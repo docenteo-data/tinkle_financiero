@@ -615,7 +615,7 @@ Orden actualizado tras la verificación de §13.6:
 
 ### 13.7 Verificación del 2026-10-26 con las definiciones exportadas
 
-Contraste con `reporting-financiero/fabric/` (exportado por API) y con el SQL endpoint. Los items de §1 siguen existiendo y los destinos de los dataflows de §5.5 no han cambiado.
+Contraste con `reporting-financiero/fabric/` (exportado por API) y con el SQL endpoint. Los items de §1 siguen existiendo. El destino de cada dataflow se ha comprobado en la anotación `DataDestinations` de cada consulta en `mashup.pq`, no en `loadEnabled` (que está a false en todas). Con ese criterio, tres conclusiones de septiembre sobre §5.2 y §5.5 eran erróneas (N2, N3 y N4 abajo). Las filas de §5.2 y §5.5 se dejan como estaban: manda esta sección.
 
 | # | Estado | Resultado |
 |---|---|---|
@@ -627,6 +627,9 @@ Contraste con `reporting-financiero/fabric/` (exportado por API) y con el SQL en
 | D8 | Resuelto | Definiciones de las vistas en `fabric/sql/`. |
 | D12 | Resuelto | Esquema de columnas de `100`, `200` y `300` en `fabric/lakehouse/esquema.tsv`. |
 | N1 | Cambiado | El workspace ya no está en la capacidad de prueba (§11.2); falta confirmar el tipo de la nueva. |
+| N2 | Contradicho | `Carga_New_HAPA_asientos` sí tiene destino en la definición: escribe en `100.New_HAPA` (consulta `Carga_HAPA_asientos_DataDestination`). La tabla tiene datos (103 filas el 2026-10-26). Falta comprobar en el historial que la carga se ejecuta. |
+| N3 | Contradicho | La consulta `RLS` de `Seguridad_CDC` sí tiene destino: escribe en `100.RLS` (consulta `RLS_DataDestination`). La tabla tiene datos (13 filas el 2026-10-26). Sigue sin enlazarse a ningún modelo, así que S3 y S4 se mantienen. |
+| N4, D10 | Corregido | En `INICIAL_Carga_Rentabilidades` la consulta `Dim_CDC` no tiene destino: solo lee `300.Dim_CDC`. El único productor de `Dim_CDC` es `INGESTA_Maestros`. Las tablas con dos productores son tres: `Oracle_historico`, `Aging_Clientes` y `Aging_Proveedores`. |
 | O8, D15, D11 | Pendiente | Programaciones, historial y medidas de Planning no se han revisado. |
 
 **Hallazgos nuevos**
