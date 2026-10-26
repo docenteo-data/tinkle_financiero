@@ -21,7 +21,8 @@ Sustituir el reporting financiero de Tinkle basado en Excel (Oracle, Portugal, H
     fabric/temas/             temas de Power BI
     fabric/esquema_lh_...tsv  esquema de las capas 100 y 200 del lakehouse lh_tinkle_financiero
     notebooks/                borradores locales (Ageing), aún no publicados en Fabric
-    scripts/                  utilidades del proyecto (exportación de definiciones de Fabric)
+    scripts/                  exportación, publicación y consultas SQL de Fabric
+    tests/                    tests de los scripts (los de Fabric, con FABRIC_E2E=1)
     docs/contexto/            documentación técnica, manual funcional, preguntas abiertas y apuntes
     docs/prompts/             prompts de análisis por fichero de Grupo y de Copilot
     docs/diagramas/           flujo de datos, arquitectura y orquestación
@@ -29,11 +30,15 @@ Sustituir el reporting financiero de Tinkle basado en Excel (Oracle, Portugal, H
 
 ## Fabric
 
-El workspace de Fabric es la fuente de verdad de lo publicado; `fabric/` es su copia en texto para leerla, compararla y versionarla. Tras cualquier cambio publicado en Fabric, se vuelve a exportar y se hace commit:
+`main` refleja lo publicado en el workspace y `fabric/` es su copia en texto. Qué vía usar para leer, consultar datos o publicar, cómo se valida la cuenta, los flujos de cambio y el rollback están en [docs/flujo-fabric.md](docs/flujo-fabric.md).
 
-    reporting-financiero/.venv/Scripts/python.exe reporting-financiero/scripts/exportar_fabric.py
+| Script | Para qué | Escribe en Fabric |
+|---|---|---|
+| `scripts/exportar_fabric.py` | Traer las definiciones de Fabric a `fabric/`; con `--comprobar main`, ver si coinciden | No |
+| `scripts/consultar_sql.py` | Consultas SELECT al SQL endpoint del lakehouse | No |
+| `scripts/publicar_fabric.py` | Publicar items desde un commit (flujo B y rollback); simulación salvo `--confirmar` | Sí |
 
-Requisito: Azure CLI con la cuenta de Tinkle por defecto (`az account set --subscription 74ab7d37-cd81-40fd-82e4-cd9c35f4345a`). El MCP `fabric-local` usa la misma cuenta. Las User Data Functions no se exportan porque llevan un secreto incrustado.
+Requisitos: Azure CLI con la cuenta de Tinkle por defecto y el entorno del proyecto (`pip install -r requirements.txt` en `.venv`). Las User Data Functions no se exportan ni se publican porque llevan un secreto incrustado.
 
 ## Datos y documentos del cliente (no se versionan)
 

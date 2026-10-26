@@ -55,7 +55,7 @@ def main():
     base = fc.solo_items(fc.ficheros_en_git(args.base), set(args.items))
     for carpeta in args.items:
         if not any(r.startswith(carpeta + "/") for r in a_publicar):
-            print("ERROR:", fc.ascii(carpeta), "no está en", fc.ascii(args.ref))
+            print("ERROR:", fc.ascii(carpeta), "no esta en", fc.ascii(args.ref))
             return 2
 
     # Fabric tiene que estar como en --base: si no, publicar perdería cambios hechos en Fabric.
@@ -91,7 +91,7 @@ def main():
         print("PUBLICADO", fc.ascii(carpeta), "desde", fc.ascii(args.ref), "por", fc.ascii(usuario) + ":", resumen)
 
     if not args.confirmar:
-        print("Simulación: no se ha publicado nada. Repite con --confirmar para publicar.")
+        print("Simulacion: no se ha publicado nada. Repite con --confirmar para publicar.")
     else:
         print("Ahora exporta (exportar_fabric.py), revisa git diff y haz commit.")
     return 0

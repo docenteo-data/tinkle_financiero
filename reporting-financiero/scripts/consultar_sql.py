@@ -70,7 +70,7 @@ def main():
             for fila in filas[:args.max_filas]:
                 print(" | ".join(fc.ascii("" if v is None else v) for v in fila))
             if len(filas) > args.max_filas:
-                print(f"(hay más filas; se muestran {args.max_filas}. Usa --csv para el resultado completo)")
+                print(f"(hay mas filas; se muestran {args.max_filas}. Usa --csv para el resultado completo)")
         con.close()
     except mssql_python.Error as error:
         print("ERROR en la consulta:", fc.ascii(error))
