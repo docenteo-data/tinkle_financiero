@@ -1,0 +1,195 @@
+Documentación de los Dataflows Gen2 del workspace Tinkle - Financiero
+
+Workspace: Tinkle - Financiero
+Workspace ID: b31820dc-4b4f-4696-9a96-bbee438e9306
+Lakehouse destino habitual: lh_tinkle_financiero
+Lakehouse ID: 4d2305f1-7ef6-42c3-87ed-aed12f143ac2
+
+Las definiciones se obtuvieron mediante get_item_definition. Los nombres indicados son los nombres internos shared de mashup.pq.
+
+CARGAS INICIALES
+
+INICIAL_Carga_Oracle
+ID: bc6e3c41-2f60-4954-9a75-6cd17dd2ca39
+
+Fuente:
+- /Files/Reporting Financiero/1. Entrada de Datos/Arranque/1-Checklist 2026 03(v11) - copia.xlsm
+- Hoja Oracle.
+- Conexión Lakehouse, DatasourceId ebd2d2e1-1cee-4cb0-8333-e6349b6c8528.
+
+Consulta M:
+- Carga Oracle historico desde Checklist.
+- Importa el libro, promueve encabezados, renombra y tipa columnas, limpia texto/nulos y normaliza fechas y origen.
+
+Destino:
+- Tabla Oracle_historico, esquema 200.
+
+INGESTA_Maestros
+ID: 60412b6d-8169-49a4-b6b9-0a5b8ec6e0f6
+
+Fuentes:
+- Maestros.xlsx: MAPPING HAPA, CDC, Clientes, MAPPING PORTUGAL y COA Oracle.
+- MASTER RRHH 2026 .xlsx: hoja MASTER.
+
+Transformaciones:
+- Limpieza, promoción de encabezados, tipado, ordenación y eliminación de duplicados.
+- Creación de calendario.
+- Normalización de clientes y sociedades.
+- Preparación de mapeos de cuentas y líneas de reporte.
+
+Destinos:
+- Esquema 200: Mapping Portugal, Mapping_HAPA y COA_Oracle.
+- Esquema 300: Dim_Calendar, Dim_Clientes, Dim_Sociedades, Dim_Report_Line, Map_Report_Line_Account, Dim_CDC, Dim_RRHH y Aux_CDC.
+
+INICIAL_Carga_budget_fct
+ID: ccf7112d-ffd7-41c0-ac41-ac394ea63e65
+
+Fuentes:
+- 1-Checklist 2026 03(v11) - copia.xlsm: hojas B01 JAZZ, B01 ONION, B01 PORT, B01 CONS y B01 TOTAL (Checklist).
+- TINKLE FORECAST 2026 FT3.xlsm.
+
+Consultas M:
+- B01 JAZZ, B01 ONION, B01 PORT, B01 CONS, B01 TOTAL (Checklist).
+- FORECASTS y BUDGET.
+- Combina hojas, promueve encabezados, separa columnas, elimina columnas auxiliares, transforma tipos, desnormaliza meses y deriva año/periodo.
+
+Destino:
+- Tabla Presupuestos, esquema 200.
+
+INICIAL_Carga_Revenues
+ID: 3efad19a-3c01-449a-a5b2-cb55f4ba2082
+
+Fuente:
+- Revenue 2026 FT3.xlsx, bajo .../Arranque.
+- Hoja Revenue by client FT3 2026 y hojas históricas cuyo nombre contiene Revenue by.
+
+Consultas M:
+- Carga historica revenues.
+- Revenue by client FT3 2026.
+- Filtra hojas, expande Data, promueve encabezados, filtra compañías y clientes válidos, renombra Origen, convierte los meses a filas, deriva Año, rellena compañía y tipa Valor.
+
+Destino:
+- Tabla Revenues, esquema 200.
+
+INICIAL_Carga_Agings
+ID: e9e60e41-5456-4d95-9b1e-32e66c795f94
+
+Fuentes:
+- 2026 03 31- AGING Clientes Grupo Tinkle TOTAL HMES.xlsx, hoja DATOS.
+- 2026 03 31(01) Cartera Prov - TOTAL.xlsx, hoja Datos.
+
+Transformaciones:
+- Promoción de encabezados, selección y renombrado de columnas, reemplazo de valores y tipado.
+
+Destinos:
+- Aging_Clientes y Aging_Proveedores, esquema 200.
+
+INICIAL_Carga_Rentabilidades
+ID: ca02d1da-5790-448a-84ba-e0e6a5e4708e
+
+Fuente:
+- Libro Excel RENTABILIDAD, bajo .../Arranque.
+
+Transformaciones:
+- Fact_Asignacion_RRHH importa y combina bloques, detecta encabezados, elimina columnas, convierte números y porcentajes y usa joins auxiliares.
+- Dim_equipos deriva la dimensión desde la fact table.
+- Dim_CDC es una consulta auxiliar.
+
+Destinos:
+- Fact_Asignacion_RRHH y Dim_equipos, esquema 300.
+
+INGESTA Y SEGURIDAD
+
+INGESTA_Carga_Datos
+ID: c8d12168-9a15-4df6-8632-eb647c58a861
+
+Fuente:
+- /Files/Reporting Financiero/1. Entrada de Datos/Dinamicos.
+- Consume ficheros Excel/CSV y hojas Datos, Hoja1, AGINGS/Datos y HMES___Aging_en_Detalle_todas__.
+
+Consultas M:
+- Carga_New_MMS.
+- Carga_New_Oracle.
+- Carga_New_PT_extrato_contas.
+- Carga_New_HAPA_asientos.
+- Carga_New_Agings_Proveedores.
+- Carga_New_Agings_Clientes.
+- Navegación dinámica, Excel.Workbook/Csv.Document, combinación, promoción de encabezados, limpieza, ordenación y tipado.
+
+Destino, esquema 100:
+- New_MMS.
+- New_Oracle.
+- New_PT_extrato_contas.
+- New_HAPA.
+- New_Agings_Proveedores.
+- New_Agings_Clientes.
+
+Seguridad_CDC
+ID: 42e8fdba-1dfa-469c-9a26-118ea3df5bb0
+
+Fuente:
+- No lee ningún fichero externo.
+- RLS parte de una tabla literal M construida con Table.FromRows, con columnas Usuario, CDC y eMail.
+- DatasourceId f51eee19-0247-47ab-aea7-4c0f6d566601.
+
+Transformación:
+- Construcción de la tabla estática de seguridad y tipado de texto.
+- La consulta RLS está marcada como no cargable.
+
+Destino:
+- RLS, esquema 100, mediante RLS_DataDestination.
+
+TRANSFORMACIONES SILVER Y GOLD
+
+TRANS_Silver
+ID: e34a567e-3986-467e-ac59-9c89b8014b87
+
+Fuentes:
+- Tablas raw del esquema 100: New_MMS, New_Oracle, New_PT_extrato_contas, New_HAPA, New_Agings_Clientes y New_Agings_Proveedores.
+
+Consultas M:
+- 200_New_MMS_trans.
+- 200_New_Oracle_trans.
+- 200_New_HAPA_trans.
+- 200_Portugal_trans.
+- 200_HAPA.
+- 200_Oracle.
+- 200_MMS.
+- Transformaciones de aging.
+- Tipado y limpieza, normalización de códigos y fechas, deduplicación, filtros, combinaciones y parámetros de fecha.
+
+Destinos, esquema 200:
+- MMS.
+- Portugal.
+- HAPA.
+- Oracle_historico.
+- Aging_Clientes.
+- Aging_Proveedores.
+
+TRANS_Gold
+ID: 2ddb6bc7-1a91-490f-9a6b-60ade6940b4e
+
+Fuentes:
+- Tablas silver Oracle_historico, HAPA, Portugal y MMS.
+- Maestros Excel Maestros.xlsx y MASTER RRHH 2026 .xlsx.
+
+Transformaciones:
+- Combina fuentes contables.
+- Selecciona y renombra columnas.
+- Filtra y elimina duplicados.
+- Normaliza fechas y texto.
+- Deriva periodo, ejercicio y claves.
+- Prepara Assets_Reporte, Liabilities_Reporte, PL_Reporte y consultas de cuentas.
+
+Destinos, esquema 300:
+- Fact_Actuals.
+- Dim_Cuentas.
+- Dim_Mapeo_Cuentas.
+- Consultas de reporte.
+
+OBSERVACIONES
+
+- Los bloques *_DataDestination son consultas auxiliares de referencia.
+- Los destinos usan Kind = Reference y TypeSettings = [Kind = Table].
+- INICIAL_Carga_Revenues devolvió EntityNotFound en el primer intento, pero se recuperó correctamente en un segundo intento con el mismo ID.
+- Las definiciones M completas incluyen payloads internos comprimidos y metadatos de staging; este archivo conserva el resumen operativo y los nombres exactos de consultas, ficheros, hojas, tablas y esquemas.

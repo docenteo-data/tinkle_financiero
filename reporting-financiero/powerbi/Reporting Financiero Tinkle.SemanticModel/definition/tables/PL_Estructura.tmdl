@@ -1,0 +1,158 @@
+table PL_Estructura
+	lineageTag: e079de09-2b52-4801-86ab-b964603ee86e
+	sourceLineageTag: ac1c7946-bfe4-4f41-93dc-f3d28d07362f
+
+	measure 'Importe P&L Niveles' =
+			
+			VAR PLIDsBaseEnContexto =
+			    CALCULATETABLE (
+			        VALUES ( PL_Estructura[PL_ID] ),
+			        KEEPFILTERS ( PL_Estructura[Tipo_Linea] = "Base" )
+			    )
+			RETURN
+			CALCULATE (
+			    [Importe Base],
+			    REMOVEFILTERS ( PL_Estructura ),
+			    TREATAS (
+			        PLIDsBaseEnContexto,
+			        PL_Mapping_Cuentas[PL_ID]
+			    )
+			)
+		lineageTag: ab3200a3-d465-4e9e-b6fa-0f49f397e685
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column PL_ID
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		lineageTag: 9771b60c-5421-40e9-bb71-10aeda906d0e
+		sourceLineageTag: c71d697c-07c1-4e53-85e1-fe1ef8997763
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: PL_ID
+
+		annotation SummarizationSetBy = User
+
+	column Parent_PL_ID
+		dataType: int64
+		formatString: 0
+		lineageTag: f94e4b63-6312-4b21-ab5c-fab2f1e2794c
+		sourceLineageTag: ea681cde-e56c-4cdd-93b7-ff7acec5e163
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Parent_PL_ID
+
+		annotation SummarizationSetBy = User
+
+	column Orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 9227f2c5-79a1-400b-843b-3f3f2ab063f7
+		sourceLineageTag: c134b6b8-4d4e-490f-a207-78b31a72f689
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Orden
+
+		annotation SummarizationSetBy = User
+
+	column Linea_PL
+		dataType: string
+		lineageTag: 9561e979-3d43-4002-b6e4-ad12ceb44990
+		sourceLineageTag: d41df57a-82f5-4c05-bb53-9e2b26a6b740
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Linea_PL
+
+		annotation SummarizationSetBy = User
+
+	column Codigo_PL
+		dataType: string
+		lineageTag: f4dc987d-059a-4043-a947-da9afea63700
+		sourceLineageTag: b68362f2-800e-4621-9ec2-869b42dd4b5d
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Codigo_PL
+
+		annotation SummarizationSetBy = User
+
+	column Tipo_Linea
+		dataType: string
+		lineageTag: 3701145b-2488-40b0-b192-90fd9ac11357
+		sourceLineageTag: 053a3c66-1c19-4369-a891-7703d48eb0f4
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Tipo_Linea
+
+		annotation SummarizationSetBy = User
+
+	column Nivel
+		dataType: int64
+		formatString: 0
+		lineageTag: 981150df-98db-4d24-9cc0-d9aeef237972
+		sourceLineageTag: 5d4c350c-29a9-434d-84aa-53032e47586d
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Nivel
+
+		annotation SummarizationSetBy = User
+
+	column Nivel_1
+		dataType: string
+		lineageTag: 000d83f7-d062-435e-8e2b-9f73c45647c4
+		sourceLineageTag: bb4d142a-054e-4fa5-9d3a-4734eee215d9
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Nivel_1
+
+		annotation SummarizationSetBy = User
+
+	column Nivel_2
+		dataType: string
+		lineageTag: b0c9119d-0dd1-4990-9e86-a9881ebeb8bf
+		sourceLineageTag: d1057356-8a4b-4957-8d89-e67b48840f75
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Nivel_2
+
+		annotation SummarizationSetBy = User
+
+	column Nivel_3
+		dataType: string
+		lineageTag: 420159db-2b43-4251-a12b-1bc69cb5cc16
+		sourceLineageTag: 6015a503-2243-47c3-a042-a5596d9e1557
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Nivel_3
+
+		annotation SummarizationSetBy = User
+
+	column Nivel_4
+		dataType: string
+		lineageTag: f21a8413-4044-4d15-abf4-69fe785c1994
+		sourceLineageTag: 3c3453bb-bbab-4144-8266-005f36f9085a
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Nivel_4
+
+		annotation SummarizationSetBy = User
+
+	column Mostrar_Detalle_Cuentas
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 510c7079-f259-49a6-9491-e441bf68eb1d
+		sourceLineageTag: 2b761b1b-5812-467f-b9c8-49a4d9d42f03
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Mostrar_Detalle_Cuentas
+
+		annotation SummarizationSetBy = User
+
+	partition PL_Estructura = entity
+		mode: directQuery
+		source
+			entityName: PL_Estructura
+			expressionSource: 'De DirectQuery a AS: Finance'
+

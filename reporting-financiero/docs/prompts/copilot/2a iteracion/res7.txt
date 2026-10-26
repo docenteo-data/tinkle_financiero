@@ -1,0 +1,93 @@
+1. Roles del workspace
+Workspace: Tinkle - Financiero
+ID: b31820dc-4b4f-4696-9a96-bbee438e9306
+
+Rol	Usuarios	Grupos	Entidades de servicio	Total
+Admin	3	0	0	3
+Member	3	0	2	5
+Contributor	0	0	0	0
+Viewer	4	0	0	4
+No hay grupos asignados. No se incluyen correos personales.
+
+2. Git y deployment pipeline
+Dato	Resultado
+Proveedor Git	NO DISPONIBLE
+Repositorio	NO DISPONIBLE
+Rama	NO DISPONIBLE
+Integración con Git	NO DISPONIBLE
+Deployment pipeline	NO DISPONIBLE
+El endpoint de metadatos del workspace no devuelve propiedades de integración Git ni de deployment pipeline. La documentación local tampoco confirma una integración activa.
+
+3. User Data Functions
+Las definiciones actuales de ambos items fueron solicitadas en modo lectura, pero Fabric respondió con operaciones asíncronas cuyo resultado no está accesible mediante las herramientas disponibles. Por ello, los siguientes datos proceden de la documentación local previamente extraída y se indican con esa limitación.
+
+Ejecución Reporting
+ID: 27467e82-89d3-44fc-8c93-4ae54fd4d193
+
+Dato	Resultado
+Endpoint público	Habilitado, según documentación local
+Parámetros	Ninguno
+Permiso exacto de invocación	NO DISPONIBLE
+Conexión gestionada	No consta
+Key Vault	No consta
+Pipeline invocado	Generar Reporting
+Método	POST a la API REST de Fabric
+Lógica:
+
+Obtiene un token de Microsoft Entra ID mediante ClientSecretCredential.
+Solicita el alcance https://api.fabric.microsoft.com/.default.
+Ejecuta mediante POST el pipeline Generar Reporting.
+Comprueba que la respuesta sea HTTP 202.
+Extrae el identificador del job de la cabecera Location.
+Devuelve un mensaje de éxito o error.
+Librerías observadas en la copia documentada:
+
+SDK de User Data Functions de Fabric, mediante @udf.function().
+azure.identity, para ClientSecretCredential.
+requests, para la llamada HTTP.
+Credenciales:
+
+CLIENT_SECRET: sí, documentado como incrustado en function_app.py. Valor omitido: [OCULTO].
+TENANT_ID: aparece usado como variable; no se puede confirmar si su valor está incrustado. NO DISPONIBLE.
+CLIENT_ID: aparece usado como variable; no se puede confirmar si su valor está incrustado. NO DISPONIBLE.
+Generar_txt
+ID: 30f6466d-8780-4886-84b8-70ebc13e6d1e
+
+Dato	Resultado
+Endpoint público	Habilitado, según documentación local
+Parámetros	Ninguno
+Permiso exacto de invocación	NO DISPONIBLE
+Conexión gestionada	No consta
+Key Vault	No consta
+Pipeline invocado	Grabar salidas
+Método	POST a la API REST de Fabric
+Lógica:
+
+Obtiene un token de Microsoft Entra ID mediante ClientSecretCredential.
+Realiza un POST a la API REST de Fabric.
+Ejecuta el pipeline Grabar salidas.
+Comprueba la respuesta HTTP 202.
+Extrae el job_id de la cabecera Location.
+Devuelve un mensaje de éxito o error.
+El pipeline Grabar salidas ejecuta el notebook Generar_txt_Balance_Saldos.
+
+Librerías observadas:
+
+SDK de User Data Functions de Fabric, mediante @udf.function().
+azure.identity, para ClientSecretCredential.
+requests, para la llamada HTTP.
+Credenciales:
+
+CLIENT_SECRET: sí, documentado como incrustado en function_app.py. Valor omitido: [OCULTO].
+TENANT_ID: aparece usado como variable; no se puede confirmar si su valor está incrustado. NO DISPONIBLE.
+CLIENT_ID: aparece usado como variable; no se puede confirmar si su valor está incrustado. NO DISPONIBLE.
+El permiso exacto requerido para invocar los endpoints no se pudo recuperar. La documentación solo indica que el llamante necesita permiso de invocación sobre la función.
+
+4. Capacidad
+Dato	Resultado
+Capacidad	Trial-20260817T105409Z-mT-HimkliUKP9Fc9o-eJpw
+SKU	FTL64
+Región	West Europe
+Estado	Active
+Capacity ID	a9930e38-9c96-4e90-bde2-70677c5fb90a
+No se creó, modificó, refrescó, ejecutó ni eliminó ningún elemento, conexión, programación o permiso.

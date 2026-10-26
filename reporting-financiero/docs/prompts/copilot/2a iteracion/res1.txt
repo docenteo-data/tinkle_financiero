@@ -1,0 +1,13 @@
+No puedo obtener la definición TMDL en esta sesión.
+
+La herramienta de lectura de Fabric aceptó la solicitud, pero respondió con una operación asíncrona y Retry-After: 20. La herramienta disponible no permite consultar el estado ni recuperar el resultado de esa operación. Las consultas posteriores volvieron a generar nuevas operaciones asíncronas, sin devolver el TMDL.
+
+Por tanto, todos los datos solicitados quedan:
+
+Relaciones: NO DISPONIBLE. No se pudo leer el TMDL.
+Tablas, particiones y orígenes: NO DISPONIBLE.
+Definición de Unidades: NO DISPONIBLE.
+Roles, filtros, OLS y miembros: NO DISPONIBLE.
+Medidas solicitadas y expresiones DAX: NO DISPONIBLE.
+Número total de medidas y tablas que las contienen: NO DISPONIBLE.
+No se crearon, modificaron, refrescaron, ejecutaron ni borraron elementos, conexiones, programaciones o permisos.

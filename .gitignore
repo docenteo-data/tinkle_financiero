@@ -1,0 +1,38 @@
+# Secretos: nunca se suben. El ejemplo de configuración sí.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+credentials
+.secretos/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Node
+node_modules/
+
+# Datos locales (los datos del cliente no van al repositorio)
+*/data/
+
+# Editores y sistema
+.obsidian/workspace*
+~$*
+.DS_Store
+Thumbs.db
+
+# Estado local de Claude Code
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+
+# Power BI (PBIP): estado local y caché del modelo
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+*.pbix

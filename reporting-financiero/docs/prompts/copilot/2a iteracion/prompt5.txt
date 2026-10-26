@@ -1,0 +1,16 @@
+REGLAS: Workspace de Fabric "Tinkle - Financiero" (id b31820dc-4b4f-4696-9a96-bbee438e9306). Operación SOLO DE LECTURA. No crees, modifiques, refresques, ejecutes ni borres ningún item, programación, conexión o permiso. Si una herramienta implica escritura o ejecución, no la uses e indícalo. No muestres secretos, contraseñas ni tokens aunque aparezcan en el código: sustitúyelos por [OCULTO]. Si no puedes obtener un dato, escribe "NO DISPONIBLE" y explica el motivo. Responde en texto plano o tablas markdown, sin resumir de más.
+
+TAREA: Vistas SQL y esquema 300 del lakehouse.
+
+Usando el SQL endpoint del lakehouse lh_tinkle_financiero (id 485f1bd4-2372-44a3-b279-e00a63a80137), ejecuta SOLO consultas SELECT sobre las vistas de sistema:
+
+1. Definición SQL completa de todas las vistas:
+SELECT s.name AS esquema, v.name AS vista, m.definition FROM sys.views v JOIN sys.schemas s ON v.schema_id = s.schema_id JOIN sys.sql_modules m ON v.object_id = m.object_id
+
+2. Para cada vista, las tablas de las que depende (sys.sql_expression_dependencies).
+
+3. Esquema de columnas completo del esquema 300 en formato TSV: TABLE_SCHEMA, TABLE_NAME, ORDINAL_POSITION, COLUMN_NAME, DATA_TYPE, IS_NULLABLE, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE (desde INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '300').
+
+4. Número de filas de cada tabla de los esquemas 100, 200 y 300 (COUNT_BIG(*)).
+
+5. Si hay otros objetos en el esquema dbo o en otros esquemas: procedimientos, funciones o vistas.

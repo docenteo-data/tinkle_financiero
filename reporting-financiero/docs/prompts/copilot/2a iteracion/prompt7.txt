@@ -1,0 +1,13 @@
+REGLAS: Workspace de Fabric "Tinkle - Financiero" (id b31820dc-4b4f-4696-9a96-bbee438e9306). Operación SOLO DE LECTURA. No crees, modifiques, refresques, ejecutes ni borres ningún item, programación, conexión o permiso. Si una herramienta implica escritura o ejecución, no la uses e indícalo. No muestres secretos, contraseñas ni tokens aunque aparezcan en el código: sustitúyelos por [OCULTO]. Si no puedes obtener un dato, escribe "NO DISPONIBLE" y explica el motivo. Responde en texto plano o tablas markdown, sin resumir de más.
+
+TAREA: Seguridad del workspace y User Data Functions.
+
+Sin modificar nada, devuelve:
+
+1. Asignaciones de roles del workspace: tipo de principal (usuario, grupo o entidad de servicio), rol, y número de principales por rol. No incluyas correos personales; los nombres de grupos sí.
+
+2. Si el workspace tiene integración con git (proveedor, repositorio, rama) y si está en algún deployment pipeline.
+
+3. Para las User Data Functions "Ejecución Reporting" (27467e82-89d3-44fc-8c93-4ae54fd4d193) y "Generar_txt" (30f6466d-8780-4886-84b8-70ebc13e6d1e): si el endpoint público está habilitado, qué permisos hacen falta para invocarlas, si usan alguna conexión gestionada o Key Vault, y la lista de librerías. Del código, describe la lógica sin mostrar el valor de CLIENT_SECRET, TENANT_ID ni CLIENT_ID (indica solo si están incrustados en el código).
+
+4. Capacidad asignada al workspace (SKU y región).

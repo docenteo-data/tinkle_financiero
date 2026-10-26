@@ -1,0 +1,50 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-ES
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["De DirectQuery a AS: Finance","PL_Filas_Presentacion","200 MMS"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Oracle_calc
+ref table Clientes
+ref table CDC
+ref table COA_Oracle
+ref table 'Mapping Portugal'
+ref table New_Balancete_Analitico_PT
+ref table PL_Mapping_Cuentas
+ref table PL_Estructura
+ref table PL_Filas_Presentacion
+ref table '200 MMS'
+ref table DateTableTemplate_a5098fc0-8634-417b-ba42-82e94eee4b61
+ref table LocalDateTable_7307a8c6-f23f-4c24-bb1c-4da065e7b288
+ref table LocalDateTable_becd959e-b96e-4ced-84e1-4de9ebf5c69b
+ref table LocalDateTable_2c94e242-7291-4886-a752-1fbfaced8bc8
+ref table LocalDateTable_ea3ea6f8-f72e-45f8-85f6-a9638e91803b
+ref table LocalDateTable_defdc1cd-1df5-4044-a0d3-a20f0f7e1253
+ref table LocalDateTable_bed7f776-99f8-449e-b451-85b8e044bc24
+ref table LocalDateTable_b1ee859c-fd76-4c45-b18b-bd0244469cd6
+ref table LocalDateTable_43d952fb-574c-448f-b7fe-99c08755291c
+ref table LocalDateTable_2efbff31-f0a2-42b1-a3a3-6332105233d3
+ref table LocalDateTable_8a5d14a5-d78e-4fc1-a712-0d469beb5038
+ref table LocalDateTable_e1282bbe-9147-4388-a85b-def78d699658
+ref table LocalDateTable_d7bd3f9e-ece9-4796-b93d-d3c4aba4d876
+ref table LocalDateTable_89111032-ab82-424d-b6ba-8b3cb1cf56e4
+ref table LocalDateTable_8ab150bb-7858-4c21-9f2c-4f806d3299fd
+ref table LocalDateTable_0c0ca0cc-e9b6-4e77-aeaa-89142acac2b8
+ref table LocalDateTable_04bd147c-7c18-4ace-9fba-4afe24316570
+ref table LocalDateTable_e6248c31-4624-4989-904e-66710cbeb05f
+ref table LocalDateTable_2f8a5b23-89e1-41e4-bff0-95e6dfd8bcaa
+ref table LocalDateTable_793b75da-a931-46eb-9832-4e04d611407f
+ref table LocalDateTable_b80cba94-34f0-4e08-b0bb-ffc4a28ee8b3
+ref table LocalDateTable_069048a4-1f65-4e08-955a-dcef2f0676ec
+ref table LocalDateTable_41bf1832-9907-4991-8cfe-94753630c649
+
+ref cultureInfo es-ES
+

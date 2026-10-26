@@ -1,0 +1,11 @@
+REGLAS: Workspace de Fabric "Tinkle - Financiero" (id b31820dc-4b4f-4696-9a96-bbee438e9306). Operación SOLO DE LECTURA. No crees, modifiques, refresques, ejecutes ni borres ningún item, programación, conexión o permiso. Si una herramienta implica escritura o ejecución, no la uses e indícalo. No muestres secretos, contraseñas ni tokens aunque aparezcan en el código: sustitúyelos por [OCULTO]. Si no puedes obtener un dato, escribe "NO DISPONIBLE" y explica el motivo. Responde en texto plano o tablas markdown, sin resumir de más.
+
+TAREA: Planning y base de datos CPM.
+
+Sin escribir en Planning ni en CPM:
+
+1. En la base de datos SQL "CPM" (id b85d1457-6ce1-441c-b8cb-21cb839d688a), mediante SELECT sobre INFORMATION_SCHEMA, lista todas las tablas y vistas con sus columnas y tipos, y el número de filas de FT3_Revenue y FT8_Revenue.
+
+2. En el item Planning (id 50ce99b8-0525-435f-bc71-56235a557714): para cada hoja, di si es visible u oculta, qué medidas y dimensiones usa, dónde se definen las medidas "FC3 Revenue" y "FC8 Revenue" (en el modelo semántico o en Planning) y con qué fórmula, y la configuración de writeback.
+
+3. Si algún item del workspace (dataflow, pipeline, notebook o modelo) lee datos de CPM.

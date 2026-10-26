@@ -1,0 +1,61 @@
+table 'Mapping Portugal'
+	lineageTag: ac10dc0f-067c-4f35-a5a0-fcff00624a48
+	sourceLineageTag: 9e1fecdf-6c0c-4cec-84f8-2723be6b5bcb
+
+	column Conta
+		dataType: int64
+		formatString: 0
+		lineageTag: 3921caff-8ba3-4b47-97e3-d57b658cc0f9
+		sourceLineageTag: f22f9d27-8e30-43aa-8a75-d6a84abdd28b
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Conta
+
+		annotation SummarizationSetBy = User
+
+	column Descrição
+		dataType: string
+		lineageTag: b6030be9-7c57-459b-842d-a0d4036701bc
+		sourceLineageTag: 79179629-7b7b-4efc-a312-56c7332b0481
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Descrição
+
+		annotation SummarizationSetBy = User
+
+	column 'Mapeo Oracle'
+		dataType: string
+		lineageTag: 2f2b4c3b-09ec-4117-ab46-7b9e50a515d3
+		sourceLineageTag: bcc03397-4e48-467b-8a73-6fc5059ede6a
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Mapeo Oracle
+
+		annotation SummarizationSetBy = User
+
+	column 'Mapeo Magnitude'
+		dataType: string
+		lineageTag: 69a4ceee-4039-4b71-a8c0-5c69f0ec6ee9
+		sourceLineageTag: 266b548d-edb1-4e96-a8aa-0ecc4a425940
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Mapeo Magnitude
+
+		annotation SummarizationSetBy = User
+
+	column 'Mapeo summary'
+		dataType: string
+		lineageTag: 0f94a1f3-e949-4ec8-aac4-eaa9ed4d41f9
+		sourceLineageTag: 70a22c86-24bb-4911-b1f9-fdcbf4d81016
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Mapeo summary
+
+		annotation SummarizationSetBy = User
+
+	partition 'Mapping Portugal' = entity
+		mode: directQuery
+		source
+			entityName: Mapping Portugal
+			expressionSource: 'De DirectQuery a AS: Finance'
+

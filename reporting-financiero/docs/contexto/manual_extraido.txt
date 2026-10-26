@@ -1,0 +1,957 @@
+PAGES: 33
+--- PAGE 1 ---
+Reporting Financiero en Microsoft Fabric
+Manual Funcional y Técnico
+VERSIÓN 0.1 – 21/08/2026
+1 Introducción y objetivo de la solución
+1.1 Contexto
+La solución de Reporting Financiero de Tinkle se ha desarrollado sobre Microsoft Fabric con el objetivo
+de centralizar, automatizar y mejorar los procesos de reporting financiero y de control de gestión que
+anteriormente se apoyaban en diferentes ficheros Excel, extracciones de sistemas y procesos
+manuales.
+El punto de partida de la solución es la existencia de distintas fuentes de información financiera y
+operativa, con estructuras y niveles de detalle diferentes. Entre ellas se encuentran la información
+contable utilizada para el cierre financiero, los datos procedentes de MMS, la información de las
+distintas sociedades del grupo, los presupuestos y forecasts, los datos de clientes y los datos
+necesarios para los análisis de rentabilidad.
+La solución implantada crea una capa común en Microsoft Fabric que permite almacenar, transformar
+y relacionar estas fuentes antes de poner la información a disposición de los usuarios mediante
+modelos semánticos, informes Power BI, procesos de Planning y procesos de generación de ficheros
+para reporting de Grupo.
+1.2 Objetivo de la solución
+El objetivo principal es disponer de una plataforma financiera centralizada que permita realizar de
+forma consistente los principales procesos de reporting y análisis financiero de Tinkle.
+La solución busca reducir la dependencia de procesos manuales, evitar la duplicación de
+transformaciones en diferentes ficheros Excel y establecer una única estructura de datos que pueda
+ser utilizada por los distintos informes y procesos financieros.
+Dentro de la solución se han implantado funcionalidades para:
+• Integrar y homogeneizar información procedente de diferentes fuentes y sociedades.
+• Consolidar la información contable real en un único modelo de datos.
+• Normalizar las cuentas de los distintos orígenes mediante estructuras de mapeo
+comunes.
+• Reproducir la estructura de reporting financiero utilizada por Tinkle y por el Grupo.
+• Analizar el cierre financiero mediante informes de gestión.
+• Consultar el detalle contable que compone los importes agregados.
+• Analizar la posición de cobros y pagos mediante Aging de clientes y proveedores.
+• Relacionar información financiera con información operativa procedente de MMS.
+• Analizar la rentabilidad por cliente.
+• Incorporar el coste de personal a la rentabilidad mediante porcentajes de dedicación.
+--- PAGE 2 ---
+• Preparar forecasts de Revenue mediante hojas de Planning.
+• Capturar las dedicaciones de los empleados a clientes, equipos y directoras.
+• Generar los ficheros necesarios para determinados procesos de reporting de Grupo.
+• Centralizar la actualización de los diferentes componentes mediante procesos
+orquestados en Microsoft Fabric.
+1.3 Contexto
+Desde el punto de vista funcional, la solución sustituye progresivamente parte de la lógica que
+anteriormente se encontraba distribuida entre diferentes Excel y procesos manuales.
+La información se carga en Fabric, se transforma siguiendo reglas comunes de negocio y
+posteriormente se reutiliza en los distintos procesos.
+De forma simplificada, el flujo funcional de la solución es el siguiente:
+Fuentes de información → Ingesta → Transformación y homogeneización →
+Modelo financiero común → Reporting / Planning / Procesos de Grupo
+Este enfoque permite que una misma información financiera pueda utilizarse para diferentes
+finalidades sin tener que volver a prepararla en cada informe.
+Por ejemplo, la información contable transformada puede utilizarse tanto para el análisis del cierre
+como para determinados cálculos de rentabilidad, mientras que los maestros de clientes, sociedades,
+cuentas o centros de coste pueden ser compartidos entre diferentes procesos.
+1.4 Contexto
+Desde el punto de vista técnico, la solución se ha construido utilizando diferentes componentes de
+Microsoft Fabric, entre ellos:
+• Dataflows Gen2 para procesos de carga y transformación.
+• Lakehouse como repositorio central de información.
+• SQL Analytics Endpoint para el acceso estructurado a las tablas almacenadas.
+• Pipelines para la orquestación de los procesos de actualización.
+• Modelo semántico central para la explotación de la información financiera.
+• Power BI para la visualización y análisis.
+• Planning para los procesos de Forecast y captura de información.
+• Notebooks y otros componentes de Fabric para procesos específicos, como la generación
+de ficheros para reporting de Grupo.
+La arquitectura separa los procesos de ingesta, transformación, modelado y consumo, de forma que
+la lógica de preparación de los datos quede centralizada y no dependa de cada informe individual.
+1.5 Principales bloques de la solución
+A nivel funcional y técnico, la solución implantada puede dividirse en los siguientes grandes bloques:
+• Carga y preparación de datos
+--- PAGE 3 ---
+Procesos encargados de incorporar las diferentes fuentes de información al entorno Fabric y
+realizar las transformaciones necesarias para obtener estructuras homogéneas.
+• Modelo financiero
+Modelo semántico central de la solución, denominado Financial Model, que relaciona la
+información contable, clientes, sociedades, cuentas, calendario, MMS, presupuestos y otros
+maestros necesarios para los diferentes análisis.
+• Reporting financiero
+Conjunto de informes Power BI utilizados para analizar el cierre y las principales magnitudes
+financieras. Dentro de este bloque se encuentran, entre otros, los informes de Checklist y HAPA.
+• Aging
+Informes destinados al seguimiento de facturas pendientes de cobro y pago, diferenciados
+entre Aging de Clientes y Aging de Proveedores.
+• Rentabilidad
+Conjunto de análisis destinados a relacionar ingresos, Gross Income, costes de producción y
+costes de personal para analizar la contribución y rentabilidad de los clientes.
+• Planning
+Procesos preparados para introducir y mantener información de Forecast y de dedicaciones de
+empleados. Incluye las hojas de Revenue FT3, Revenue FT8 y Dedicaciones.
+• Reporting de Grupo
+Procesos destinados a generar los ficheros de salida requeridos para determinados reportings
+externos o de Grupo.
+1.6 Alcance del manual
+El presente documento describe tanto la operativa funcional como la arquitectura técnica de la
+solución implantada.
+Para cada uno de los bloques se explicará:
+• La finalidad funcional.
+• Los datos utilizados.
+• Los componentes de Microsoft Fabric involucrados.
+• Las principales transformaciones realizadas.
+• Las relaciones entre los distintos elementos de la solución.
+• La forma de utilización por parte de los usuarios.
+• Las consideraciones necesarias para su mantenimiento.
+El objetivo es que el documento sirva tanto como manual de utilización de la solución como referencia
+para comprender su arquitectura y facilitar futuras tareas de mantenimiento, evolución o
+incorporación de nuevas fuentes de información.
+--- PAGE 4 ---
+2 Arquitectura general
+2.1 Visión general
+La solución de Reporting Financiero de Tinkle se encuentra centralizada en un workspace de
+Microsoft Fabric, desde el que se gestionan los diferentes componentes de almacenamiento,
+transformación, modelado, reporting, planificación y generación de salidas.
+La solución combina principalmente:
+• Dataflows Gen2.
+• Lakehouse.
+• SQL Analytics Endpoint.
+• Pipelines.
+• Modelo semántico.
+• Informes Power BI.
+• Planning.
+• Notebooks.
+• Funciones y procesos específicos para generación de ficheros.
+Todo ello se encuentra integrado dentro del mismo entorno de Microsoft Fabric.
+2.2 Esquema general de la solución
+A nivel conceptual, la arquitectura implantada puede representarse de la siguiente forma:
+Sistemas y ficheros de origen
+↓
+Procesos de ingesta
+↓
+Lakehouse – datos almacenados
+↓
+Transformaciones Silver
+↓
+Transformaciones Gold
+↓
+Financial Model
+↓
+Power BI / Planning / Reporting de Grupo
+Cada capa tiene una responsabilidad diferente.
+--- PAGE 5 ---
+2.3 Capa de ingesta
+La entrada recurrente de información se realiza principalmente mediante los Dataflows:
+• INGESTA_Carga_Datos
+• INGESTA_Maestros
+El primero está orientado a incorporar los datos transaccionales necesarios para los diferentes
+procesos financieros.
+El segundo incorpora información maestra utilizada posteriormente para relacionar, clasificar y
+normalizar los datos.
+Además existen procesos de carga inicial, utilizados durante la implantación para incorporar
+históricos o crear determinadas tablas desde cero.
+Estas cargas iniciales no forman parte de la operativa habitual del usuario y únicamente deben
+utilizarse cuando sea necesario reconstruir o inicializar algún conjunto de datos.
+2.4 Almacenamiento central
+El almacenamiento principal de la solución se realiza en el Lakehouse lh_tinkle_financiero
+El Lakehouse funciona como repositorio central de las tablas utilizadas por los procesos de
+transformación y reporting.
+Sobre este almacenamiento existe también un SQL Analytics Endpoint, que permite acceder a las
+tablas mediante una interfaz SQL y es utilizado por distintos componentes del proceso.
+La utilización de un repositorio central evita mantener copias independientes de los mismos datos para
+cada informe.
+2.5 Organización lógica de los datos
+Las tablas se encuentran organizadas en diferentes esquemas, principalmente:
+• 100 – Datos de entrada o datos recientemente incorporados.
+• 200 – Tablas intermedias y datos transformados.
+• 300 – Modelo preparado para consumo y reporting.
+Esta separación permite distinguir el estado de la información dentro del proceso de transformación.
+Por ejemplo, existen tablas de entrada como New_MMS, New_HAPA o los nuevos datos de Aging,
+tablas intermedias como MMS, HAPA o Aging_Clientes, y posteriormente tablas de modelo como
+Fact_Actuals, Dim_Clientes, Dim_Cuentas, Dim_Sociedades o Dim_Calendar.
+2.6 Transformaciones Silver
+La capa Silver se encarga de limpiar, estructurar y normalizar la información recibida desde las
+distintas fuentes.
+Estas transformaciones se ejecutan mediante el Dataflow TRANS_Silver
+En esta capa se realizan las operaciones necesarias para convertir los datos de entrada en estructuras
+consistentes y reutilizables.
+--- PAGE 6 ---
+Entre otras funciones, esta capa permite:
+• Homogeneizar tipos de datos.
+• Limpiar columnas y registros.
+• Estandarizar formatos.
+• Preparar los distintos orígenes para su tratamiento conjunto.
+• Consolidar información histórica y nueva.
+• Crear estructuras intermedias necesarias para las siguientes transformaciones.
+El objetivo de Silver es desacoplar el formato original de cada sistema del modelo final utilizado para
+reporting.
+2.7 Transformaciones Gold
+Una vez normalizada la información, el Dataflow TRANS_Gold genera las tablas destinadas
+directamente al modelo financiero.
+Esta capa incorpora la lógica de negocio necesaria para relacionar las diferentes fuentes y construir
+dimensiones y tablas de hechos.
+Entre las estructuras generadas en esta capa se encuentran elementos como:
+• Fact_Actuals
+• Dim_Clientes
+• Dim_Cuentas
+• Dim_Mapeo_Cuentas
+• Dim_Sociedades
+• Dim_Calendar
+• Dim_CDC
+• Dim_RRHH
+• Dim_equipos
+• Fact_Asignacion_RRHH
+• Dim_Report_Line
+• Map_Report_Line_Account
+Estas tablas constituyen la base sobre la que posteriormente se construye el modelo semántico.
+2.8 Financial Model
+El elemento central para la explotación de los datos es el modelo semántico Financial Model.
+Este modelo conecta las principales tablas financieras y maestras y contiene las relaciones y medidas
+necesarias para el consumo de la información desde Power BI.
+El Financial Model actúa como modelo semántico core de la solución.
+--- PAGE 7 ---
+Los diferentes informes financieros pueden reutilizar este modelo, evitando reproducir cálculos y
+relaciones de forma independiente en cada informe.
+Entre la información integrada en el modelo se encuentra:
+• Contabilidad real.
+• MMS.
+• Presupuesto y Forecast.
+• Clientes.
+• Sociedades.
+• Calendario.
+• Cuentas y mapeos contables.
+• Estructura del reporting financiero.
+• Centros de coste.
+• Equipos.
+• RRHH.
+• Dedicaciones de empleados.
+2.9 Capa de consumo
+Sobre la información preparada se han construido distintos elementos de consumo.
+• Reporting
+Los principales informes implantados son:
+• Checklist.
+• HAPA.
+• Aging.
+• Rentabilidad.
+Estos informes permiten analizar desde diferentes perspectivas la información financiera almacenada
+en Fabric.
+• Planning
+Se han preparado hojas específicas para procesos en los que el usuario debe introducir o modificar
+información.
+Actualmente existen hojas para:
+• Revenue FT3.
+• Revenue FT8.
+• Dedicaciones.
+Planning permite combinar información existente en el modelo con información introducida por los
+usuarios.
+--- PAGE 8 ---
+• Reporting de Grupo
+La arquitectura incluye también procesos específicos para generar los ficheros requeridos por el
+reporting de Grupo.
+Para ello se utilizan componentes como pipelines, funciones y notebooks que permiten transformar
+los datos del modelo financiero en el formato de salida requerido.
+2.10 Orquestación de procesos
+La actualización de la solución está centralizada mediante el pipeline Generar Reporting.
+Este pipeline ejecuta los procesos en el orden necesario para garantizar que cada capa trabaja sobre
+información previamente actualizada.
+De forma simplificada, la secuencia es:
+Carga
+↓
+Actualización SQL Endpoint
+↓
+Transformaciones Silver
+↓
+Actualización SQL Endpoint
+↓
+Transformaciones Gold
+↓
+Actualización del Financial Model
+De esta manera, la actualización del reporting no requiere ejecutar manualmente cada uno de los
+componentes de Fabric.
+La orquestación garantiza que primero se carguen los datos, posteriormente se transformen y
+finalmente se refresque el modelo semántico utilizado por los informes.
+3 Arquitectura de datos: capas 100, 200 y 300
+3.1 Objetivo de la organización por capas
+Las tablas del Lakehouse se organizan mediante una estructura de esquemas que permite identificar
+en qué punto del proceso se encuentra cada conjunto de datos.
+La solución utiliza principalmente tres niveles:
+• 100 – Datos de entrada.
+• 200 – Datos consolidados o transformados.
+• 300 – Datos preparados para modelado y reporting.
+--- PAGE 9 ---
+Esta separación facilita el mantenimiento de la solución, ya que permite diferenciar claramente los
+datos recibidos desde los sistemas de origen de aquellos que ya han sido transformados y de las
+estructuras finalmente utilizadas por el modelo semántico.
+De forma simplificada, el flujo es:
+100 – Entrada → 200 – Preparación / consolidación → 300 – Modelo de negocio
+No todas las fuentes tienen necesariamente que recorrer exactamente las mismas transformaciones,
+pero esta estructura constituye el patrón general de organización de la solución.
+3.2 Esquema 200 – Información consolidada y estructuras
+intermedias
+El esquema 200 contiene tablas que ya han pasado por procesos de preparación, normalización o
+consolidación.
+Aquí se encuentran tanto datos transaccionales consolidados como determinadas tablas auxiliares
+necesarias para transformar las distintas fuentes.
+Entre las principales tablas se encuentran:
+Datos operativos y financieros
+• MMS
+• HAPA
+• Aging_Clientes
+• Aging_Proveedores
+• Budget_historico
+Estructuras de mapeo
+• COA_Oracle
+• Mapping Portugal
+• Mapping_HAPA
+Estas tablas permiten trasladar la estructura propia de cada origen a la estructura contable utilizada
+posteriormente por la solución.
+Por ejemplo, las sociedades pueden utilizar diferentes planes contables o codificaciones, pero antes
+de llegar al modelo financiero es necesario establecer una equivalencia común.
+El objetivo es que las particularidades de cada sistema queden resueltas antes de llegar a la capa de
+consumo.
+Ejemplo conceptual
+Una cuenta procedente de HAPA puede seguir un flujo similar al siguiente:
+Cuenta HAPA
+↓
+Mapping HAPA
+↓
+--- PAGE 10 ---
+Cuenta financiera común
+↓
+Modelo de reporting
+De forma equivalente, la información procedente de Portugal utiliza su correspondiente estructura de
+mapeo.
+3.3 Consolidación de información histórica y nueva
+Una característica relevante de la arquitectura es la separación entre:
+• La información ya consolidada.
+• La nueva información recibida en cada actualización.
+Por ejemplo:
+100.New_MMS
+representa la nueva información incorporada durante el proceso de carga, mientras que:
+200.MMS
+representa el conjunto que posteriormente se utiliza en las siguientes transformaciones.
+Este patrón permite gestionar de forma controlada la incorporación de nuevos periodos.
+Conceptualmente:
+Histórico existente + nueva carga → tabla consolidada
+La misma filosofía se aplica a otras fuentes cuando resulta necesario conservar información histórica
+y añadir periódicamente nuevos datos.
+3.4 Esquema 300 – Modelo de negocio
+El esquema 300 constituye la capa más próxima al modelo semántico.
+En esta capa se construyen las dimensiones, tablas de hechos y estructuras auxiliares utilizadas por
+el Financial Model.
+A diferencia de los esquemas anteriores, las tablas del esquema 300 ya no están diseñadas siguiendo
+necesariamente la estructura original de los sistemas fuente.
+Su diseño responde principalmente a las necesidades de análisis financiero.
+Las principales estructuras pueden clasificarse en los siguientes grupos.
+4.6. Tablas de hechos
+Las tablas de hechos almacenan los movimientos, importes o asignaciones sobre los que se realizan
+los cálculos.
+Fact_Actuals
+Es la principal tabla de hechos contable de la solución.
+Contiene información como:
+--- PAGE 11 ---
+• Sociedad.
+• Cuenta de origen.
+• Descripción.
+• Cliente.
+• Fecha.
+• Debe.
+• Haber.
+• Saldo.
+• Categoría.
+• Origen del dato.
+• Periodo.
+• Cuenta normalizada.
+• Sociedad normalizada.
+• Cliente normalizado.
+Su finalidad es disponer de una estructura común para los datos reales, independientemente del
+sistema del que procedan inicialmente.
+Fact_Asignacion_RRHH
+Contiene la información necesaria para gestionar las dedicaciones de los empleados.
+Incluye, entre otros:
+• Directora.
+• Equipo.
+• Cliente Oracle.
+• Cliente MMS.
+• Empleado.
+• Porcentaje de dedicación.
+• Tipo de dedicación.
+• Equipo.
+Esta tabla permite posteriormente trasladar el coste de las personas a los clientes en función de la
+dedicación informada.
+3.5 Dimensiones maestras
+Las dimensiones contienen la información descriptiva utilizada para clasificar y filtrar los datos.
+Dim_Calendar
+Dimensión temporal común.
+--- PAGE 12 ---
+Incluye información como:
+• Fecha.
+• Ejercicio.
+• Mes.
+• Periodo.
+• Trimestre.
+• Inicio y fin de mes.
+• Orden temporal.
+Permite utilizar una estructura temporal consistente en todos los análisis.
+Dim_Sociedades
+Centraliza las distintas sociedades incluidas en el modelo.
+Entre sus atributos se encuentran:
+• Código de sociedad.
+• Sociedad.
+• País.
+• Country Code.
+• Código utilizado en MMS.
+Esta dimensión permite relacionar diferentes codificaciones de sociedad bajo una misma estructura.
+Dim_Clientes
+Es el maestro común de clientes.
+Tiene especial importancia porque Oracle y MMS utilizan identificadores diferentes.
+La dimensión incorpora tanto:
+• ClienteKey_Oracle
+• ClienteKey_MMS
+como los correspondientes códigos y atributos descriptivos.
+De esta manera se establece un punto común que permite relacionar la información financiera de
+Oracle con la información operativa de MMS.
+Dim_Cuentas
+Contiene la información descriptiva y de clasificación de las cuentas.
+Permite pasar desde el código contable hasta diferentes niveles de análisis y reporting.
+Dim_Mapeo_Cuentas
+Complementa la dimensión anterior manteniendo la relación entre:
+• Cuenta de origen.
+--- PAGE 13 ---
+• Cuenta normalizada.
+• Magnitud.
+• Origen del mapeo.
+Esta separación facilita incorporar diferentes fuentes contables sin trasladar la complejidad del origen
+al reporting.
+3.6 Dimensiones organizativas
+La solución incorpora también estructuras destinadas a representar la organización interna de Tinkle.
+Dim_CDC
+Mantiene la relación de centros de coste e información asociada como:
+• Código de centro de coste.
+• Iniciales.
+• Directora.
+• Nombre.
+Dim_equipos
+Añade un nivel adicional para representar los equipos existentes dentro de la estructura organizativa.
+Incluye:
+• Equipo.
+• Directora.
+• Centro de coste.
+• Código de directora.
+• Clave de equipo.
+Dim_RRHH
+Contiene información del personal necesaria para los procesos de rentabilidad.
+Entre sus atributos se encuentran datos relacionados con:
+• Empleado.
+• Empresa.
+• Puesto.
+• Manager.
+• Equipo.
+• Centro de coste.
+• Fechas de alta y baja.
+• Jornada.
+• Costes salariales.
+--- PAGE 14 ---
+Debido a la naturaleza de la información contenida en esta tabla, su utilización debe contemplarse
+dentro de las medidas de seguridad y acceso definidas para la solución.
+3.7 Estructura específica de reporting financiero
+Una parte importante de la capa 300 está destinada específicamente a reproducir la estructura del
+reporting financiero.
+Para ello se utilizan:
+• Dim_Report_Line
+• Map_Report_Line_Account
+Dim_Report_Line
+Define las filas que deben aparecer en los distintos reportes.
+Incluye información como:
+• Orden.
+• Fila.
+• Identificador.
+• Etiqueta.
+• Código de reporte.
+• Tipo de fila.
+• Formato.
+• Reporte.
+Esta estructura permite definir el aspecto lógico del informe de manera independiente de las cuentas
+contables.
+Map_Report_Line_Account
+Relaciona las líneas del informe con las cuentas o referencias que deben alimentarlas.
+Incluye elementos como:
+• Línea de reporte.
+• Tipo de origen.
+• Referencia.
+• Cuenta.
+• Signo.
+• Tipo de mapeo.
+• Reporte.
+Gracias a esta separación, la estructura visual del reporting puede mantenerse de forma
+independiente de la estructura física de la contabilidad.
+Conceptualmente:
+--- PAGE 15 ---
+Cuenta contable → mapeo → línea de reporting
+Este diseño resulta especialmente relevante para reproducir los formatos de Balance y Cuenta de
+Resultados utilizados para el análisis financiero y el reporting de Grupo.
+4 Acceso a la solución y operativa
+4.1 Puntos de acceso
+La solución dispone de diferentes puntos de acceso en función de la operación que deba realizar el
+usuario.
+De forma general se distinguen tres entornos:
+• Aplicación Tinkle - Financiero: acceso a los informes de reporting y análisis.
+• OneDrive – Reporting Financiero: intercambio de ficheros de entrada y salida.
+• Microsoft Fabric Planning: acceso a las hojas de Forecast y Dedicaciones.
+4.2 Acceso a los informes
+Los informes se publican a través de la aplicación:
+Tinkle - Financiero
+Esta aplicación constituye el principal punto de acceso para los usuarios que necesitan consultar la
+información financiera.
+Desde el menú lateral se puede navegar entre los diferentes bloques funcionales disponibles, entre
+ellos:
+• Checklist.
+• Aging.
+• Rentabilidad.
+• Otros informes habilitados dentro del entorno.
+Cada bloque puede contener distintas páginas de análisis y niveles de detalle.
+El objetivo de la aplicación es que el usuario pueda trabajar directamente con los informes publicados
+sin necesidad de navegar por los diferentes elementos técnicos existentes en el workspace de
+Microsoft Fabric.
+La información disponible para cada usuario dependerá de los permisos y segmentaciones que se
+hayan definido.
+4.3 Repositorio compartido OneDrive / SharePoint
+Para aquellos procesos que todavía requieren intercambio de ficheros se ha habilitado un repositorio
+compartido dentro del entorno corporativo de OneDrive / SharePoint.
+Este repositorio actúa como punto de intercambio entre el equipo financiero y los procesos
+desarrollados en Microsoft Fabric.
+Dentro de la carpeta Reporting Financiero existen dos áreas claramente diferenciadas:
+--- PAGE 16 ---
+El usuario debe utilizar estas carpetas en lugar de cargar o recuperar información directamente desde
+los componentes técnicos de Fabric.
+4.3.1 Carpeta 1. Entrada de Datos
+Es el punto de entrada para los ficheros que deben ser procesados por la solución.
+Dentro de esta carpeta se ha establecido la siguiente estructura:
+• Arranque
+Contiene los ficheros relacionados con la inicialización o puesta en marcha de determinados conjuntos
+de datos.
+Esta carpeta está orientada principalmente a cargas iniciales, históricos o información necesaria para
+construir determinadas tablas de partida.
+Como criterio general, estos ficheros no forman parte de la actualización habitual del reporting.
+Su utilización debe reservarse para situaciones en las que sea necesario realizar una carga inicial,
+reconstruir información o incorporar históricos adicionales.
+• Dinámicos
+Contiene los ficheros que forman parte de la operativa recurrente de actualización.
+En esta carpeta se depositan los nuevos datos que deben incorporarse a la plataforma durante los
+diferentes ciclos de actualización.
+--- PAGE 17 ---
+Estos ficheros constituyen la principal entrada de datos transaccionales al proceso.
+El flujo habitual es:
+Usuario deposita el fichero → carpeta Dinámicos → proceso de ingesta Fabric →
+transformación → actualización del modelo
+Por tanto, cuando se reciba información correspondiente a un nuevo cierre o periodo, deberá utilizarse
+esta ubicación para aquellos ficheros incluidos dentro de las cargas recurrentes.
+• Maestros
+Contiene los ficheros de información maestra utilizados por la solución.
+Los maestros permiten establecer las relaciones y clasificaciones necesarias para interpretar
+correctamente los datos de las diferentes fuentes.
+Pueden incluir información relacionada con elementos como:
+• Clientes.
+• Sociedades.
+• Cuentas.
+• Mapeos.
+• Centros de coste.
+• Estructuras organizativas.
+• Otras tablas de referencia utilizadas por el modelo.
+Cuando se produzcan altas, bajas o modificaciones en los maestros, deberá actualizarse la información
+correspondiente en esta carpeta antes de ejecutar el proceso que deba consumirla.
+• Dinámicos
+Representan información que cambia periódicamente y que normalmente se incorpora con cada
+actualización o cierre.
+Por ejemplo:
+• Nuevos movimientos.
+• Nuevas extracciones de sistemas.
+• Información correspondiente al periodo que se está procesando.
+--- PAGE 18 ---
+Estos ficheros se depositan en:
+1. Entrada de Datos → Dinámicos
+• Maestros
+Representan información utilizada para clasificar, relacionar o enriquecer los datos.
+No necesariamente cambian en cada cierre, aunque deben mantenerse actualizados cuando se
+produzcan modificaciones.
+Estos ficheros se depositan en:
+1. Entrada de Datos → Maestros
+Esta separación permite que Fabric procese de forma diferenciada la información transaccional y la
+información de referencia.
+4.3.2 Operativa general de carga
+La operativa prevista para actualizar los datos es la siguiente:
+1. El usuario recibe o genera los ficheros correspondientes al nuevo periodo.
+2. Los ficheros se depositan en la subcarpeta adecuada de 1. Entrada de Datos.
+3. Si existen modificaciones en maestros, se actualizan también los correspondientes
+ficheros de la carpeta Maestros.
+4. Se ejecuta el proceso de actualización de Microsoft Fabric desde el botón “Cargar
+datos”:
+5. Fabric ingiere y transforma la información.
+6. Se actualiza el modelo semántico.
+7. Los nuevos datos quedan disponibles en los informes.
+La carpeta compartida constituye, por tanto, la interfaz de entrada para el usuario financiero.
+No es necesario modificar directamente las tablas del Lakehouse ni acceder a los Dataflows para
+proporcionar nuevos datos al sistema.
+4.3.3 Carpeta 2. Salida de ficheros
+La carpeta: Reporting Financiero → 2. Salida de ficheros es el repositorio utilizado por la solución
+para depositar los ficheros generados como resultado de determinados procesos.
+Las salidas están organizadas por tipología de reporting.
+Actualmente se dispone de las siguientes carpetas:
+• Ageing
+• Balance
+--- PAGE 19 ---
+• CashFlow
+• Pendiente_Facturar
+• Revenue
+• Working_Capital
+Cada carpeta agrupa los ficheros correspondientes a ese bloque de información.
+Esta estructura facilita que el usuario pueda localizar directamente las salidas que necesita sin tener
+que navegar por los componentes internos de Fabric.
+4.3.4 Operativa salidas ficheros txt para Grupo
+Una de las funcionalidades implantadas es la generación automática de ficheros utilizados
+posteriormente en procesos de reporting de Grupo.
+Fabric toma la información ya cargada y transformada, ejecuta la lógica correspondiente y genera los
+ficheros de salida con la estructura requerida.
+Los resultados se depositan automáticamente en la carpeta correspondiente dentro de 2. Salida de
+ficheros
+En función del proceso ejecutado, el usuario podrá encontrar las salidas dentro de:
+• Ageing
+Ficheros relacionados con la información de antigüedad de saldos.
+• Balance
+Ficheros correspondientes al reporting de Balance.
+• CashFlow
+Salidas correspondientes a Cash Flow.
+• Pendiente_Facturar
+Ficheros asociados a información pendiente de facturación.
+• Revenue
+Salidas correspondientes al reporting de Revenue.
+• Working_Capital
+Ficheros relacionados con Working Capital.
+El objetivo de esta automatización es sustituir progresivamente la elaboración manual de estos
+ficheros y permitir que se generen a partir de la información centralizada en Fabric.
+4.4 Acceso a las hojas de Planning
+Los procesos de Planning se gestionan de forma diferente a los informes y al intercambio de ficheros.
+Actualmente se encuentran preparadas las siguientes hojas:
+• Revenue FT3
+• Revenue FT8
+--- PAGE 20 ---
+• Dedicaciones
+Estas hojas están pendientes de validación para su incorporación al proceso presupuestario y pueden
+utilizarse mediante dos mecanismos de acceso:
+4.4.1 Acceso desde el workspace de Fabric
+Los usuarios que dispongan de permisos sobre el entorno pueden acceder al elemento de Planning
+directamente desde el workspace de Microsoft Fabric y seleccionar la hoja que corresponda.
+Este acceso está principalmente orientado a usuarios que trabajan habitualmente dentro del entorno
+Fabric.
+4.4.2 Acceso mediante enlace compartido
+Las hojas de Planning también pueden compartirse mediante enlaces específicos.
+Este mecanismo permite proporcionar a cada usuario un acceso directo al proceso que debe
+completar sin necesidad de navegar por el conjunto de componentes del workspace.
+Está especialmente orientado a la distribución de las hojas entre las directoras.
+En aquellos casos en los que se configure la correspondiente segmentación, cada directora podrá
+trabajar únicamente con la información asociada a sus clientes, equipos o ámbito de responsabilidad.
+5 Informe Checklist (Oracle)
+5.1 Objetivo
+El informe Checklist (Oracle) constituye la principal herramienta de análisis del cierre financiero.
+Su finalidad es trasladar al entorno de Power BI la información que tradicionalmente se analizaba
+mediante el fichero Checklist, utilizando para ello los datos contables ya incorporados y normalizados
+en Microsoft Fabric.
+El informe permite revisar las principales magnitudes financieras, analizar Balance y Cuenta de
+Resultados y acceder a vistas auxiliares para investigar determinadas cuentas o partidas.
+--- PAGE 21 ---
+5.2 Navegación
+Dentro del bloque Checklist (Oracle) se encuentran distintas páginas orientadas al análisis financiero.
+Entre las páginas principales se encuentran:
+• Home
+• C - Assets
+• C - Liabilities
+• C - P&L
+Estas tres últimas representan las principales estructuras del reporting:
+• Activo.
+• Pasivo.
+• Cuenta de Resultados.
+En P&L es posible seleccionar el forecast y el mes para comparar con los actuales:
+Adicionalmente existen páginas auxiliares destinadas a analizar determinadas partidas, cuentas o
+procesos concretos.
+Entre las vistas disponibles se encuentran, por ejemplo:
+• 1-FFPP & Part
+• 2-28 FA
+• Amortizaciones.
+• Análisis de determinadas cuentas específicas.
+• 4000-Prov
+--- PAGE 22 ---
+• 430-Cli
+Estas páginas complementan las vistas financieras principales y permiten investigar determinados
+saldos con mayor nivel de detalle.
+La necesidad de disponer tanto del saldo agregado como del movimiento que lo explica fue uno de los
+requisitos principales definidos durante el diseño de la solución.
+6 Informe Aging Clientes
+6.1 Objetivo
+El informe Aging Clientes permite analizar las facturas pendientes de cobro a una determinada fecha.
+El usuario puede conocer:
+• Cliente.
+• Fecha de factura.
+• Fecha de vencimiento.
+• Número de factura.
+• Saldo pendiente.
+• Días de vencimiento.
+• Antigüedad de la deuda.
+La información almacenada incluye específicamente fecha de factura, fecha de vencimiento, importe
+de factura y saldo pendiente.
+6.2 Selección de fecha
+El informe dispone de selectores de:
+• Día.
+• Mes.
+• Año.
+Esto permite realizar el análisis a una fecha determinada.
+El concepto de Aging no está limitado necesariamente al último día de mes. El proceso original ya
+contemplaba realizar análisis tanto a mitad de mes como al cierre, clasificando las facturas según su
+situación en la fecha seleccionada.
+6.3 Tabla de detalle
+La tabla superior permite consultar directamente las facturas pendientes e identificar aquellas con
+mayor antigüedad.
+Puede utilizarse para:
+• Detectar facturas vencidas.
+• Identificar clientes con deuda antigua.
+--- PAGE 23 ---
+• Consultar el saldo pendiente individual.
+• Determinar cuántos días lleva vencida una factura.
+6.4 Aging Buckets
+La segunda matriz agrupa la deuda por tramos de antigüedad.
+Entre los intervalos configurados se encuentran:
+• 61-90 días.
+• 90-120 días.
+• 121-180 días.
+• 181-365 días.
+• Más de un año.
+De esta forma puede analizarse la concentración de deuda por cliente y antigüedad.
+7 Informe Aging Proveedores
+7.1 Objetivo
+El informe Aging Proveedores aplica la misma lógica a las facturas pendientes de pago.
+Permite analizar:
+• Proveedor.
+• Fecha de factura.
+• Fecha de vencimiento.
+--- PAGE 24 ---
+• Número de factura.
+• Importe pendiente.
+• Días de vencimiento.
+• Distribución por Aging Bucket.
+La fuente incluye además información como fecha contable, medio, moneda, método de pago e IBAN,
+aunque no todos estos campos tienen necesariamente que mostrarse en la página principal.
+7.2 Análisis
+La tabla superior permite revisar las facturas pendientes de cada proveedor.
+La matriz inferior agrupa los importes en función de su antigüedad.
+El gráfico permite analizar simultáneamente:
+• Importe pendiente.
+• Número de facturas.
+7.3 Fecha contable
+En proveedores resulta especialmente relevante conservar también la fecha contable.
+Esto permite distinguir una factura antigua que ha sido contabilizada recientemente de una factura
+que realmente lleva pendiente desde un periodo anterior, necesidad que fue identificada durante las
+sesiones de definición.
+--- PAGE 25 ---
+8 Informe Rentabilidad de clientes
+8.1 Objetivo
+El bloque de Rentabilidad permite evolucionar desde el análisis puramente contable hacia un análisis
+económico por cliente.
+La solución combina distintas fuentes para responder a preguntas como:
+• ¿Cuánto Gross Income genera un cliente?
+• ¿Cuál es su coste de personal asociado?
+• ¿Qué contribución genera?
+• ¿Qué porcentaje de contribución presenta?
+• ¿Existen diferencias entre la información real y MMS?
+• ¿Qué clientes están consumiendo mayor cantidad de recursos?
+El análisis integra principalmente:
+Información contable real + MMS + clientes + RRHH + dedicaciones
+La necesidad de analizar tanto rentabilidad por cliente como rentabilidad por equipo/directora fue uno
+de los requisitos definidos para esta parte de la solución.
+8.2 Comparación Real frente a MMS
+Una de las vistas permite comparar por cliente las cifras procedentes de la contabilidad real con las
+cifras operativas disponibles en MMS.
+Entre los indicadores mostrados se encuentran:
+• Honorarios Real.
+• Producción Real.
+• Gross Income Real.
+• Honorarios MMS.
+• Producción MMS.
+• Gross Income MMS.
+• Desviación de Gross Income.
+• % Desviación.
+• Estado.
+La columna de estado facilita la identificación de clientes que únicamente aparecen en una de las dos
+fuentes o que presentan diferencias entre ambas.
+Esta comparación es especialmente importante porque Oracle y MMS utilizan estructuras y códigos de
+cliente diferentes, que han sido reconciliados mediante el maestro común de clientes.
+--- PAGE 26 ---
+8.3 Indicadores principales
+La cabecera del informe presenta indicadores agregados como:
+• Gross Income MMS.
+• Coste Personal Imputado Cliente.
+• Contribution MMS.
+• % Contribution MMS.
+Estos indicadores permiten obtener rápidamente una visión global de la rentabilidad antes de analizar
+el detalle por cliente.
+El usuario puede además seleccionar la escala:
+• Unidades.
+• Miles.
+8.4 Rentabilidad basada en dedicaciones
+La rentabilidad avanzada incorpora el coste de personal utilizando los porcentajes de dedicación
+informados.
+La lógica es:
+Empleado → coste → porcentaje de dedicación → cliente → coste imputado
+De esta forma, un cliente no se analiza exclusivamente por sus ingresos o Gross Income, sino también
+por los recursos humanos que consume.
+La tabla de asignaciones del modelo almacena, entre otros elementos, empleado, cliente, equipo y
+porcentaje de dedicación.
+--- PAGE 27 ---
+La correcta distribución del coste de cada persona es especialmente importante porque una
+asignación incorrecta afecta directamente a la rentabilidad calculada para cada cliente o directora.
+8.5 Análisis por empleado
+Otra vista permite analizar la información desde la perspectiva del personal.
+Se muestra, entre otros:
+• Nombre del empleado.
+• % de dedicación.
+• Coste personal imputado.
+• Clientes.
+• Gross Income MMS.
+• Coste de personal asignado.
+Esta página sirve tanto para analizar rentabilidad como para detectar posibles problemas en las
+asignaciones.
+Por ejemplo, un porcentaje total significativamente superior o inferior al esperado debe ser revisado
+antes de utilizar la asignación para interpretar rentabilidades.
+8.6 9.6. Contribución por cliente
+El gráfico de contribución permite comparar el porcentaje obtenido para distintos clientes.
+Esta visualización ayuda a identificar rápidamente:
+• Clientes con elevada contribución.
+• Clientes con contribución reducida.
+• Clientes potencialmente deficitarios.
+• Casos extremos que requieren revisar ingresos, costes o dedicaciones.
+--- PAGE 28 ---
+9 Planning – Revenue FT3 y FT8
+9.1 Objetivo
+La solución incorpora hojas de Microsoft Fabric Planning destinadas a preparar los ejercicios de
+Forecast de Revenue.
+Actualmente se encuentran preparadas:
+• Revenue FT3
+• Revenue FT8
+El objetivo es sustituir el proceso distribuido en distintos Excel por una matriz única de planificación
+por cliente y mes.
+El proceso de Forecast requiere disponer de información mensualizada por cliente para poder decidir
+en qué meses deben reconocerse los ingresos previstos.
+9.2 Estructura
+Las hojas presentan:
+• Cliente Oracle.
+• Descripción del cliente.
+• Ejercicio.
+• Mes.
+• Revenue mensual.
+• Total anual.
+La matriz permite visualizar el año completo de cada cliente en una única fila.
+--- PAGE 29 ---
+9.3 Meses cerrados
+Para los meses ya cerrados, la hoja muestra el dato real.
+Estos importes no forman parte de la previsión que debe modificar la directora, puesto que
+corresponden a periodos ya ejecutados.
+9.4 Meses abiertos
+Para los meses todavía abiertos, la hoja utiliza como punto de partida la información disponible en
+MMS.
+--- PAGE 30 ---
+El dato MMS actúa por tanto como una propuesta inicial de Forecast.
+La directora puede revisar esta información y modificarla cuando conozca circunstancias que todavía
+no estén correctamente reflejadas en MMS.
+Por ejemplo:
+• Renovaciones.
+• Finalización anticipada de contratos.
+• Nuevos proyectos.
+• Cambios en el calendario de facturación.
+• Importes esperados distintos de los inicialmente registrados.
+El objetivo es combinar una propuesta automática basada en los datos existentes con el conocimiento
+de negocio de cada responsable.
+9.5 FT3 y FT8
+FT3 y FT8 representan distintos ejercicios o momentos del ciclo de Forecast.
+La lógica de funcionamiento es la misma:
+Mes cerrado → Real
+Mes abierto → MMS como propuesta + posibilidad de modificación
+La diferencia está en los periodos que se consideran cerrados o abiertos en cada ejercicio de Forecast.
+9.6 Acceso por directora
+Las hojas están preparadas para que el proceso pueda distribuirse entre las diferentes directoras.
+El objetivo funcional es que cada directora trabaje con:
+• Sus clientes.
+• Su ámbito de responsabilidad.
+• Los periodos de Forecast que debe revisar.
+La segmentación por directora responde al proceso ya existente, en el que cada responsable trabaja
+con sus propios clientes y equipos.
+10 Planning – Dedicaciones
+10.1 Objetivo
+La hoja Dedicaciones permite informar cómo se distribuye el tiempo de los empleados entre los
+distintos clientes.
+Esta información constituye el input principal para imputar costes de personal dentro del análisis
+avanzado de rentabilidad.
+10.2 Estructura
+--- PAGE 31 ---
+La hoja utiliza una matriz que cruza:
+• Directora.
+• Equipo.
+• Empleado.
+• Cliente.
+• % Dedicación.
+De esta forma se puede visualizar conjuntamente el conjunto de clientes y personas que forman parte
+de cada estructura organizativa.
+10.3 Imputación
+Cada celda representa el porcentaje del tiempo de un empleado asignado a un determinado cliente.
+Por ejemplo, si una persona dedica:
+• 40 % al Cliente A.
+• 30 % al Cliente B.
+• 30 % al Cliente C.
+su dedicación total será del 100 %.
+En las sesiones de definición se estableció que la suma de las diferentes asignaciones de una persona
+debe representar su dedicación total y, con carácter general, no superar el 100 %.
+10.4 Equipos y directoras
+La estructura permite gestionar situaciones más complejas en las que:
+• Un empleado participa en varios clientes.
+• Un empleado trabaja para varios equipos.
+• Un cliente es atendido por varios equipos.
+• Una persona puede participar en estructuras asociadas a diferentes directoras.
+La matriz proporciona una estructura común para registrar estas casuísticas y evitar mantener un
+fichero independiente por responsable.
+--- PAGE 32 ---
+10.5 Relación con Rentabilidad
+Una vez informadas las dedicaciones, la solución puede aplicar el porcentaje correspondiente sobre
+el coste del empleado.
+El resultado es:
+Coste empleado × % dedicación = Coste imputado al cliente
+Este importe alimenta posteriormente el informe de Rentabilidad.
+Por tanto:
+Planning Dedicaciones → Asignación RRHH → Coste por cliente → Contribución
+11 Generación de ficheros para Reporting de Grupo
+11.1 Objetivo
+La solución incorpora procesos destinados a generar automáticamente los ficheros requeridos para
+determinados reportings de Grupo.
+Este bloque busca reducir la dependencia de procesos manuales y evitar tener que reconstruir los TXT
+a partir de diferentes Excel.
+La necesidad de generar estos ficheros directamente desde la solución fue uno de los objetivos
+planteados desde las primeras sesiones del proyecto.
+11.2 Repositorio de salida
+Los ficheros generados se ponen a disposición del usuario dentro de:
+Reporting Financiero → 2. Salida de ficheros
+La estructura actual incluye carpetas para:
+• Ageing.
+• Balance.
+• CashFlow.
+• Pendiente_Facturar.
+• Revenue.
+• Working_Capital.
+11.3 Proceso
+De forma general:
+1. Fabric utiliza los datos ya cargados y validados.
+2. Se ejecutan las consultas necesarias para construir la salida al hacer click en el botón
+“Generar txt”:
+--- PAGE 33 ---
+3. Se realizan validaciones de formato.
+4. Se generan los TXT.
+5. Los ficheros se trasladan a la carpeta de salida correspondiente.
+6. Finanzas recoge los ficheros para realizar la carga en el sistema de reporting de Grupo.
+El usuario no necesita construir manualmente el contenido del fichero.

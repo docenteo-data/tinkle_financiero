@@ -1,0 +1,76 @@
+Modelo semántico: Agings
+Workspace: Tinkle - Financiero
+Workspace ID: b31820dc-4b4f-4696-9a96-bbee438e9306
+Modelo: Agings
+Modelo ID: e19def87-fdf3-4b44-bd60-d22e5d79ce88
+
+La operación realizada fue únicamente de lectura.
+
+1. Modo de almacenamiento y origen
+Modo: NO DISPONIBLE.
+
+El conector de Fabric aceptó la solicitud de definición, pero respondió con una operación asíncrona (Retry-After: 20) y no expuso la herramienta necesaria para consultar el resultado de dicha operación. Por tanto, no es posible confirmar el modo directamente desde el TMDL.
+
+La documentación local indica que el modelo es independiente de Financial Model y que probablemente consume:
+
+Lakehouse: lh_tinkle_financiero
+Esquema: 200
+Tablas candidatas:
+200.Aging_Clientes
+200.Aging_Proveedores
+El modo Direct Lake aparece documentado explícitamente para Financial Model, pero no está confirmado mediante el TMDL de Agings. Por rigor, no se atribuye ese modo al modelo Agings.
+
+2. Tablas, columnas y tipos
+Definición completa de tablas del modelo: NO DISPONIBLE.
+
+La documentación local confirma únicamente estas tablas físicas relacionadas con el proceso de Agings:
+
+Tabla candidata	Origen	Número de columnas	Columnas y tipos
+Aging_Clientes	200.Aging_Clientes	NO DISPONIBLE en el modelo	NO DISPONIBLE
+Aging_Proveedores	200.Aging_Proveedores	NO DISPONIBLE en el modelo	NO DISPONIBLE
+El esquema del lakehouse documenta tablas de entrada con conteos distintos:
+
+100.New_Agings_Clientes: 13 columnas
+100.New_Agings_Proveedores: 15 columnas
+Esos conteos corresponden a las tablas de entrada, no necesariamente a las tablas incluidas en el modelo semántico.
+
+3. Relaciones
+Relaciones completas: NO DISPONIBLE.
+
+No se pudo recuperar el TMDL, por lo que no se pueden confirmar:
+
+Tabla y columna de origen
+Tabla y columna de destino
+Cardinalidad
+Dirección del filtro
+Estado activo/inactivo
+4. Medidas DAX
+Medidas: NO DISPONIBLE.
+
+No se recuperó la definición TMDL ni las expresiones DAX del modelo Agings.
+
+5. Roles RLS/OLS
+Roles RLS/OLS: NO DISPONIBLE.
+
+No se pudo verificar mediante el TMDL si existen:
+
+Roles RLS
+Expresiones de filtro por tabla
+Permisos OLS
+Número de miembros
+No se muestran nombres, correos ni miembros de seguridad.
+
+6. Informes que usan el modelo
+La documentación local identifica un consumidor confirmado:
+
+Informe	Informe ID	Modelo utilizado
+Agings	05c3bd2c-c699-4d04-92c6-1828a375f9cf	Agings (e19def87-fdf3-4b44-bd60-d22e5d79ce88)
+Los demás informes del workspace están documentados como consumidores de Financial Model, no de Agings:
+
+Checklist (Oracle)
+MMS
+Presupuesto
+Rentabilidad
+HAPA
+Limitación técnica
+Las solicitudes get_item_definition devolvieron operaciones asíncronas con URLs de operación, pero las herramientas disponibles no permiten consultar sus resultados. Por eso, los apartados dependientes del TMDL se indican como NO DISPONIBLE en lugar de inferirse.

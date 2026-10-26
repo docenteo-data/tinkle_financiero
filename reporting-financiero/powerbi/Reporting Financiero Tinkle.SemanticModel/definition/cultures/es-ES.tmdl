@@ -1,0 +1,32 @@
+cultureInfo es-ES
+
+	linguisticMetadata =
+			{
+			  "Version": "1.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "case_profile.producto": {
+			      "Binding": {
+			        "ConceptualEntity": "Case_profile",
+			        "ConceptualProperty": "Producto"
+			      },
+			      "State": "Generated"
+			    },
+			    "case_profile.fase_caso": {
+			      "Binding": {
+			        "ConceptualEntity": "Case_profile",
+			        "ConceptualProperty": "fase_caso"
+			      },
+			      "State": "Generated"
+			    },
+			    "casos_recobrados_12m.recovered_12m": {
+			      "Binding": {
+			        "ConceptualEntity": "casos_recobrados_12m",
+			        "ConceptualProperty": "recovered_12m"
+			      },
+			      "State": "Generated"
+			    }
+			  }
+			}
+		contentType: json
+

@@ -1,0 +1,25 @@
+Planning (50ce99b8-0525-435f-bc71-56235a557714) está configurado como un Plan conectado al modelo semántico Financial Model (847ce270-06ab-408b-85c9-cb8f390fad1c) del workspace.
+
+Contiene estas hojas/modelos:
+
+Revenue FT3: planificación de ingresos/forecast FT3. Usa medidas como REAL (Fees & other), Importe MMS y FC3 Revenue, con dimensiones de cliente, ejercicio y mes.
+Revenue FT8: planificación de ingresos/forecast FT8, con REAL (Fees & other), Importe MMS y FC8 Revenue.
+Dedicaciones: planificación de dedicación de recursos, con % Dedicación, directora, equipo, cliente y empleado.
+Revenue_testing: hoja oculta de pruebas, con una estructura equivalente a ingresos FT3.
+Relación con CPM (b85d1457-6ce1-441c-b8cb-21cb839d688a):
+
+CPM es el destino de writeback del Plan, en el esquema dbo.
+La hoja Revenue FT3 escribe en CPM.dbo.FT3_Revenue.
+La hoja Revenue FT8 escribe en CPM.dbo.FT8_Revenue.
+La operación configurada es PushData, con precisión decimal de dos posiciones y mapeo de Dim_Clientes[Descripción] a la columna SQL Descripcion.
+No aparece un destino de writeback equivalente para Dedicaciones.
+Sincronización con el lakehouse
+
+El flujo es esencialmente:
+
+
+El lakehouse se alimenta mediante los dataflows, incluido INICIAL_Carga_budget_fct, que carga la tabla 200.Presupuestos desde los ficheros de presupuesto y forecast. Después se transforman las capas Silver/Gold y se actualiza Financial Model.
+
+No se observa una sincronización directa de CPM de vuelta hacia lh_tinkle_financiero. CPM funciona como almacenamiento SQL de los datos introducidos desde Planning; para que esos cambios aparezcan en el lakehouse tendría que existir una carga o dataflow adicional, que no aparece en la configuración revisada.
+
+La arquitectura general del lakehouse y sus tablas está documentada en Documentacion_Tinkle_Financiero.md:41-43 y el flujo de capas en Documentacion_Tinkle_Financiero.md:125-130.

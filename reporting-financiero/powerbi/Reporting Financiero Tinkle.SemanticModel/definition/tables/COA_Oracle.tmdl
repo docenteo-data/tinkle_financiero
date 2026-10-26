@@ -1,0 +1,112 @@
+table COA_Oracle
+	lineageTag: 92d53194-c76b-4d02-8e26-762ae9393624
+	sourceLineageTag: 8d988b57-9585-47c7-91c9-7f03d2999780
+
+	column ORACLE1
+		dataType: string
+		lineageTag: 9cd3a14a-b45a-4e1b-b85b-c111b5c30a0f
+		sourceLineageTag: 8e754905-2b27-4b51-bd56-556a8f20bb62
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: ORACLE1
+
+		annotation SummarizationSetBy = User
+
+	column ORACLE2
+		dataType: string
+		lineageTag: 162eadb5-b587-4a7a-b8f7-6f97fc4c472a
+		sourceLineageTag: 136ab3cd-a122-40c9-b426-eb3d828d790a
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: ORACLE2
+
+		annotation SummarizationSetBy = User
+
+	column ORACLE3
+		dataType: int64
+		formatString: 0
+		lineageTag: 32514adc-1337-42e7-998a-8fd3fa0df4ad
+		sourceLineageTag: cefd17a4-98c4-4069-aec4-2fb88451c3b7
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: ORACLE3
+
+		annotation SummarizationSetBy = User
+
+	column ORACLE-CUENTA
+		dataType: string
+		lineageTag: 6e47a155-3e72-45e9-8c22-a7a23fe3981b
+		sourceLineageTag: d4feedd1-b7aa-43de-a36c-06c82fc2317c
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: ORACLE-CUENTA
+
+		annotation SummarizationSetBy = User
+
+	column ORACLE-DESCRIPCION
+		dataType: string
+		lineageTag: 2d57e8cb-3b64-4ffd-a6ae-c14f8dfb8e8e
+		sourceLineageTag: 1479abe3-b2fb-4d80-8aba-c6cb59362e4e
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: ORACLE-DESCRIPCION
+
+		annotation SummarizationSetBy = User
+
+	column SAP-ACCOUINT
+		dataType: string
+		lineageTag: d2724bfc-006c-4841-bba6-2f8d8d18097e
+		sourceLineageTag: e61d342e-fd59-4fce-9665-42474687646a
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: SAP-ACCOUINT
+
+		annotation SummarizationSetBy = User
+
+	column SAP-DESCRIPTION
+		dataType: string
+		lineageTag: 5a410aae-0946-456a-a560-07c9f7dc4976
+		sourceLineageTag: d5667a62-8dcc-4964-ac84-379edc17b92c
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: SAP-DESCRIPTION
+
+		annotation SummarizationSetBy = User
+
+	column SAP1
+		dataType: int64
+		formatString: 0
+		lineageTag: 2ee9983c-6356-4d7e-b92b-7482db7e93d8
+		sourceLineageTag: f27015ae-8015-453c-87a0-d6487a269937
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: SAP1
+
+		annotation SummarizationSetBy = User
+
+	column SAP-TIPO
+		dataType: string
+		lineageTag: 17a0079c-9ab2-49b1-b497-41a46d86687c
+		sourceLineageTag: b69aee8e-34c3-4b0c-9a6c-9f3a17dd9081
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: SAP-TIPO
+
+		annotation SummarizationSetBy = User
+
+	column Cuenta
+		dataType: string
+		lineageTag: 6d752f20-5d22-40de-b66a-1fce37d62bc2
+		sourceLineageTag: 592622bb-6ad5-43c9-9875-31eddbb85311
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Cuenta
+
+		annotation SummarizationSetBy = User
+
+	partition COA_Oracle = entity
+		mode: directQuery
+		source
+			entityName: COA_Oracle
+			expressionSource: 'De DirectQuery a AS: Finance'
+

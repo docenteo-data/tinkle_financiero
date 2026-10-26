@@ -1,0 +1,84 @@
+
+
+Tinkle financiero
+
+Los plazos se alargaron. No sabemos si van a continuar x enfado.
+
+No hubo un seguimiento. 
+
+Se ha quedado un poco colgado asi que es un buen proyecto para ir metiendo en fabric e ir entrando.
+
+Tiene dos funciones definidas, disparan pipelines para cargar o sacar datos.
+
+Hay que probar a conectarse con Claude al MCP de Fabric
+
+Tinkle\Reporing financiero\Entregables - 
+
+DirectQuery - consultas a base de datos directas desde powerbi
+DirectLake - se supone que es un modelo mejorado (va mas rapido) ya que ataca a un datalake
+
+DirectLake no te deja usar columnas calculadas en PowerBI
+
+Lo mas valioso es el modelo de datos que está montado.
+
+En la carpeta está montado el diagrama del proceso.
+
+Para que estemos preparados para el siguiente, investigar cómo meter Claude con MCP.
+
+El proyecto original a nivel funcional
+
+dpto financiero de 5 personas,
+Tinkle pertenece a havas, uno de las mas grandes grupos de esto
+Tinkle tiene un modelo parecido a consultoria por dentro (proyectos)
+
+Tenian que reportar balance (ganancias vs perdidas (P&L)), liabilities y assets
+
+lo querian en excel con transformaciones y demás y querian automatizar
+y es lo que han hecho 
+
+BALANCE:
+
+
+Fuentes:
+Oracle - datos de compañias de tinkle (estrategy, consultants etc)
+Portugal - va de un fichero aparte y hay que homogeneizarlo 
+Magnitude - fichero mms. Vienen de otro aplicativo financiero, son operaciones que se van a hacer a futuro. 
+HAPA (acento) - otra compañía que compró el grupo que reportan aparte por ahora
+
+Fact_actuals es donde están las transacciones (todas)
+
+Hay una fact table (dim_mapeo_cuentas) que es la que relaciona los numeros de cuenta 
+
+Cuadro de mando asociado
+
+AGINGS:
+Qué es: cuando te tiene que pagar la gente (ver si hay retrasos en los pagos)
+Hay de clientes y de proveedores
+
+PRESUPUESTO Y PLANNING
+Delicado porque aqui hay salarios
+
+La cosa es integrarlo en el modulo de planning, hay algo montado ya, 
+se filtra por directora (siglas). 
+
+los datos antiguos se leen de oracle, las predicciones de mms
+
+DEDICACIONES
+Otro planning de dedicacion de recursos.
+
+\Reporting financiero\Reuniones - aqui hay trancripciones y se puede cargar y preguntar con ia
+álvaro me pasa un proyecto de chatgpt (esta en la cuenta de data, no me la pasa a la nominal)
+
+Generar_txt_Balance_Saldos -- habria que replicarlo para el resto (aging, etc.)
+
+Mirar conector  Fabric MCP y sacar documentación del proyecto.
+
+Cargarlo a Asana, que esté en el backlog de docenteo y en to do.
+
+-----------------
+
+
+
+
+Para descargar info de fabric Pablo usa la linea de comandos de Azure (CLI de Azure)
+

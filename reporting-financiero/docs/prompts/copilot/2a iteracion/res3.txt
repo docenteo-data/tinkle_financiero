@@ -1,0 +1,47 @@
+1. Informes del workspace
+Workspace confirmado: Tinkle - Financiero
+ID: b31820dc-4b4f-4696-9a96-bbee438e9306
+
+Informe	ID	Modelo semántico enlazado	Descripción	Última modificación	Páginas
+Checklist (Oracle)	ac83ce13-5a64-4ef7-bbb2-05b3e1439b5e	Financial Model (847ce270-06ab-408b-85c9-cb8f390fad1c)	Vacía	NO DISPONIBLE	NO DISPONIBLE: número y nombres
+MMS	97052b38-d2fd-4a01-afbf-bfb8ebc8b1a7	Financial Model (847ce270-06ab-408b-85c9-cb8f390fad1c)	Vacía	NO DISPONIBLE	NO DISPONIBLE: número y nombres
+Agings	05c3bd2c-c699-4d04-92c6-1828a375f9cf	Agings (e19def87-fdf3-4b44-bd60-d22e5d79ce88)	Vacía	NO DISPONIBLE	NO DISPONIBLE: número y nombres
+Presupuesto	9f2f023c-592a-4ce0-bc6f-8adad4a28a41	Financial Model (847ce270-06ab-408b-85c9-cb8f390fad1c)	Vacía	NO DISPONIBLE	NO DISPONIBLE: número y nombres
+Rentabilidad	b4d83714-386f-4a97-abcb-5db71937d442	Financial Model (847ce270-06ab-408b-85c9-cb8f390fad1c)	Vacía	NO DISPONIBLE	NO DISPONIBLE: número y nombres
+HAPA	97d0a79d-09ff-4d6b-9cf0-b3e2b1e3fa47	Financial Model (847ce270-06ab-408b-85c9-cb8f390fad1c)	Vacía	NO DISPONIBLE	NO DISPONIBLE: número y nombres
+Los modelos semánticos encontrados fueron:
+
+Financial Model: 847ce270-06ab-408b-85c9-cb8f390fad1c
+Agings: e19def87-fdf3-4b44-bd60-d22e5d79ce88
+Las descripciones vacías proceden del metadato devuelto por Fabric. Las páginas, visuales y fechas de modificación requieren la definición interna del informe. Las solicitudes de definición fueron aceptadas, pero devolvieron operaciones asíncronas cuyo resultado no puede consultarse con las herramientas de lectura disponibles.
+
+2. Informes duplicados
+MMS
+ID	Estado en la consulta actual	Modelo	Páginas	Visuales
+97052b38-d2fd-4a01-afbf-bfb8ebc8b1a7	Encontrado	Financial Model	NO DISPONIBLE	NO DISPONIBLE
+a0c690f7-92a3-4acf-b084-d0d0311e4287	No encontrado: EntityNotFound	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+La documentación local identifica 97052... como consumidor de Financial Model, pero no contiene la definición de la copia a0c690.... Por tanto, no se puede demostrar si son copias idénticas, revisiones distintas o un elemento eliminado/no visible.
+
+Checklist (Oracle)
+ID	Estado en la consulta actual	Modelo	Páginas	Visuales
+ee58e006-ba1f-424d-9669-5a519127e35c	No encontrado: EntityNotFound	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+ac83ce13-5a64-4ef7-bbb2-05b3e1439b5e	Encontrado	Financial Model	NO DISPONIBLE	NO DISPONIBLE
+La documentación local identifica ac83... como consumidor de Financial Model. No hay información verificable sobre la copia ee58....
+
+Informe incluido en la app: NO DISPONIBLE.
+La definición de la app devolvió una operación asíncrona y no existe una herramienta disponible para recuperar su resultado. No es correcto inferir la inclusión únicamente porque un informe esté en el workspace.
+
+3. App y audiencias
+ID	Correspondencia	Resultado
+1e18b9bd-5689-4897-8c13-30be4ff0bdbf	Registrado en la documentación local como uno de los dos ids de la app, probablemente el objeto PowerBIApp	NO DISPONIBLE en la consulta actual: el workspace no devolvió este item
+66f6b4f0-e80e-44f4-b591-f6a1e513bda9	OrgApp	Nombre: Tinkle - Financiero. Descripción: aplicación de reporting financiero para resultados, balance y evolución del negocio
+Informes incluidos
+NO DISPONIBLE. La definición de 66f6b4f0... requiere una operación asíncrona que no se pudo recuperar. La documentación local solo indica que existe una distribución hacia la app, pero no enumera de forma verificable su contenido publicado.
+
+Audiencias
+Audiencia	ID	Tipo	Número de miembros
+test_app	fd6d65d3-0b01-415a-979f-84da40dca949	OrgAppAudience	NO DISPONIBLE
+Otras audiencias	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+La audiencia test_app sí fue encontrada directamente como OrgAppAudience. No se obtuvo su número de miembros. No se muestran nombres personales.
+
+No se realizaron operaciones de escritura, actualización, refresco, ejecución, borrado ni modificación de permisos.

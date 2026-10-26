@@ -1,0 +1,117 @@
+<svg viewBox="0 0 1700 480" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1700" height="480" fill="#ffffff"/>
+
+  <text x="20" y="35" font-size="22" font-weight="bold" fill="#1a1a1a">Orquestación bajo demanda — pipelines y User Data Functions</text>
+  <text x="20" y="58" font-size="14" fill="#555">Qué pasa, paso a paso, cuando se invoca cada UDF</text>
+
+  <!-- ===================== ROW 1: Ejecución Reporting -> Generar Reporting ===================== -->
+  <text x="20" y="100" font-size="13" font-weight="bold" fill="#7a0d0d">UDF "Ejecución Reporting"  →  Pipeline "Generar Reporting"</text>
+
+  <!-- UDF box -->
+  <rect x="20" y="115" width="140" height="70" rx="8" fill="#ffebee" stroke="#c62828" stroke-width="1.5"/>
+  <text x="90" y="145" font-size="11.5" font-weight="bold" text-anchor="middle" fill="#7a0d0d">UDF</text>
+  <text x="90" y="160" font-size="10" text-anchor="middle" fill="#8a2020">POST API REST</text>
+  <text x="90" y="173" font-size="10" text-anchor="middle" fill="#8a2020">de Fabric</text>
+
+  <line x1="160" y1="150" x2="196" y2="150" stroke="#333" stroke-width="2" marker-end="url(#arrow3)"/>
+
+  <!-- Step 1 -->
+  <rect x="200" y="115" width="180" height="70" rx="8" fill="#f3e5f5" stroke="#6a1b9a" stroke-width="1.5"/>
+  <text x="290" y="138" font-size="11" font-weight="bold" text-anchor="middle" fill="#3c0a5c">1. Carga</text>
+  <text x="290" y="154" font-size="9.5" text-anchor="middle" fill="#4a1070">RefreshDataflow</text>
+  <text x="290" y="168" font-size="9.5" text-anchor="middle" fill="#4a1070">INGESTA_Carga_Datos</text>
+
+  <line x1="380" y1="150" x2="416" y2="150" stroke="#333" stroke-width="2" marker-end="url(#arrow3)"/>
+  <text x="398" y="143" font-size="8.5" text-anchor="middle" fill="#555">Succeeded</text>
+
+  <!-- Step 2 -->
+  <rect x="420" y="115" width="180" height="70" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+  <text x="510" y="138" font-size="11" font-weight="bold" text-anchor="middle" fill="#0d3d75">2. RefreshSqlEndpoint1_copy1</text>
+  <text x="510" y="156" font-size="9.5" text-anchor="middle" fill="#3a6ea5">endpoint SQL del</text>
+  <text x="510" y="170" font-size="9.5" text-anchor="middle" fill="#3a6ea5">lakehouse</text>
+
+  <line x1="600" y1="150" x2="636" y2="150" stroke="#333" stroke-width="2" marker-end="url(#arrow3)"/>
+  <text x="618" y="143" font-size="8.5" text-anchor="middle" fill="#555">Succeeded</text>
+
+  <!-- Step 3 -->
+  <rect x="640" y="115" width="180" height="70" rx="8" fill="#f3e5f5" stroke="#6a1b9a" stroke-width="1.5"/>
+  <text x="730" y="134" font-size="11" font-weight="bold" text-anchor="middle" fill="#3c0a5c">3. Transformaciones</text>
+  <text x="730" y="148" font-size="11" font-weight="bold" text-anchor="middle" fill="#3c0a5c">SILVER</text>
+  <text x="730" y="165" font-size="9.5" text-anchor="middle" fill="#4a1070">RefreshDataflow TRANS_Silver</text>
+
+  <line x1="820" y1="150" x2="856" y2="150" stroke="#333" stroke-width="2" marker-end="url(#arrow3)"/>
+  <text x="838" y="143" font-size="8.5" text-anchor="middle" fill="#555">Succeeded</text>
+
+  <!-- Step 4 -->
+  <rect x="860" y="115" width="180" height="70" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+  <text x="950" y="138" font-size="11" font-weight="bold" text-anchor="middle" fill="#0d3d75">4. RefreshSqlEndpoint1</text>
+  <text x="950" y="156" font-size="9.5" text-anchor="middle" fill="#3a6ea5">endpoint SQL del</text>
+  <text x="950" y="170" font-size="9.5" text-anchor="middle" fill="#3a6ea5">lakehouse</text>
+
+  <line x1="1040" y1="150" x2="1076" y2="150" stroke="#333" stroke-width="2" marker-end="url(#arrow3)"/>
+  <text x="1058" y="143" font-size="8.5" text-anchor="middle" fill="#555">Succeeded</text>
+
+  <!-- Step 5 -->
+  <rect x="1080" y="115" width="180" height="70" rx="8" fill="#f3e5f5" stroke="#6a1b9a" stroke-width="1.5"/>
+  <text x="1170" y="134" font-size="11" font-weight="bold" text-anchor="middle" fill="#3c0a5c">5. Transformaciones</text>
+  <text x="1170" y="148" font-size="11" font-weight="bold" text-anchor="middle" fill="#3c0a5c">GOLD</text>
+  <text x="1170" y="165" font-size="9.5" text-anchor="middle" fill="#4a1070">RefreshDataflow TRANS_Gold</text>
+
+  <line x1="1260" y1="150" x2="1296" y2="150" stroke="#333" stroke-width="2" marker-end="url(#arrow3)"/>
+  <text x="1278" y="143" font-size="8.5" text-anchor="middle" fill="#555">Completed</text>
+
+  <!-- Step 6 -->
+  <rect x="1300" y="115" width="185" height="70" rx="8" fill="#e0f7fa" stroke="#00838f" stroke-width="1.5"/>
+  <text x="1392" y="134" font-size="11" font-weight="bold" text-anchor="middle" fill="#004d51">6. Refresco modelo</text>
+  <text x="1392" y="148" font-size="11" font-weight="bold" text-anchor="middle" fill="#004d51">semántico</text>
+  <text x="1392" y="165" font-size="9.5" text-anchor="middle" fill="#00565c">Financial Model</text>
+
+  <line x1="1485" y1="150" x2="1521" y2="150" stroke="#333" stroke-width="2" marker-end="url(#arrow3)"/>
+  <text x="1503" y="143" font-size="8.5" text-anchor="middle" fill="#555">Completed</text>
+
+  <!-- Step 7 -->
+  <rect x="1525" y="115" width="155" height="70" rx="8" fill="#e0f7fa" stroke="#00838f" stroke-width="1.5"/>
+  <text x="1602" y="134" font-size="11" font-weight="bold" text-anchor="middle" fill="#004d51">7. Refresco modelo</text>
+  <text x="1602" y="148" font-size="11" font-weight="bold" text-anchor="middle" fill="#004d51">semántico</text>
+  <text x="1602" y="165" font-size="9.5" text-anchor="middle" fill="#00565c">Agings</text>
+
+  <!-- ===================== ROW 2: Generar_txt -> Grabar salidas ===================== -->
+  <text x="20" y="270" font-size="13" font-weight="bold" fill="#7a0d0d">UDF "Generar_txt"  →  Pipeline "Grabar salidas"</text>
+
+  <rect x="20" y="285" width="140" height="70" rx="8" fill="#ffebee" stroke="#c62828" stroke-width="1.5"/>
+  <text x="90" y="315" font-size="11.5" font-weight="bold" text-anchor="middle" fill="#7a0d0d">UDF</text>
+  <text x="90" y="330" font-size="10" text-anchor="middle" fill="#8a2020">POST API REST</text>
+  <text x="90" y="343" font-size="10" text-anchor="middle" fill="#8a2020">de Fabric</text>
+
+  <line x1="160" y1="320" x2="196" y2="320" stroke="#333" stroke-width="2" marker-end="url(#arrow3)"/>
+
+  <rect x="200" y="285" width="220" height="70" rx="8" fill="#fff3e0" stroke="#ef6c00" stroke-width="1.5"/>
+  <text x="310" y="308" font-size="11" font-weight="bold" text-anchor="middle" fill="#7a3800">1. Notebook1</text>
+  <text x="310" y="326" font-size="9.5" text-anchor="middle" fill="#8a4a10">Generar_txt_Balance_Saldos</text>
+  <text x="310" y="340" font-size="9.5" text-anchor="middle" fill="#8a4a10">genera ficheros .txt en OneLake</text>
+
+  <line x1="420" y1="320" x2="456" y2="320" stroke="#333" stroke-width="2" marker-end="url(#arrow3)"/>
+  <text x="438" y="313" font-size="8.5" text-anchor="middle" fill="#555">Succeeded</text>
+
+  <rect x="460" y="285" width="220" height="70" rx="8" fill="#fce4ec" stroke="#ad1457" stroke-width="1.5"/>
+  <text x="570" y="308" font-size="11" font-weight="bold" text-anchor="middle" fill="#6b0d34">2. Grabar balance</text>
+  <text x="570" y="326" font-size="9.5" text-anchor="middle" fill="#7a1140">Copy: Files/Exportaciones/Balance</text>
+  <text x="570" y="340" font-size="9.5" text-anchor="middle" fill="#7a1140">→ SharePoint (salida de ficheros)</text>
+
+  <!-- Legend -->
+  <rect x="20" y="400" width="1650" height="60" rx="8" fill="#fafafa" stroke="#ddd" stroke-width="1"/>
+  <text x="35" y="420" font-size="11" font-weight="bold" fill="#333">Leyenda de tipo de actividad:</text>
+  <rect x="35" y="428" width="14" height="14" fill="#f3e5f5" stroke="#6a1b9a"/><text x="55" y="439" font-size="10" fill="#333">RefreshDataflow</text>
+  <rect x="180" y="428" width="14" height="14" fill="#e3f2fd" stroke="#1565c0"/><text x="200" y="439" font-size="10" fill="#333">RefreshSqlEndpoint</text>
+  <rect x="345" y="428" width="14" height="14" fill="#e0f7fa" stroke="#00838f"/><text x="365" y="439" font-size="10" fill="#333">PBI SemanticModelRefresh</text>
+  <rect x="545" y="428" width="14" height="14" fill="#fff3e0" stroke="#ef6c00"/><text x="565" y="439" font-size="10" fill="#333">TridentNotebook</text>
+  <rect x="700" y="428" width="14" height="14" fill="#fce4ec" stroke="#ad1457"/><text x="720" y="439" font-size="10" fill="#333">Copy</text>
+  <rect x="800" y="428" width="14" height="14" fill="#ffebee" stroke="#c62828"/><text x="820" y="439" font-size="10" fill="#333">User Data Function</text>
+  <text x="1000" y="439" font-size="10" fill="#777">No hay dependencia declarada entre ambos pipelines: cada UDF los dispara por separado.</text>
+</svg>

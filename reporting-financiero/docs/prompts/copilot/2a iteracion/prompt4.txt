@@ -1,0 +1,19 @@
+REGLAS: Workspace de Fabric "Tinkle - Financiero" (id b31820dc-4b4f-4696-9a96-bbee438e9306). Operación SOLO DE LECTURA. No crees, modifiques, refresques, ejecutes ni borres ningún item, programación, conexión o permiso. Si una herramienta implica escritura o ejecución, no la uses e indícalo. No muestres secretos, contraseñas ni tokens aunque aparezcan en el código: sustitúyelos por [OCULTO]. Si no puedes obtener un dato, escribe "NO DISPONIBLE" y explica el motivo. Responde en texto plano o tablas markdown, sin resumir de más.
+
+TAREA: Modo de escritura y linaje de los Dataflows Gen2.
+
+Lee la definición (mashup.pq y queryMetadata.json) de estos Dataflows Gen2: INICIAL_Carga_Oracle, INGESTA_Maestros, INICIAL_Carga_budget_fct, INICIAL_Carga_Revenues, INICIAL_Carga_Agings, INICIAL_Carga_Rentabilidades, INGESTA_Carga_Datos, Seguridad_CDC, TRANS_Silver y TRANS_Gold.
+
+Para cada dataflow devuelve una tabla con una fila por consulta que tenga destino: nombre de la consulta, lakehouse destino, esquema.tabla destino, modo de actualización (Replace o Append), y si el esquema se gestiona automáticamente o es fijo.
+
+Además:
+
+1. Lista las consultas no cargables (sin destino) de cada dataflow.
+
+2. En TRANS_Gold: di si Assets_Reporte, Liabilities_Reporte, PL_Reporte y las consultas de cuentas tienen destino, y cuál.
+
+3. Di qué dataflows escriben en la tabla Dim_CDC y con qué modo.
+
+4. Di qué dataflows LEEN estas tablas del esquema 200: Revenues, Portugal, HAPA, Mapping Portugal, Mapping_HAPA, COA_Oracle, Budget_historico, Presupuestos.
+
+5. Lista los parámetros de cada dataflow (nombre, tipo y valor actual).

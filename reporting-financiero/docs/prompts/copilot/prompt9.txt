@@ -1,0 +1,16 @@
+"En el workspace 'Tinkle - Financiero', busca qué dataflow, pipeline o notebook escribe en la tabla Budget_historico del lakehouse lh_tinkle_financiero (esquema 200). Revisa también si algún ítem de Planning (id 50ce99b8-0525-435f-bc71-56235a557714) o proceso no incluido en el inventario de dataflows la alimenta. Indica si está en desuso.
+
+Resultado
+
+No he encontrado ningún proceso activo del workspace que escriba en 200.Budget_historico.
+
+Los 10 dataflows inventariados no tienen esa tabla como destino. El más parecido, INICIAL_Carga_budget_fct, carga 200.Presupuestos, no Budget_historico.
+Generar Reporting solo orquesta dataflows, transformaciones y refrescos del modelo semántico.
+Grabar salidas ejecuta Generar_txt_Balance_Saldos, que lee 200.vw_Export_Grupo y 200.vw_Export_Saldos_4_7 y escribe ficheros de exportación, no tablas.
+El notebook no contiene referencias a Budget_historico, saveAsTable ni escrituras sobre el esquema 200.
+Planning (50ce99b8-0525-435f-bc71-56235a557714) escribe mediante writeback en CPM.dbo.FT3_Revenue y CPM.dbo.FT8_Revenue. No existe sincronización de vuelta hacia lh_tinkle_financiero.
+La tabla sí existe físicamente y tiene 7 columnas: esquema_lh_tinkle_financiero_100_200.tsv:348-354.
+
+Conclusión
+
+Budget_historico está operativamente en desuso o huérfana dentro del workspace actual: no hay dataflow, pipeline, notebook, Planning ni otro ítem catalogado que la alimente. No puedo afirmar que esté vacía o que nunca reciba escrituras externas mediante SQL/API fuera del inventario, pero sí que no forma parte del flujo activo documentado.

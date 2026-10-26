@@ -1,0 +1,558 @@
+table Oracle_calc
+	lineageTag: 168ada2d-1eeb-4acd-9948-5b8edc229349
+	sourceLineageTag: 61b9475c-9fa2-4e82-a705-cec1b5c24267
+
+	measure 'Importe Base' = SUM ( Oracle_calc[Total _Sum_] )
+		lineageTag: ac35c5ff-0689-4901-9d3b-0a00d60bd4b2
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Importe Línea Base' =
+			
+			VAR LineaActual =
+			    SELECTEDVALUE ( PL_Estructura[PL_ID] )
+			RETURN
+			CALCULATE (
+			    [Importe Base],
+			    TREATAS (
+			        SELECTCOLUMNS (
+			            FILTER (
+			                PL_Mapping_Cuentas,
+			                PL_Mapping_Cuentas[PL_ID] = LineaActual
+			            ),
+			            "CuentaSAP", PL_Mapping_Cuentas[Cuenta]
+			        ),
+			        COA_Oracle[SAP-ACCOUINT]
+			    )
+			)
+		lineageTag: 2dabb226-351e-4ad2-90a5-0b16e38e350e
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Importe P&L' =
+			
+			VAR LineaActual =
+			    SELECTEDVALUE ( PL_Estructura[PL_ID] )
+			
+			VAR EstoyEnCuentaSAP =
+			    ISINSCOPE ( COA_Oracle[SAP-ACCOUINT])
+			
+			VAR EstoyEnCuentaOracle =
+			    ISINSCOPE ( COA_Oracle[SAP-ACCOUINT])
+			
+			VAR ImporteBaseLinea =
+			    [Importe Línea Base]
+			
+			VAR GrossIncome =
+			    CALCULATE (
+			        [Importe Línea Base],
+			        REMOVEFILTERS ( PL_Estructura ),
+			        PL_Estructura[PL_ID] IN { 10, 20, 40 }
+			    )
+			
+			VAR RevenueIFRS15 =
+			    CALCULATE (
+			        [Importe Línea Base],
+			        REMOVEFILTERS ( PL_Estructura ),
+			        PL_Estructura[PL_ID] IN { 10, 20 }
+			    )
+			
+			VAR OperatingExpenses =
+			    CALCULATE (
+			        [Importe Línea Base],
+			        REMOVEFILTERS ( PL_Estructura ),
+			        PL_Estructura[PL_ID] IN { 100, 110, 120, 130, 140, 150, 160 }
+			    )
+			
+			VAR OperatingProfit =
+			    GrossIncome + OperatingExpenses
+			
+			VAR FinancialIncome =
+			    CALCULATE (
+			        [Importe Línea Base],
+			        REMOVEFILTERS ( PL_Estructura ),
+			        PL_Estructura[PL_ID] IN { 200, 210, 220, 230 }
+			    )
+			
+			VAR NonOperating =
+			    CALCULATE (
+			        [Importe Línea Base],
+			        REMOVEFILTERS ( PL_Estructura ),
+			        PL_Estructura[PL_ID] IN { 300, 310 }
+			    )
+			
+			VAR IncomeTax =
+			    CALCULATE (
+			        [Importe Línea Base],
+			        REMOVEFILTERS ( PL_Estructura ),
+			        PL_Estructura[PL_ID] = 400
+			    )
+			
+			VAR TotalNetIncome =
+			    OperatingProfit + FinancialIncome + NonOperating + IncomeTax
+			
+			RETURN
+			SWITCH (
+			    TRUE(),
+			
+			    -- Si estás expandiendo cuentas, solo tiene sentido mostrar detalle en líneas base
+			    EstoyEnCuentaSAP || EstoyEnCuentaOracle,
+			        IF (
+			            SELECTEDVALUE ( PL_Estructura[Tipo_Linea] ) = "Base",
+			            [Importe Base],
+			            BLANK ()
+			        ),
+			
+			    LineaActual = 30, RevenueIFRS15,
+			    LineaActual = 50, GrossIncome,
+			    LineaActual = 170, OperatingExpenses,
+			    LineaActual = 180, OperatingProfit,
+			    LineaActual = 240, FinancialIncome,
+			    LineaActual = 320, NonOperating,
+			    LineaActual = 500, TotalNetIncome,
+			
+			    ImporteBaseLinea
+			)
+		lineageTag: 17439aee-d2b8-4fe0-82f7-23683efc7ff1
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Origen
+		dataType: string
+		lineageTag: 34d0eb61-243d-4187-9602-e7cfe3ce0648
+		sourceLineageTag: cd19ff54-e8a5-4bf9-b96b-3ed31d765c97
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Origen
+
+		annotation SummarizationSetBy = User
+
+	column 'Org Id'
+		dataType: string
+		lineageTag: dc8e8ca4-7e4e-41e5-83fc-6c35fb905c0d
+		sourceLineageTag: 1a65d0a6-ce24-4d21-90bd-1f80bbbf359c
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Org Id
+
+		annotation SummarizationSetBy = User
+
+	column Compañía
+		dataType: string
+		lineageTag: 3bb01488-560f-4fa2-9d88-4178888a12bb
+		sourceLineageTag: f2186ede-b931-4458-966b-b1949153bd3f
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Compañía
+
+		annotation SummarizationSetBy = User
+
+	column 'Flex Value Set Id CDC'
+		dataType: string
+		lineageTag: d9343e68-4a0b-4210-9c84-7930a5b452c2
+		sourceLineageTag: 9d1e1035-8d7c-497d-bedf-ba06f1a45738
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Flex Value Set Id CDC
+
+		annotation SummarizationSetBy = User
+
+	column 'Origen Usuario'
+		dataType: string
+		lineageTag: 14d35bdf-650d-470d-9c2a-e92f961cf59f
+		sourceLineageTag: f639ac2c-effc-40f9-a333-62a5fbd873fe
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Origen Usuario
+
+		annotation SummarizationSetBy = User
+
+	column Estado
+		dataType: string
+		lineageTag: 244a05f7-f8fe-4fa1-b538-397ade870c6a
+		sourceLineageTag: ec91718b-2aca-4537-8df8-ca680a62221d
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Estado
+
+		annotation SummarizationSetBy = User
+
+	column Secuencia
+		dataType: string
+		lineageTag: a4ebd0a6-8568-4b4f-8ca1-e5df28f06fca
+		sourceLineageTag: 19fd3f58-d9fe-4de6-aa0d-dc59e2a9bdc7
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Secuencia
+
+		annotation SummarizationSetBy = User
+
+	column Cia
+		dataType: string
+		lineageTag: f0d2846a-389c-4240-a588-91b2bd82ac21
+		sourceLineageTag: a5ffaa95-5e31-4d11-a3a6-abd0a5609c7c
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Cia
+
+		annotation SummarizationSetBy = User
+
+	column 'Cod Compania MMS'
+		dataType: string
+		lineageTag: 6c210e80-25ef-4cd1-909c-72ec869b0d5f
+		sourceLineageTag: c4ab931b-4742-431e-8314-60e14e5bd9f9
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Cod Compania MMS
+
+		annotation SummarizationSetBy = User
+
+	column Cuenta
+		dataType: string
+		lineageTag: 73fb1037-0cbb-4636-b7a9-a6c55eb848b2
+		sourceLineageTag: 7013d3fe-c1f9-44e9-94ec-6203caef1856
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Cuenta
+
+		annotation SummarizationSetBy = User
+
+	column 'Des. Cuenta'
+		dataType: string
+		lineageTag: 9be859dc-7d99-48b8-8948-b46ae65eafd7
+		sourceLineageTag: c4400bf9-1e0b-49f9-b56f-a347baaac989
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Des. Cuenta
+
+		annotation SummarizationSetBy = User
+
+	column CDC
+		dataType: string
+		lineageTag: 60c17215-690b-4c5e-b7cf-fac5c33d9e2c
+		sourceLineageTag: e1b4c11d-0f21-4e02-8982-55abef08d372
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: CDC
+
+		annotation SummarizationSetBy = User
+
+	column 'Des. CDC'
+		dataType: string
+		lineageTag: 677e0956-9c9f-412c-80bb-01d63b86767b
+		sourceLineageTag: 81390776-e84f-411f-a307-232fe65f1ac2
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Des. CDC
+
+		annotation SummarizationSetBy = User
+
+	column Cliente
+		dataType: string
+		lineageTag: 291e1e7b-b850-4fe3-a427-b5df68389e1d
+		sourceLineageTag: 7f121c07-9dc9-4515-839a-79f8d1f01b38
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Cliente
+
+		annotation SummarizationSetBy = User
+
+	column Imputación
+		dataType: string
+		lineageTag: b233778a-93f5-4c1c-afca-758bebfcc25c
+		sourceLineageTag: 905911c1-27e7-4408-8673-6fbbd4531a68
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Imputación
+
+		annotation SummarizationSetBy = User
+
+	column Intercía
+		dataType: string
+		lineageTag: 23a96a8b-c914-47e3-a01e-c11481b0237f
+		sourceLineageTag: 13d053b0-6e6e-4f55-b4c4-b3165da5841a
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Intercía
+
+		annotation SummarizationSetBy = User
+
+	column Libre
+		dataType: string
+		lineageTag: e04c410e-400e-4c14-8d9e-be5df170ae64
+		sourceLineageTag: 63b0a9ba-8872-4348-93f4-bc87224b52bd
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Libre
+
+		annotation SummarizationSetBy = User
+
+	column 'Fecha Contable'
+		dataType: dateTime
+		formatString: General Number
+		lineageTag: 2a3159fa-b79a-4bc0-99ac-f5f57e9ea013
+		sourceLineageTag: b0b851f6-cddd-4fcd-bf77-e33a11e11be2
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Fecha Contable
+
+		annotation SummarizationSetBy = User
+
+	column 'Mes Contable'
+		dataType: string
+		lineageTag: e117c281-3c2e-4253-8e76-ffd9bd094023
+		sourceLineageTag: 70d5a64c-6e11-43de-bfd6-ed13c76b1b20
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Mes Contable
+
+		annotation SummarizationSetBy = User
+
+	column 'Nombre Lote'
+		dataType: string
+		lineageTag: f3b6b99b-d135-4276-9ab8-fa9ed8b2bcdc
+		sourceLineageTag: 98d827ad-4486-4242-8233-722ed40e4100
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Nombre Lote
+
+		annotation SummarizationSetBy = User
+
+	column Factura
+		dataType: string
+		lineageTag: a2a0d7fb-ecf5-4d65-9bea-6b301e115682
+		sourceLineageTag: 381e454b-8a98-4055-bd05-88183424659c
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Factura
+
+		annotation SummarizationSetBy = User
+
+	column Asiento
+		dataType: string
+		lineageTag: 4d459dd5-c3c3-49e9-a2e8-4c8eaea0d921
+		sourceLineageTag: 8c479444-8523-4167-b76a-a234d594ffb0
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Asiento
+
+		annotation SummarizationSetBy = User
+
+	column Divisa
+		dataType: string
+		lineageTag: 557b838e-26c4-4a4e-9d94-4d0d1f0e6492
+		sourceLineageTag: a034dfa2-2a2f-4228-999e-edc97518ee9f
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Divisa
+
+		annotation SummarizationSetBy = User
+
+	column 'Num. Tercero'
+		dataType: string
+		lineageTag: d32fe29c-d0a9-4ef3-864e-1336ef2724c1
+		sourceLineageTag: a9118c89-7888-45d3-b8ab-4f6e8a9746e7
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Num. Tercero
+
+		annotation SummarizationSetBy = User
+
+	column 'Nom. Tercero'
+		dataType: string
+		lineageTag: eb04b773-ec65-4334-aba7-ed31edf9e50b
+		sourceLineageTag: 9dd5ea5a-f723-4306-8355-a3315cec0a80
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Nom. Tercero
+
+		annotation SummarizationSetBy = User
+
+	column 'Num. Pedido'
+		dataType: string
+		lineageTag: 6eb4e958-bc33-47f0-8e3d-30b445d07da8
+		sourceLineageTag: 3a5e263a-f10a-4303-b9ec-9a6c89ea8854
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Num. Pedido
+
+		annotation SummarizationSetBy = User
+
+	column NIF
+		dataType: string
+		lineageTag: b582166d-9bce-473d-9769-68fc0229e55d
+		sourceLineageTag: 1ebf1f48-1ae0-46f2-a889-646acfe9ebc1
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: NIF
+
+		annotation SummarizationSetBy = User
+
+	column 'Fecha Factura'
+		dataType: string
+		lineageTag: 43c395a0-0caf-4918-bbb6-34138f0f94ee
+		sourceLineageTag: adea9573-c59c-4191-b2db-f3e215bd47c4
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Fecha Factura
+
+		annotation SummarizationSetBy = User
+
+	column 'Mes Factura'
+		dataType: string
+		lineageTag: 65739048-f200-4431-80a3-154845f46d49
+		sourceLineageTag: 5cf4257b-4ff8-424e-9600-a8f49af6bfc7
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Mes Factura
+
+		annotation SummarizationSetBy = User
+
+	column 'Año Factura'
+		dataType: string
+		lineageTag: d1856384-9195-4523-bcf0-5a655121a662
+		sourceLineageTag: a0a840e3-6cce-4bf9-a1a3-41cf926e3dab
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Año Factura
+
+		annotation SummarizationSetBy = User
+
+	column 'Concepto Pedido'
+		dataType: string
+		lineageTag: 3a6404f8-0707-4ad8-843b-7fb5adde056f
+		sourceLineageTag: 63acf3e8-5432-4aa5-a30d-fe9e57d91c1b
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Concepto Pedido
+
+		annotation SummarizationSetBy = User
+
+	column 'Descripción Linea'
+		dataType: string
+		lineageTag: 23cd187e-9f95-47bf-a060-3e7aa6d1ec5d
+		sourceLineageTag: bf831bcf-ccbf-411e-847a-62aeeaa84e7e
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Descripción Linea
+
+		annotation SummarizationSetBy = User
+
+	column 'Porcentaje Imputación'
+		dataType: string
+		lineageTag: 3d7dfbb3-4cac-44fb-a1e1-109db5698550
+		sourceLineageTag: f1ccb3ca-0b38-4839-ac0f-49a91eacc86a
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Porcentaje Imputación
+
+		annotation SummarizationSetBy = User
+
+	column 'Debe _Sum_'
+		dataType: double
+		lineageTag: 04cb9f0d-cf94-4c95-9b26-a963730b8d93
+		sourceLineageTag: 548693f7-5765-40b4-abb2-5a56e202d4b3
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: Debe _Sum_
+
+		annotation SummarizationSetBy = User
+
+	column 'Haber _Sum_'
+		dataType: double
+		lineageTag: e6f6f157-960d-4229-8091-a445fa8f3c48
+		sourceLineageTag: a3c06bc3-da07-4a10-bc59-8d8c2648f31f
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: Haber _Sum_
+
+		annotation SummarizationSetBy = User
+
+	column 'Total _Sum_'
+		dataType: double
+		lineageTag: f6bbb346-8df2-4e54-8a6e-5f665779c948
+		sourceLineageTag: 1585c7d8-dce7-4484-9e25-050901f4aa75
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: Total _Sum_
+
+		annotation SummarizationSetBy = User
+
+	column 'Divisa Reporting'
+		dataType: string
+		lineageTag: 6015ab73-8ec0-46a2-8ee7-a87a554dc79d
+		sourceLineageTag: 356e7234-c5f7-47b6-804c-c529bc7724eb
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Divisa Reporting
+
+		annotation SummarizationSetBy = User
+
+	column Categoria
+		dataType: string
+		lineageTag: bfab7ec4-8a84-4496-9749-c486b74bb8b9
+		sourceLineageTag: bdd91d98-88a6-4320-8e07-174c11a6af51
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = User
+
+	column RevAmount
+		dataType: double
+		lineageTag: 3c46c32c-36b3-46e1-afe5-063cda21ec42
+		sourceLineageTag: e84c1eeb-3bb7-4652-854a-61d4b5f2ee7b
+		dataCategory: Uncategorized
+		summarizeBy: sum
+		sourceColumn: RevAmount
+
+		annotation SummarizationSetBy = User
+
+	column Interco
+		dataType: string
+		lineageTag: bf981db7-b182-4584-a1a8-b0408fa408a0
+		sourceLineageTag: dc552569-43f0-459f-8fe6-2f9557651840
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Interco
+
+		annotation SummarizationSetBy = User
+
+	column Mes
+		dataType: string
+		lineageTag: 3c2bee08-c67e-4c66-9139-7ef97877400a
+		sourceLineageTag: 689087fa-0ab2-4aa9-bd21-9874aa6b1415
+		dataCategory: Uncategorized
+		summarizeBy: none
+		sourceColumn: Mes
+
+		annotation SummarizationSetBy = User
+
+	column 'Cuenta & Descripción' = Oracle_calc[Cuenta]&" - "&Oracle_calc[Des. Cuenta]
+		lineageTag: 302d948f-1d1d-4598-bace-72a97b50048e
+		summarizeBy: none
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nom & Num Tercero' = Oracle_calc[Num. Tercero]&" - "&Oracle_calc[Nom. Tercero]
+		lineageTag: 49a496ce-062c-403d-b328-7a82aaa9c92f
+		summarizeBy: none
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Oracle_calc = entity
+		mode: directQuery
+		source
+			entityName: Oracle_calc
+			expressionSource: 'De DirectQuery a AS: Finance'
+

@@ -1,0 +1,3 @@
+La comprobación detectó un detalle de conteo: la definición TMDL contiene 40 medidas, no 35; el inventario nominal sí las recoge todas. Corregiré ese número para que la documentación no contradiga la fuente y volveré a validar la línea afectada.
+
+Generating patch (6 lines) in Documentacion_Tinkle_Financiero.md

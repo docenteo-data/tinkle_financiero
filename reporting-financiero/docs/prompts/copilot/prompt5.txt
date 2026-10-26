@@ -1,0 +1,108 @@
+Workspace: Tinkle - Financiero
+
+Funciones de usuario analizadas
+
+1. Ejecucion Reporting
+
+- ID: 27467e82-89d3-44fc-8c93-4ae54fd4d193
+- Funcion Python: ejecutar_reporte_financiero()
+- Firma: def ejecutar_reporte_financiero() -> str
+- Parametros: ninguno
+- Endpoint publico: habilitado
+
+Logica principal:
+
+1. Obtiene un token de Microsoft Entra ID mediante ClientSecretCredential.
+2. Construye una llamada REST a la API de Microsoft Fabric.
+3. Ejecuta el pipeline Generar Reporting.
+4. Comprueba que la respuesta HTTP sea 202.
+5. Extrae el job_id de la cabecera Location.
+6. Devuelve un mensaje de exito o error.
+
+Codigo relevante, con las credenciales omitidas:
+
+@udf.function()
+def ejecutar_reporte_financiero() -> str:
+    try:
+        credential = ClientSecretCredential(
+            tenant_id=TENANT_ID,
+            client_id=CLIENT_ID,
+            client_secret=CLIENT_SECRET
+        )
+
+        access_token = credential.get_token(
+            "https://api.fabric.microsoft.com/.default"
+        ).token
+
+        endpoint = (
+            "https://api.fabric.microsoft.com/v1/"
+            f"workspaces/{WORKSPACE_ID}/"
+            f"dataPipelines/{PIPELINE_ID}/"
+            "jobs/execute/instances"
+        )
+
+        response = requests.post(
+            endpoint,
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            },
+            timeout=30
+        )
+
+        if response.status_code != 202:
+            return (
+                "No se ha podido iniciar el proceso financiero. "
+                f"HTTP {response.status_code}: {response.text[:300]}"
+            )
+
+        execution_url = response.headers.get("Location", "")
+        job_id = execution_url.rstrip("/").split("/")[-1] \
+            if execution_url else "no disponible"
+
+        return (
+            "Proceso financiero iniciado correctamente. "
+            f"Job: {job_id}"
+        )
+
+    except Exception as exc:
+        return f"Error inesperado: {str(exc)[:500]}"
+
+Pipeline invocado:
+
+- Nombre: Generar Reporting
+- ID: 147b24eb-352f-4f88-9d64-b4a7fc1d67f6
+- Tipo de invocacion: API REST de Fabric
+
+2. Generar_txt
+
+- ID: 30f6466d-8780-4886-84b8-70ebc13e6d1e
+- Funcion Python: ejecutar_generacion_txt()
+- Firma: def ejecutar_generacion_txt() -> str
+- Parametros: ninguno
+- Endpoint publico: habilitado
+
+Logica principal:
+
+Tiene la misma estructura que Ejecucion Reporting: obtiene un token de Entra ID, realiza una peticion POST a la API REST de Fabric, comprueba el codigo HTTP 202, extrae el job_id de la cabecera Location y devuelve un mensaje de exito o error.
+
+Pipeline invocado:
+
+- Nombre: Grabar salidas
+- ID: 56a37cd5-3664-47b4-b28f-ec7f26d23075
+- Tipo de invocacion: API REST de Fabric
+
+Relaciones y origen de las invocaciones
+
+- ejecutar_reporte_financiero() invoca el pipeline Generar Reporting.
+- ejecutar_generacion_txt() invoca el pipeline Grabar salidas.
+- El pipeline Grabar salidas ejecuta el notebook Generar_txt_Balance_Saldos.
+- Notebook: Generar_txt_Balance_Saldos
+- ID del notebook: c649ae24-2b54-4fce-bd5c-d23a9516ec37
+- El notebook no contiene referencias directas a ninguna de las dos funciones.
+- No se encontraron otros pipelines, notebooks o artefactos del workspace que invoquen directamente las funciones.
+- Al estar habilitados los endpoints publicos, tambien pueden invocarse externamente, por ejemplo desde Power BI u otro cliente HTTP.
+
+Aviso de seguridad
+
+Las definiciones contienen un CLIENT_SECRET incrustado directamente en function_app.py. Se recomienda revocarlo y rotarlo, y sustituirlo por una referencia segura a secretos.

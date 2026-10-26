@@ -1,0 +1,19 @@
+REGLAS: Workspace de Fabric "Tinkle - Financiero" (id b31820dc-4b4f-4696-9a96-bbee438e9306). Operación SOLO DE LECTURA. No crees, modifiques, refresques, ejecutes ni borres ningún item, programación, conexión o permiso. Si una herramienta implica escritura o ejecución, no la uses e indícalo. No muestres secretos, contraseñas ni tokens aunque aparezcan en el código: sustitúyelos por [OCULTO]. Si no puedes obtener un dato, escribe "NO DISPONIBLE" y explica el motivo. Responde en texto plano o tablas markdown, sin resumir de más.
+
+TAREA: Relaciones, tablas, roles y medidas de "Financial Model".
+
+Lee la definición TMDL del modelo semántico "Financial Model" (id 847ce270-06ab-408b-85c9-cb8f390fad1c) y devuelve:
+
+1. Lista completa de TODAS las relaciones, en una tabla con estas columnas: nombre, tabla.columna origen (lado muchos), tabla.columna destino (lado uno), cardinalidad (fromCardinality/toCardinality), crossFilteringBehavior, isActive, securityFilteringBehavior. Indica el número total.
+
+2. Lista de tablas con su modo de partición (directLake, import, calculated, etc.) y el origen (esquema y tabla del lakehouse, o expresión si es calculada). Indica el total de tablas y si _Medidas cuenta como tabla.
+
+3. Definición completa de la tabla "Unidades".
+
+4. Roles de seguridad: nombre de cada rol, filtros de fila (expresión DAX por tabla), permisos a nivel de objeto (OLS) y número de miembros (sin nombres ni correos).
+
+5. Si existen medidas llamadas "FC3 Revenue" o "FC8 Revenue", o cualquier medida que no esté en esta lista:
+ASOC01 - Statutory data, FCT, Budget Base, Budget Net Income, Budget Reporting Cuentas, DIF_ASOC01_FCT, Importe Base, Importe Reporting Cuentas, Net Income Reporting, REAL (Fees & other), Escala Seleccionado, Importe MMS, Honorarios Real, Producción Real, Coste Producción, Gross Income Real, Honorarios MMS, Producción MMS, Gross income MMS, Desviación Gross Income, % Desviación Gross Income, Estado GI, 2025_salario, 2025_salario_total, 2026_salario, 2026_salario_total, 2026_Coste_total_salarial, Coste SSGG 2026, Coste SSGG Bonus 2025, COSTE TOTAL CON BONUS Y GRATIFICACION, DIF salarial año anterior, % Dedicación, % Dedicación Total Persona, Estado Dedicación Persona, Coste Personal Imputado Total 2026, Coste Personal Imputado Cliente 2026, Contribution MMS 2026, % Contribution MMS 2026, Nº Personas Asignadas, Color Fondo Reporting.
+Para cada una que exista, devuelve su nombre, la tabla que la contiene y su expresión DAX.
+
+6. Número total de medidas y en qué tablas están.

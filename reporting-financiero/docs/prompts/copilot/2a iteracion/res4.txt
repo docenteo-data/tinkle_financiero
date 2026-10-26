@@ -1,0 +1,150 @@
+Análisis realizado en modo solo lectura sobre el workspace Tinkle - Financiero.
+
+Nota de correspondencia técnica:
+
+INICIAL_Carga_Oracle → definición interna INICIAL_Carga_Oracle_Checklist.
+INGESTA_Maestros → INGESTAS INICIALES.
+INGESTA_Carga_Datos → INGESTA_Carga_Oracle.
+TRANS_Silver → TRANS_Carga_datos.
+En los destinos Automatic, UpdateMethod no aparece serializado explícitamente. Se informa como Replace implícito, que es el comportamiento predeterminado declarado por el destino automático. DynamicSchema = false se informa como esquema fijo.
+
+Consultas con destino
+
+INICIAL_Carga_Oracle
+Consulta	Lakehouse	Esquema.tabla	Modo	Esquema
+Carga Oracle historico desde Checklist	lh_tinkle_financiero	200.Oracle_historico	Replace	Fijo
+Consultas no cargables: ninguna consulta de negocio. DefaultDestination es un auxiliar técnico.
+
+INGESTA_Maestros
+Consulta	Lakehouse	Esquema.tabla	Modo	Esquema
+Mapping HAPA	lh_tinkle_financiero	200.Mapping_HAPA	Replace implícito	Automático
+Dim_CDC	lh_tinkle_financiero	300.Dim_CDC	Replace implícito	Automático
+Dim_Calendar	lh_tinkle_financiero	300.Dim_Calendar	Replace implícito	Automático
+Dim_Clientes	lh_tinkle_financiero	300.Dim_Clientes	Replace implícito	Automático
+Mapping Portugal	lh_tinkle_financiero	200.Mapping Portugal	Replace	Fijo
+COA_Oracle	lh_tinkle_financiero	200.COA_Oracle	Replace implícito	Automático
+Dim_Sociedades	lh_tinkle_financiero	300.Dim_Sociedades	Replace implícito	Automático
+Map_Report_Line_Account	lh_tinkle_financiero	300.Map_Report_Line_Account	Replace implícito	Automático
+Dim_Report_Line	lh_tinkle_financiero	300.Dim_Report_Line	Replace implícito	Automático
+Dim_RRHH	lh_tinkle_financiero	300.Dim_RRHH	Replace implícito	Automático
+Aux_CDC	lh_tinkle_financiero	300.Aux_CDC	Replace implícito	Automático
+Consultas no cargables:
+
+Assets_Reporte
+Assets_Reporte_Cuentas
+Liabilities_Reporte
+Liabilities_Reporte_Cuentas
+PL_Reporte
+PL_Reporte_Cuentas
+INICIAL_Carga_budget_fct
+Consulta	Lakehouse	Esquema.tabla	Modo	Esquema
+FORECASTS y BUDGET	lh_tinkle_financiero	200.Presupuestos	Replace implícito	Automático
+Consultas no cargables:
+
+B01 JAZZ
+B01 ONION
+B01 PORT
+B01 CONS
+B01 TOTAL (Checklist)
+INICIAL_Carga_Revenues
+Consulta	Lakehouse	Esquema.tabla	Modo	Esquema
+Carga historica revenues	lh_tinkle_financiero	200.Revenues	Replace implícito	Automático
+Consulta no cargable:
+
+Revenue by client FT3 2026
+INICIAL_Carga_Agings
+Consulta	Lakehouse	Esquema.tabla	Modo	Esquema
+Carga Aging Clientes historico	lh_tinkle_financiero	200.Aging_Clientes	Replace implícito	Automático
+Carga Aging Proveedores historico	lh_tinkle_financiero	200.Aging_Proveedores	Replace implícito	Automático
+Consultas no cargables: ninguna.
+
+INICIAL_Carga_Rentabilidades
+Consulta	Lakehouse	Esquema.tabla	Modo	Esquema
+Fact_Asignacion_RRHH	lh_tinkle_financiero	300.Fact_Asignacion_RRHH	Replace implícito	Automático
+Dim_equipos	lh_tinkle_financiero	300.Dim_equipos	Replace implícito	Automático
+Dim_CDC	lh_tinkle_financiero	300.Dim_CDC	Replace implícito	Automático
+Consultas no cargables: ninguna.
+
+INGESTA_Carga_Datos
+Consulta	Lakehouse	Esquema.tabla	Modo	Esquema
+Carga_New_MMS	lh_tinkle_financiero	100.New_MMS	Replace implícito	Automático
+Carga_New_Oracle	lh_tinkle_financiero	100.New_Oracle	Replace	Fijo
+Carga_New_PT_extrato_contas	lh_tinkle_financiero	100.New_PT_extrato_contas	Replace implícito	Automático
+Carga_New_Agings_Proveedores	lh_tinkle_financiero	100.New_Agings_Proveedores	Replace implícito	Automático
+Carga_New_Agings_Clientes	lh_tinkle_financiero	100.New_Agings_Clientes	Replace implícito	Automático
+Consulta no cargable:
+
+Carga_New_HAPA_asientos
+Seguridad_CDC
+No tiene consultas con destino.
+
+Consulta no cargable:
+
+RLS
+RLS_DataDestination aparece como auxiliar técnico oculto, pero no tiene una asignación de destino de carga activa.
+
+TRANS_Silver
+Consulta	Lakehouse	Esquema.tabla	Modo	Esquema
+200_New_Agings_Proveedores	lh_tinkle_financiero	200.Aging_Proveedores	Replace	Fijo
+200_New_Agings_Clientes	lh_tinkle_financiero	200.Aging_Clientes	Replace	Fijo
+200_Portugal_trans	lh_tinkle_financiero	200.Portugal	Replace implícito	Automático
+200_HAPA	lh_tinkle_financiero	200.HAPA	Replace implícito	Automático
+200_Oracle	lh_tinkle_financiero	200.Oracle_historico	Replace	Fijo
+200_MMS	lh_tinkle_financiero	200.MMS	Replace implícito	Automático
+Consultas no cargables:
+
+200_New_MMS_trans
+200_New_Oracle_trans
+200_New_HAPA_trans
+pFechaContable_New_Oracle
+pFecha_New_HAPA
+TRANS_Gold
+Consulta	Lakehouse	Esquema.tabla	Modo	Esquema
+Dim_mapeo_cuentas	lh_tinkle_financiero	300.Dim_Mapeo_Cuentas	Replace implícito	Automático
+Dim_Cuentas	lh_tinkle_financiero	300.Dim_Cuentas	Replace implícito	Automático
+Fact_Actuals	lh_tinkle_financiero	300.Fact_Actuals	Replace implícito	Automático
+Consultas no cargables:
+
+Oracle_historico
+HAPA
+Portugal
+200_Mapping Portugal
+200_Mapping_HAPA
+200_COA_Oracle
+Assets, Liabilities, PL y cuentas en TRANS_Gold
+
+Assets_Reporte, Liabilities_Reporte, PL_Reporte y sus consultas de cuentas no aparecen en la definición de TRANS_Gold. Por tanto:
+
+Consulta	¿Tiene destino en TRANS_Gold?	Destino
+Assets_Reporte	No	NO DISPONIBLE: no pertenece a este Dataflow
+Assets_Reporte_Cuentas	No	NO DISPONIBLE: no pertenece a este Dataflow
+Liabilities_Reporte	No	NO DISPONIBLE: no pertenece a este Dataflow
+Liabilities_Reporte_Cuentas	No	NO DISPONIBLE: no pertenece a este Dataflow
+PL_Reporte	No	NO DISPONIBLE: no pertenece a este Dataflow
+PL_Reporte_Cuentas	No	NO DISPONIBLE: no pertenece a este Dataflow
+Esas consultas están en INGESTA_Maestros y no tienen destino.
+
+Dataflows que escriben en Dim_CDC
+
+Dataflow	Consulta	Destino	Modo
+INGESTA_Maestros	Dim_CDC	300.Dim_CDC	Replace implícito
+INICIAL_Carga_Rentabilidades	Dim_CDC	300.Dim_CDC	Replace implícito
+Lecturas de tablas del esquema 200
+
+Se excluyeron las consultas *_DataDestination, porque representan la resolución del destino de escritura.
+
+Tabla 200	Dataflows que la leen	Consultas
+Revenues	Ninguno identificado	NO DISPONIBLE
+Portugal	TRANS_Gold	Portugal
+HAPA	TRANS_Gold	HAPA
+Mapping Portugal	TRANS_Gold	200_Mapping Portugal
+Mapping_HAPA	TRANS_Gold	200_Mapping_HAPA
+COA_Oracle	TRANS_Gold	200_COA_Oracle
+Budget_historico	Ninguno identificado	NO DISPONIBLE
+Presupuestos	Ninguno como origen	La aparición encontrada corresponde al destino de escritura de INICIAL_Carga_budget_fct
+Parámetros
+
+Dataflow	Parámetro	Tipo	Valor actual
+TRANS_Silver	pFechaContable_New_Oracle	date	List.Min(#"Changed type"[Fecha Contable])
+TRANS_Silver	pFecha_New_HAPA	date	List.Min(#"Changed type"[Fecha])
+Los otros nueve Dataflows no declaran parámetros M identificables en sus definiciones: NO DISPONIBLE no aplica, porque la definición indica que no tienen parámetros declarados. Los dos valores anteriores son calculados dinámicamente y no tienen una fecha literal evaluada en la definición.

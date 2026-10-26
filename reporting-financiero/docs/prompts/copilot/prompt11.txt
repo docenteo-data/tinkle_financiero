@@ -1,0 +1,5 @@
+"Confirma el nombre literal (tal cual aparece en el diseñador/JSON) de la actividad del pipeline 'Generar Reporting' que ejecuta el dataflow TRANS_Silver (e34a567e-3986-467e-ac59-9c89b8014b87): ¿es 'Transformaciones SQL' o 'Transformaciones SILVER'?"
+
+El nombre literal en el JSON es Transformaciones SILVER.
+
+Esa actividad tiene type: "RefreshDataflow" y dataflowId: "e34a567e-3986-467e-ac59-9c89b8014b87". Transformaciones SQL es una transcripción anterior incorrecta.

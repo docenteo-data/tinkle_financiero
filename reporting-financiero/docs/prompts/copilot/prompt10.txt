@@ -1,0 +1,22 @@
+"En el workspace 'Tinkle - Financiero', vuelve a leer la definición del pipeline 'Generar Reporting' (id 147b24eb-352f-4f88-9d64-b4a7fc1d67f6) y confirma el valor exacto, carácter a carácter, del `sqlEndpointId` usado en las actividades RefreshSqlEndpoint1 y RefreshSqlEndpoint1_copy1."
+
+Confirmación
+He revisado la definición del pipeline Generar Reporting (id 147b24eb-352f-4f88-9d64-b4a7fc1d67f6) en Fabric y el valor exacto, carácter a carácter, del sqlEndpointId en ambas actividades es:
+
+485f1bd4-2372-44a3-b279-e00a63a80137
+
+Esto aparece idéntico en:
+
+RefreshSqlEndpoint1
+RefreshSqlEndpoint1_copy1
+La variante con 4da3 no coincide con la definición actual del pipeline; la definición válida usa 44a3.
+
+
+"En el mismo pipeline, confirma el valor exacto del id de conexión externa usado en las actividades 'Semantic model refresh1' y 'Semantic model refresh1_copy1' (debe ser un GUID de 32 caracteres hexadecimales)."
+
+Confirmación
+El id de conexión externa usado en las actividades Semantic model refresh1 y Semantic model refresh1_copy1 es exactamente este valor:
+
+634b4683-a1cb-4197-8442-b23d936b319d
+
+Es el mismo valor en ambas actividades dentro de la definición del pipeline, y coincide con el formato GUID estándar: 32 dígitos hexadecimales repartidos en grupos con guiones.

@@ -1,0 +1,53 @@
+En el workspace Tinkle - Financiero:
+
+PIPELINE Grabar salidas
+ID: 56a37cd5-3664-47b4-b28f-ec7f26d23075
+
+Parámetros
+No define parámetros de pipeline ni variables.
+
+Actividades
+
+1. Notebook1
+- Tipo: TridentNotebook
+- Notebook ID: c649ae24-2b54-4fce-bd5c-d23a9516ec37
+- Workspace: b31820dc-4b4f-4696-9a96-bbee438e9306
+- Sin dependencias.
+
+2. Grabar balance
+- Tipo: Copy
+- Dependencia: se ejecuta cuando Notebook1 termina correctamente.
+- Configuración de ejecución: timeout de 12 horas, sin reintentos.
+
+Origen
+- Tipo: Lakehouse / OneLake.
+- Lakehouse: lh_tinkle_financiero
+- Carpeta raíz: Files
+- Ruta de entrada: Exportaciones/Balance
+- Patrón de archivos: *.txt
+- Lectura recursiva: activada.
+
+Destino
+- Tipo: SharePoint Online.
+- Carpeta: Shared Documents/Reporting Financiero/2. Salida de ficheros/Balance
+- Conserva la jerarquía de carpetas (PreserveHierarchy).
+- No es una salida a otra ruta de OneLake: OneLake es únicamente el origen.
+
+RELACIÓN CON Generar Reporting
+
+Generar Reporting tiene el ID 147b24eb-352f-4f88-9d64-b4a7fc1d67f6.
+
+No existe una dependencia directa declarada entre ambos pipelines:
+- Grabar salidas no ejecuta ni referencia a Generar Reporting.
+- Generar Reporting tampoco ejecuta ni referencia a Grabar salidas.
+- La definición de Generar Reporting solo contiene dependencias internas entre sus propias actividades:
+
+Carga
+  -> RefreshSqlEndpoint1_copy1
+  -> Transformaciones SILVER
+  -> RefreshSqlEndpoint1
+  -> Transformaciones GOLD
+  -> Semantic model refresh1
+  -> Semantic model refresh1_copy1
+
+Por tanto, cualquier relación entre ambos pipelines sería externa a sus definiciones actuales, por ejemplo una programación, un desencadenador o una orquestación superior.

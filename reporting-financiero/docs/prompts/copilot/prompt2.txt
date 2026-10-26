@@ -1,0 +1,93 @@
+Definición completa del pipeline "Generar Reporting" (id 147b24eb-352f-4f88-9d64-b4a7fc1d67f6) en el workspace "Tinkle - Financiero"
+
+1) ACTIVIDADES EN ORDEN DE EJECUCIÓN
+
+1. Carga
+   - Tipo: RefreshDataflow
+   - Dependencias: ninguna
+   - Propiedades: dataflowId = c8d12168-9a15-4df6-8632-eb647c58a861; workspaceId = b31820dc-4b4f-4696-9a96-bbee438e9306; notificationOption = NoNotification; dataflowType = DataflowFabric; executeMashupQueriesOnly = true
+   - Política: timeout 00:12:00; retry 0; retryIntervalInSeconds = 30; secureOutput = false; secureInput = false
+
+2. RefreshSqlEndpoint1_copy1
+   - Tipo: RefreshSqlEndpoint
+   - Depende de: Carga
+   - Condición: Succeeded
+   - Propiedades: sqlEndpointId = 485f1bd4-2372-4da3-b279-e00a63a80137; workspaceId = b31820dc-4b4f-4696-9a96-bbee438e9306; createTables = false
+   - Conexión externa: 2b2904ce-869a-4859-8cb9-6c7589e9a250
+
+3. Transformaciones SQL
+   - Tipo: RefreshDataflow
+   - Depende de: RefreshSqlEndpoint1_copy1
+   - Condición: Succeeded
+   - Propiedades: dataflowId = e34a567e-3986-467e-ac59-9c89b8014b87; workspaceId = b31820dc-4b4f-4696-9a96-bbee438e9306; notificationOption = NoNotification; dataflowType = DataflowFabric; executeMashupQueriesOnly = true
+   - Política: timeout 00:12:00; retry 0; retryIntervalInSeconds = 30; secureOutput = false; secureInput = false
+
+4. RefreshSqlEndpoint1
+   - Tipo: RefreshSqlEndpoint
+   - Depende de: Transformaciones SQL
+   - Condición: Succeeded
+   - Propiedades: sqlEndpointId = 485f1bd4-2372-4da3-b279-e00a63a80137; workspaceId = b31820dc-4b4f-4696-9a96-bbee438e9306; createTables = false
+   - Conexión externa: 2b2904ce-869a-4859-8cb9-6c7589e9a250
+
+5. Transformaciones GOL
+   - Tipo: RefreshDataflow
+   - Depende de: RefreshSqlEndpoint1
+   - Condición: Succeeded
+   - Propiedades: dataflowId = 2ddb6bc7-1a91-490f-9a6b-60ade6940b4e; workspaceId = b31820dc-4b4f-4696-9a96-bbee438e9306; notificationOption = NoNotification; dataflowType = DataflowFabric; executeMashupQueriesOnly = true
+   - Política: timeout 00:12:00; retry 0; retryIntervalInSeconds = 30; secureOutput = false; secureInput = false
+
+6. Semantic model refresh1
+   - Tipo: PBI SemanticModelRefresh
+   - Depende de: Transformaciones GOL
+   - Condición: Completed
+   - Propiedades: method = POST; operationType = SemanticModelRefresh; groupId = b31820dc-4b4f-4696-9a96-bbee438e9306; datasetId = 847ce270-06ab-408b-85c9-cb8f390fad1c; waitOnCompletion = true; commitMode = Transactional
+   - Conexión externa: 634b46833-a1cb-4197-8442-b23d936b319d
+
+7. Semantic model refresh1_copy1
+   - Tipo: PBI SemanticModelRefresh
+   - Depende de: Semantic model refresh1
+   - Condición: Completed
+   - Propiedades: method = POST; operationType = SemanticModelRefresh; groupId = b31820dc-4b4f-4696-9a96-bbee438e9306; datasetId = e19def87-fdf3-4b44-bd60-d22e5d79ce88; waitOnCompletion = true; commitMode = Transactional
+   - Conexión externa: 634b46833-a1cb-4197-8442-b23d936b319d
+
+2) TIPOS DE ACTIVIDAD Y CARACTERÍSTICAS
+
+- RefreshDataflow
+  - Ejecuta un dataflow Fabric.
+  - Tiene política de retry/timeout.
+  - Propiedades clave: dataflowId, workspaceId, dataflowType, notificationOption, executeMashupQueriesOnly.
+
+- RefreshSqlEndpoint
+  - Refresca un SQL endpoint.
+  - Propiedades clave: sqlEndpointId, workspaceId, createTables.
+
+- PBI SemanticModelRefresh
+  - Refresca un modelo semántico de Power BI.
+  - Propiedades clave: datasetId, method, operationType, waitOnCompletion, commitMode, groupId.
+
+3) CONDICIONES DE ÉXITO / FALLO ENTRE ACTIVIDADES
+
+- Condiciones observadas en la dependencia: Succeeded y Completed.
+- No hay rama de fallo explícita definida en el JSON del pipeline.
+- No aparecen condicionales de Failed, Skipped o otras ramificaciones alternativas.
+- El flujo es lineal y secuencial:
+  Carga -> RefreshSqlEndpoint1_copy1 -> Transformaciones SQL -> RefreshSqlEndpoint1 -> Transformaciones GOL -> Semantic model refresh1 -> Semantic model refresh1_copy1
+
+4) TRIGGERS / PROGRAMACIONES ASOCIADAS
+
+No aparecen triggers ni schedules dentro del payload recuperado del pipeline.
+La definición del item devuelve propiedades de actividades, dependencias y conexiones, pero no incluye un bloque de trigger con recurrence o schedule.
+Esto indica que el pipeline no tiene un trigger programado embebido en su definición JSON visible, y probablemente depende de ejecución manual o de un trigger externo no incluido en este payload.
+
+5) RESUMEN EJECUTIVO
+
+El pipeline Generar Reporting es un orquestador secuencial de carga y refresco de datos y modelos semánticos:
+- Carga inicial de un dataflow Fabric
+- Refresco del SQL endpoint
+- Transformaciones en SQL
+- Segundo refresco del SQL endpoint
+- Transformaciones GOL
+- Refresco del modelo semántico de Power BI
+- Segundo refresco del modelo semántico para completar el reporting
+
+Se trata de un pipeline de preparación y actualización del reporting final con dependencia lineal entre tareas.

@@ -1,0 +1,67 @@
+Resultado de revisión en modo solo lectura. No se creó, modificó, refrescó, ejecutó ni borró ningún item, conexión, programación o permiso. No se expusieron secretos.
+
+1. Base SQL CPM
+Item identificado:
+
+Campo	Valor
+Workspace	Tinkle - Financiero
+Base de datos	CPM
+ID	b85d1457-6ce1-441c-b8cb-21cb839d688a
+SQL Endpoint	69d9c9ae-c727-4e65-b485-1ab1ad75f41e
+La herramienta disponible no ofrece ejecución de consultas SQL, ni siquiera consultas SELECT. La lectura de la definición de la base devolvió una operación asíncrona sin contenido accesible.
+
+Por ello:
+
+Solicitud	Resultado
+Tablas y vistas de CPM mediante INFORMATION_SCHEMA	NO DISPONIBLE
+Columnas y tipos	NO DISPONIBLE
+Número de filas de dbo.FT3_Revenue	NO DISPONIBLE
+Número de filas de dbo.FT8_Revenue	NO DISPONIBLE
+Motivo: no hay una herramienta SQL de solo lectura disponible en esta sesión y los metadatos del item no incluyen el esquema ni los recuentos.
+
+2. Item Planning
+Item identificado:
+
+Campo	Valor
+Nombre	Planning
+Tipo	Plan
+ID	50ce99b8-0525-435f-bc71-56235a557714
+Modelo semántico conectado	Financial Model
+ID del modelo	847ce270-06ab-408b-85c9-cb8f390fad1c
+La configuración documentada contiene estas hojas:
+
+Hoja	Visibilidad	Medidas	Dimensiones
+Revenue FT3	Visible	REAL (Fees & other), Importe MMS, FC3 Revenue	Cliente, ejercicio, mes
+Revenue FT8	Visible	REAL (Fees & other), Importe MMS, FC8 Revenue	Cliente, ejercicio, mes
+Dedicaciones	Visible	% Dedicación	Directora, equipo, cliente, empleado
+Revenue_testing	Oculta	Estructura equivalente a Revenue FT3	Cliente, ejercicio, mes
+Medidas FC3 Revenue y FC8 Revenue
+La documentación del modelo semántico enumera 40 medidas y no incluye FC3 Revenue ni FC8 Revenue. Por tanto, según la evidencia disponible:
+
+Medida	Definición	Fórmula
+FC3 Revenue	En Planning, no en Financial Model	NO DISPONIBLE
+FC8 Revenue	En Planning, no en Financial Model	NO DISPONIBLE
+La definición técnica de Planning no pudo recuperarse: la API inició una operación asíncrona, pero no proporcionó el resultado dentro de las herramientas disponibles.
+
+Writeback
+Hoja	Destino	Operación	Configuración
+Revenue FT3	CPM.dbo.FT3_Revenue	PushData	Precisión decimal de 2 posiciones; Dim_Clientes[Descripción] se mapea a Descripcion
+Revenue FT8	CPM.dbo.FT8_Revenue	PushData	Precisión decimal de 2 posiciones; Dim_Clientes[Descripción] se mapea a Descripcion
+Dedicaciones	Sin destino configurado	Ninguna	No consta writeback
+Revenue_testing	NO DISPONIBLE	NO DISPONIBLE	Hoja de pruebas oculta; no consta destino adicional
+La relación documentada es unidireccional: lakehouse/modelo semántico hacia Planning y writeback de determinados datos hacia CPM. No consta sincronización de CPM hacia el lakehouse.
+
+3. Items que leen datos de CPM
+No se identificó ningún dataflow, pipeline, notebook ni modelo semántico que lea de CPM.
+
+Los items revisados apuntan a lh_tinkle_financiero, sus esquemas 100, 200 y 300, o a ficheros de SharePoint/lakehouse. En particular:
+
+Financial Model: lee del lakehouse.
+INICIAL_Carga_Revenues: carga ficheros de ingresos hacia el lakehouse.
+INGESTA_Carga_Datos: lee ficheros Excel/CSV.
+Generar Reporting: orquesta dataflows y refresco del modelo.
+Grabar salidas: usa el lakehouse y SharePoint.
+Generar_txt_Balance_Saldos: trabaja con datos del lakehouse.
+Conclusión: no hay evidencia de lectura desde CPM en los items catalogados. CPM aparece como destino de writeback de Planning, no como fuente de lectura de los procesos revisados.
+
+La configuración funcional disponible también está recogida en Documentacion_Tinkle_Financiero.md:314-322.

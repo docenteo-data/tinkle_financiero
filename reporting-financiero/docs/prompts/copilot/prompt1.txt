@@ -1,0 +1,69 @@
+Definición y resumen del notebook Generar_txt_Balance_Saldos
+
+Notebook: Generar_txt_Balance_Saldos
+Id: c649ae24-2b54-4fce-bd5c-d23a9516ec37
+Workspace: Tinkle - Financiero
+
+La definición completa contiene 11 celdas, con lógica distribuida entre parámetros, lectura, validaciones, transformación y generación de ficheros.
+
+LECTURAS
+
+Desde el lakehouse lh_tinkle_financiero, esquema 200, lee estas vistas mediante spark.read.synapsesql:
+
+- lh_tinkle_financiero.200.vw_Export_Grupo
+- lh_tinkle_financiero.200.vw_Export_Saldos_4_7
+
+TRANSFORMACIONES
+
+Balance:
+
+- Selecciona 27 columnas en el orden requerido.
+- Convierte campos de texto a string y sustituye nulos por cadenas vacías.
+- Redondea P_AMOUNT a 0 decimales y lo convierte a entero.
+- Valida campos obligatorios, periodos YYYY.MM, coincidencia D_DP/D_PE, coincidencia D_RU/D_ORU, duplicados y múltiples periodos por sociedad.
+- Ordena por sociedad y cuenta; al generar cada fichero aplica además el orden especial A, P, R, dejando P12000 en una posición concreta.
+
+Saldos 4_7:
+
+- Selecciona Sociedad, CodigoFichero, PeriodoTexto, Periodo, Cuenta, Descripcion y Saldo.
+- Normaliza nulos y calcula PeriodoCodigo con formato yyyy.MM.
+- Ordena por código de fichero y cuenta.
+- Valida registros, campos obligatorios y que cada código tenga un único periodo.
+- Formatea importes con convención española: punto de miles, coma decimal y negativos entre paréntesis.
+
+FICHEROS GENERADOS
+
+Se generan normalmente 5 ficheros de Balance y 5 de Saldos 4_7, uno por sociedad/código.
+
+Balance:
+
+- Formato final: .txt, aunque se escribe internamente mediante Spark como CSV.
+- Delimitador: ;
+- Incluye cabecera.
+- Codificación UTF-8.
+- Valores nulos y vacíos como cadena vacía.
+- Ruta:
+
+  Files/Exportaciones/Balance/{periodo}/{sociedad}_Balance_{MES-YY}_{YYYYMMDD_HHMMSS}.txt
+
+Con la configuración actual, los nombres de sociedad son:
+
+- ESP066 -> TINKLE_COMM
+- ESP067 -> TINKLE_EU
+- ESP068 -> TINKLE_JAZZ
+- ESP069 -> TINKLE_ONION
+- ESP070 -> TINKLE_CONS
+
+Saldos 4_7:
+
+- Formato: TXT de ancho fijo.
+- Incluye fecha/hora, sociedad, cabeceras, separadores y saltos CRLF.
+- Ruta:
+
+  Files/Exportaciones/Balance/{periodo}/{CodigoFichero}_Saldos_4_7_{MES-YY}_{YYYYMMDD_HHMMSS}.txt
+
+El timestamp se añade porque INCLUIR_TIMESTAMP = True; los ficheros existentes se sobrescriben porque SOBRESCRIBIR = True.
+
+FUNCIONES UTILIZADAS
+
+No utiliza la función de usuario Generar_txt ni Ejecución Reporting. La generación está implementada directamente en el propio notebook mediante funciones Python como escribir_balance, construir_saldos_4_7 y escribir_lineas_txt.

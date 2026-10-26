@@ -1,0 +1,32 @@
+"En el workspace 'Tinkle - Financiero', lakehouse lh_tinkle_financiero (4d2305f1-7ef6-42c3-87ed-aed12f143ac2), obtén el esquema de columnas de todas las tablas de los namespaces '100' y '200'."
+
+100.New_Agings_Clientes       13
+100.New_Agings_Proveedores    15
+100.New_HAPA                  42
+100.New_MMS                  183
+100.New_Oracle                38
+100.New_PT_extrato_contas     24
+100.RLS                        3
+
+200.Aging_Clientes             13
+200.Aging_Proveedores          15
+200.Budget_historico            7
+200.COA_Oracle                  5
+200.HAPA                       24
+200.MMS                       192
+200.Mapping Portugal            5
+200.Mapping_HAPA                8
+200.Oracle_historico           45
+200.Portugal                   26
+200.Presupuestos               10
+200.Revenues                   13
+200.vw_Export_Grupo            27
+200.vw_Export_Saldos_4_7        9
+
+El esquema completo se obtuvo desde INFORMATION_SCHEMA.COLUMNS, incluyendo nombre, posición, tipo de dato, nulabilidad, longitud, precisión y escala.
+
+He exportado el esquema completo aquí:
+
+esquema_lh_tinkle_financiero_100_200.tsv
+
+Contiene las 717 columnas de los namespaces 100 y 200, con nombre de tabla, columna, posición, tipo, nulabilidad, longitud, precisión y escala

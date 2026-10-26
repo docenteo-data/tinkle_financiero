@@ -1,0 +1,62 @@
+Resultado verificado por metadatos del workspace
+He revisado los metadatos y definiciones accesibles del workspace sin ejecutar ni modificar nada. En los artefactos inspectados no aparecen propiedades de programación ni historial operativo expuestos por la API disponible, por lo que los campos no recuperables se indican como NO DISPONIBLE.
+
+1) Programaciones configuradas
+Item	Tipo	Habilitada	Frecuencia	Horas	Zona horaria	Fecha fin
+Generar Reporting	Pipeline	No	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+Grabar salidas	Pipeline	No	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+INGESTA_Carga_Datos	Dataflow	No	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+INICIAL_Carga_Oracle	Dataflow	No	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+Seguridad_CDC	Dataflow	No	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+INGESTA_Maestros	Dataflow	No	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+TRANS_Silver	Dataflow	No	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+TRANS_Gold	Dataflow	No	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+INICIAL_Carga_budget_fct	Dataflow	No	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+INICIAL_Carga_Agings	Dataflow	No	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+INICIAL_Carga_Revenues	Dataflow	No	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+INICIAL_Carga_Rentabilidades	Dataflow	No	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+Generar_txt_Balance_Saldos	Notebook	No	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+Financial Model	Modelo semántico	No	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+Agings	Modelo semántico	No	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+En las definiciones inspeccionadas no aparece ninguna estructura de schedule, recurrence, timezone ni endDate.
+
+2) Historial de las últimas 10 ejecuciones
+Pipeline	Fecha	Estado	Duración	Lanzada por	Error
+Generar Reporting	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+Grabar salidas	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+No se ha podido recuperar el historial de runs desde la API de lectura disponible en este contexto.
+
+3) Historial de las últimas 5 actualizaciones
+Dataflows
+Item	Fecha	Estado	Duración
+INGESTA_Carga_Datos	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+INICIAL_Carga_Oracle	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+Seguridad_CDC	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+INGESTA_Maestros	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+TRANS_Silver	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+TRANS_Gold	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+INICIAL_Carga_budget_fct	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+INICIAL_Carga_Agings	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+INICIAL_Carga_Revenues	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+INICIAL_Carga_Rentabilidades	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+Modelos semánticos
+Item	Fecha	Estado	Duración
+Financial Model	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+Agings	NO DISPONIBLE	NO DISPONIBLE	NO DISPONIBLE
+La definición del item no incluye refresh history ni jobs de actualización.
+
+4) Actividad Copy “Grabar balance” del pipeline “Grabar salidas”
+Campo	Valor
+Actividad	Grabar balance
+URL completa del sitio de SharePoint de destino	NO DISPONIBLE
+Tipo de conexión	SharePoint Online (inferido del valor SharePointOnlineFileWriteSettings en la definición)
+Ruta de destino visible en la definición	Shared Documents/Reporting Financiero/2. Salida de ficheros/Balance
+La definición expone la ruta relativa del destino, pero no la URL completa del sitio ni la credencial de la conexión.
+
+5) Conexiones que usa el workspace
+Nombre	Tipo	Método de autenticación	Cuenta personal o entidad de servicio
+GUID de conexión visible en la definición del sink SharePoint	SharePoint Online	NO DISPONIBLE	NO DISPONIBLE
+GUID de conexión visible en la definición del source Lakehouse	Lakehouse	NO DISPONIBLE	NO DISPONIBLE
+El catálogo de conexiones del workspace no está expuesto en la API de lectura disponible aquí. Solo se observan GUIDs referenciadas en las actividades y no se puede afirmar, sin riesgo de error, el nombre real ni si la conexión es personal o de servicio.
+
+Si quieres, puedo convertir este resultado en una segunda versión más compacta o en un CSV listo para pegar.

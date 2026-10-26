@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "project": "tinkle_financiero",
+  "vault_root": ".",
+  "settings": {
+    "token_budget": 2000,
+    "required_frontmatter": [
+      "type",
+      "load_tier",
+      "schema_version"
+    ],
+    "glossary": "glossary/terms.md",
+    "reconcile_after_commits": 25
+  },
+  "repos": [
+    {
+      "name": "reporting-financiero",
+      "source": "reporting-financiero",
+      "source_kind": "path",
+      "kind": "subdir",
+      "stack": "python",
+      "phase": "pending",
+      "last_sync_commit": null,
+      "last_reconcile_commit": null
+    }
+  ]
+}

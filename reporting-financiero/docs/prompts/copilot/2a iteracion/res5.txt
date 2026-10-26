@@ -1,0 +1,28 @@
+No fue posible ejecutar las consultas SQL solicitadas.
+
+Comprobaciones realizadas en modo solo lectura:
+
+Elemento	Resultado
+Workspace	Confirmado: Tinkle - Financiero
+Workspace ID	b31820dc-4b4f-4696-9a96-bbee438e9306
+SQL endpoint	Confirmado: lh_tinkle_financiero
+SQL endpoint ID	485f1bd4-2372-44a3-b279-e00a63a80137
+Herramienta de ejecución SQL SELECT	NO DISPONIBLE
+Página de navegador adjunta	No utilizable: respondió 403 Forbidden
+Resultados solicitados:
+
+Definición SQL completa de todas las vistas: NO DISPONIBLE.
+No existe una herramienta habilitada para ejecutar la consulta contra el SQL endpoint.
+
+Dependencias de cada vista mediante sys.sql_expression_dependencies: NO DISPONIBLE por el mismo motivo.
+
+Esquema TSV de columnas del esquema 300: NO DISPONIBLE.
+Los metadatos del elemento no permiten consultar INFORMATION_SCHEMA.COLUMNS.
+
+Número de filas de las tablas de los esquemas 100, 200 y 300: NO DISPONIBLE.
+No se ejecutaron consultas COUNT_BIG(*).
+
+Procedimientos, funciones y vistas adicionales: NO DISPONIBLE.
+La API de metadatos solo enumeró elementos Fabric del workspace, no objetos internos de la base de datos.
+
+No se creó, modificó, refrescó, ejecutó ni eliminó ningún item, programación, conexión o permiso.

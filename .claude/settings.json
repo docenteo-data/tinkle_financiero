@@ -1,0 +1,24 @@
+{
+  "extraKnownMarketplaces": {
+    "docenteo-org-tools": {
+      "source": {
+        "source": "github",
+        "repo": "docenteo-data/Docenteo-Corporativo"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "docenteo-skills@docenteo-org-tools": true,
+    "superpowers@docenteo-org-tools": true,
+    "claude-md-management@claude-plugins-official": true,
+    "diagram-design@docenteo-org-tools": true
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": []
+  }
+}

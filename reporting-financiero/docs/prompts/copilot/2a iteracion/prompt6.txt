@@ -1,0 +1,15 @@
+REGLAS: Workspace de Fabric "Tinkle - Financiero" (id b31820dc-4b4f-4696-9a96-bbee438e9306). Operación SOLO DE LECTURA. No crees, modifiques, refresques, ejecutes ni borres ningún item, programación, conexión o permiso. Si una herramienta implica escritura o ejecución, no la uses e indícalo. No muestres secretos, contraseñas ni tokens aunque aparezcan en el código: sustitúyelos por [OCULTO]. Si no puedes obtener un dato, escribe "NO DISPONIBLE" y explica el motivo. Responde en texto plano o tablas markdown, sin resumir de más.
+
+TAREA: Programaciones, historial de ejecuciones y conexiones.
+
+Sin ejecutar nada, devuelve:
+
+1. Las programaciones (schedules) configuradas para cada pipeline, dataflow, notebook y modelo semántico del workspace: item, habilitada sí o no, frecuencia, horas, zona horaria y fecha de fin.
+
+2. El historial de las últimas 10 ejecuciones de los pipelines "Generar Reporting" y "Grabar salidas": fecha, estado, duración, quién o qué la lanzó y el mensaje de error si falló.
+
+3. El historial de las últimas 5 actualizaciones de cada dataflow y de cada modelo semántico: fecha, estado y duración.
+
+4. De la actividad Copy "Grabar balance" del pipeline "Grabar salidas": URL completa del sitio de SharePoint de destino y tipo de conexión (sin credenciales).
+
+5. Las conexiones que usa el workspace: nombre, tipo, método de autenticación, y si es una cuenta personal o una entidad de servicio (sin secretos).
