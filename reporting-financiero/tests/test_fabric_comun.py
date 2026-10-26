@@ -55,6 +55,29 @@ def test_formato_de_definicion_igual_en_exportar_y_publicar():
     assert "UserDataFunction" not in fc.FORMATOS
 
 
+def test_solo_items_incluye_lo_exportado_del_lakehouse_y_excluye_lo_manual():
+    ficheros = {
+        "TRANS_Gold.Dataflow/mashup.pq": b"m",
+        "sql/200.vw_Export_Grupo.sql": b"v",
+        "lakehouse/esquema.tsv": b"t",
+        "temas/TemaTinkle.json": b"j",
+        "Ejecucion.UserDataFunction/function_app.py": b"secreto",
+    }
+    assert sorted(fc.solo_items(ficheros)) == [
+        "TRANS_Gold.Dataflow/mashup.pq", "lakehouse/esquema.tsv", "sql/200.vw_Export_Grupo.sql",
+    ]
+
+
+def test_ficheros_sql_de_vistas_y_esquema():
+    vistas = [("200", "vw_Export_Grupo", "CREATE VIEW x AS SELECT 1")]
+    columnas = [("300", "Dim_CDC", "Nombre", 1, "varchar", "YES", 8000, None, None)]
+    ficheros = fc.ficheros_sql(vistas, columnas)
+    assert ficheros["sql/200.vw_Export_Grupo.sql"] == "CREATE VIEW x AS SELECT 1".encode("utf-8")
+    tsv = ficheros["lakehouse/esquema.tsv"].decode("utf-8").splitlines()
+    assert tsv[0].split("\t")[:3] == ["esquema", "tabla", "columna"]
+    assert tsv[1] == "300\tDim_CDC\tNombre\t1\tvarchar\tYES\t8000\t\t"
+
+
 def test_separar_item():
     assert fc.separar_item("Financial Model.SemanticModel") == ("Financial Model", "SemanticModel")
     assert fc.separar_item("Checklist (Oracle).Report") == ("Checklist (Oracle)", "Report")

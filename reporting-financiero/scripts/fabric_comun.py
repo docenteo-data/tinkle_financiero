@@ -164,14 +164,17 @@ def ficheros_en_git(ref, carpeta=CARPETA_FABRIC):
 
 
 def solo_items(ficheros, carpetas=None):
-    """Filtra {ruta: bytes} a las carpetas de items exportables (o a las indicadas)."""
+    """Filtra {ruta: bytes} a lo que se exporta de Fabric (o a las carpetas indicadas).
+
+    Se exportan las carpetas de items y las del lakehouse (vistas y esquema); temas/ es manual.
+    """
     resultado = {}
     for ruta, contenido in ficheros.items():
         carpeta = ruta.split("/", 1)[0]
         if carpetas is not None:
             if carpeta in carpetas:
                 resultado[ruta] = contenido
-        elif separar_item(carpeta)[1] in FORMATOS:
+        elif separar_item(carpeta)[1] in FORMATOS or carpeta in CARPETAS_LAKEHOUSE:
             resultado[ruta] = contenido
     return resultado
 
@@ -185,6 +188,58 @@ def comparar(fabric, repo):
 
 
 # --- SQL -------------------------------------------------------------------
+
+# Carpetas de fabric/ que salen del SQL endpoint del lakehouse (vistas y esquema de columnas).
+CARPETAS_LAKEHOUSE = {"sql", "lakehouse"}
+COLUMNAS_ESQUEMA = ["esquema", "tabla", "columna", "posicion", "tipo", "nulable", "longitud", "precision", "escala"]
+
+CONSULTA_VISTAS = """
+SELECT s.name, o.name, m.definition
+FROM sys.sql_modules m
+JOIN sys.objects o ON o.object_id = m.object_id
+JOIN sys.schemas s ON s.schema_id = o.schema_id
+WHERE o.type = 'V' AND s.name IN ('100', '200', '300')
+ORDER BY 1, 2
+"""
+
+CONSULTA_COLUMNAS = """
+SELECT c.TABLE_SCHEMA, c.TABLE_NAME, c.COLUMN_NAME, c.ORDINAL_POSITION, c.DATA_TYPE, c.IS_NULLABLE,
+       c.CHARACTER_MAXIMUM_LENGTH, c.NUMERIC_PRECISION, c.NUMERIC_SCALE
+FROM INFORMATION_SCHEMA.COLUMNS c
+JOIN INFORMATION_SCHEMA.TABLES t ON t.TABLE_SCHEMA = c.TABLE_SCHEMA AND t.TABLE_NAME = c.TABLE_NAME
+WHERE c.TABLE_SCHEMA IN ('100', '200', '300') AND t.TABLE_TYPE = 'BASE TABLE'
+ORDER BY 1, 2, 4
+"""
+
+
+def conectar_sql():
+    import struct
+
+    import mssql_python
+
+    tok = token("https://database.windows.net/").encode("utf-16-le")
+    cadena = f"Server={SQL_SERVIDOR};Database={SQL_BASE_DATOS};Encrypt=yes"
+    return mssql_python.connect(cadena, attrs_before={1256: struct.pack("<i", len(tok)) + tok})
+
+
+def ficheros_sql(vistas, columnas):
+    """Convierte las filas de CONSULTA_VISTAS y CONSULTA_COLUMNAS en {ruta: bytes} de fabric/."""
+    ficheros = {f"sql/{esquema}.{vista}.sql": definicion.encode("utf-8") for esquema, vista, definicion in vistas}
+    lineas = ["\t".join(COLUMNAS_ESQUEMA)]
+    lineas += ["\t".join("" if v is None else str(v) for v in fila) for fila in columnas]
+    ficheros["lakehouse/esquema.tsv"] = ("\n".join(lineas) + "\n").encode("utf-8")
+    return ficheros
+
+
+def descargar_sql():
+    con = conectar_sql()
+    cursor = con.cursor()
+    cursor.execute(CONSULTA_VISTAS)
+    vistas = cursor.fetchall()
+    cursor.execute(CONSULTA_COLUMNAS)
+    columnas = cursor.fetchall()
+    con.close()
+    return ficheros_sql(vistas, columnas)
 
 def es_consulta_de_lectura(sql):
     """True si la sentencia empieza por SELECT o WITH y no contiene ninguna palabra de escritura.
