@@ -19,6 +19,35 @@
       "Bash(git diff:*)",
       "Bash(git log:*)"
     ],
-    "deny": []
+    "deny": [
+      "mcp__fabric-local__core_create-item",
+      "mcp__fabric-local__core_update-item",
+      "mcp__fabric-local__core_delete-item",
+      "mcp__fabric-local__core_create-workspace",
+      "mcp__fabric-local__core_update-workspace",
+      "mcp__fabric-local__core_delete-workspace",
+      "mcp__fabric-local__core_assign-workspace-to-capacity",
+      "mcp__fabric-local__datafactory_create-dataflow",
+      "mcp__fabric-local__datafactory_create-pipeline",
+      "mcp__fabric-local__datafactory_run-pipeline",
+      "mcp__fabric-local__onelake_create-directory",
+      "mcp__fabric-local__onelake_delete-directory",
+      "mcp__fabric-local__onelake_delete-file",
+      "mcp__fabric-local__onelake_upload-file",
+      "mcp__fabric-local__onelake_create-or-update-data-access-role",
+      "mcp__fabric-local__onelake_delete-data-access-role",
+      "mcp__fabric-local__onelake_create-shortcut-adls-gen2",
+      "mcp__fabric-local__onelake_create-shortcut-amazon-s3",
+      "mcp__fabric-local__onelake_create-shortcut-azure-blob",
+      "mcp__fabric-local__onelake_create-shortcut-dataverse",
+      "mcp__fabric-local__onelake_create-shortcut-gcs",
+      "mcp__fabric-local__onelake_create-shortcut-onedrive-sharepoint",
+      "mcp__fabric-local__onelake_create-shortcut-onelake",
+      "mcp__fabric-local__onelake_create-shortcut-s3-compatible",
+      "mcp__fabric-local__onelake_delete-shortcut",
+      "mcp__fabric-local__onelake_modify-diagnostics",
+      "mcp__fabric-local__onelake_modify-immutability-policy",
+      "mcp__fabric-local__onelake_reset-shortcut-cache"
+    ]
   }
 }
