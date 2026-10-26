@@ -1,0 +1,31 @@
+table Fechas
+	lineageTag: 0c638ffa-177f-43b3-aec8-158646fe0e77
+
+	measure fechaseleccionada = SELECTEDVALUE(Fechas[Fecha])
+		formatString: Short Date
+		lineageTag: 0b635b92-86e3-4c17-8fed-920595aaea56
+
+	column Fecha
+		formatString: Short Date
+		lineageTag: 7c918db7-5e83-42e1-8043-959d737eb572
+		summarizeBy: none
+		sourceColumn: [Date]
+
+		variation Variación
+			isDefault
+			relationship: a7f745c6-0e5b-47f6-a363-713fe15d7b55
+			defaultHierarchy: LocalDateTable_916a20ef-4bf0-4cc2-bf77-a1ff4249fb8c.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Fechas = calculated
+		mode: import
+		source =
+				
+				CALENDAR(
+				    DATE(2026, 1, 1),
+				    DATE(2027, 12, 31)
+				)
+
+	annotation PBI_Id = efae5e6e885d4c988050bc107dae10a7
+

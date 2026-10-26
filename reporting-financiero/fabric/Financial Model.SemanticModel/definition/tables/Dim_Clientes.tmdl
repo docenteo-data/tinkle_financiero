@@ -1,0 +1,137 @@
+table Dim_Clientes
+	lineageTag: c61c18a0-1275-4a89-a187-9ba5c487f31d
+	sourceLineageTag: [300].[Dim_Clientes]
+
+	column 'Cliente ORACLE'
+		dataType: string
+		lineageTag: 226336a2-2b9b-428f-9db2-18b67d6ebaea
+		sourceLineageTag: Cliente ORACLE
+		summarizeBy: none
+		sourceColumn: Cliente ORACLE
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cliente MMS'
+		dataType: string
+		lineageTag: f4b87fc0-20ec-4c86-b174-557b31cb6cbb
+		sourceLineageTag: Cliente MMS
+		summarizeBy: none
+		sourceColumn: Cliente MMS
+
+		annotation SummarizationSetBy = Automatic
+
+	column Descripción
+		dataType: string
+		lineageTag: 803fcaa2-98cb-461f-bd4d-d3873d46c546
+		sourceLineageTag: Descripción
+		summarizeBy: none
+		sourceColumn: Descripción
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Inicio'
+		dataType: string
+		lineageTag: 7559a854-5676-44a6-a188-681416f21cc8
+		sourceLineageTag: Fecha Inicio
+		summarizeBy: none
+		sourceColumn: Fecha Inicio
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Finaliz.'
+		dataType: string
+		lineageTag: 1eeb2ee6-7bb6-4de8-b05f-8f12a35e54a9
+		sourceLineageTag: Fecha Finaliz.
+		summarizeBy: none
+		sourceColumn: Fecha Finaliz.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Activ.'
+		dataType: string
+		lineageTag: 6692e2f4-0b15-4524-b613-e72a1e8b29ec
+		sourceLineageTag: Activ.
+		summarizeBy: none
+		sourceColumn: Activ.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ppal.'
+		dataType: string
+		lineageTag: d160483b-3e39-4c57-8edd-0c19a6ac422d
+		sourceLineageTag: Ppal.
+		summarizeBy: none
+		sourceColumn: Ppal.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo Acumul.'
+		dataType: string
+		lineageTag: fd3253b2-10fa-4731-ab25-586482a03435
+		sourceLineageTag: Grupo Acumul.
+		summarizeBy: none
+		sourceColumn: Grupo Acumul.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Contab. Permit.'
+		dataType: string
+		lineageTag: 4929ec2c-c9c8-4872-8b4d-c937a7340769
+		sourceLineageTag: Contab. Permit.
+		summarizeBy: none
+		sourceColumn: Contab. Permit.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Presup. Permitida'
+		dataType: string
+		lineageTag: 7e4e5caf-62d7-488c-8b6f-e58452124c72
+		sourceLineageTag: Presup. Permitida
+		summarizeBy: none
+		sourceColumn: Presup. Permitida
+
+		annotation SummarizationSetBy = Automatic
+
+	column Empresa
+		dataType: string
+		lineageTag: 5de8c713-9c24-426c-86ae-cc43686cee40
+		sourceLineageTag: Empresa
+		summarizeBy: none
+		sourceColumn: Empresa
+
+		annotation SummarizationSetBy = Automatic
+
+	column SECCION
+		dataType: string
+		lineageTag: de10b648-4ea9-4c23-9519-ae8edbc40924
+		sourceLineageTag: SECCION
+		summarizeBy: none
+		sourceColumn: SECCION
+
+		annotation SummarizationSetBy = Automatic
+
+	column ClienteKey_Oracle
+		dataType: string
+		lineageTag: 420d39b1-3c0d-4533-9c7a-d0e2047a180b
+		sourceLineageTag: ClienteKey_Oracle
+		summarizeBy: none
+		sourceColumn: ClienteKey_Oracle
+
+		annotation SummarizationSetBy = Automatic
+
+	column ClienteKey_MMS
+		dataType: string
+		lineageTag: c41d2f1a-d6b5-499a-a94d-0c6430b68b0c
+		sourceLineageTag: ClienteKey_MMS
+		summarizeBy: none
+		sourceColumn: ClienteKey_MMS
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Clientes = entity
+		mode: directLake
+		source
+			entityName: Dim_Clientes
+			schemaName: 300
+			expressionSource: 'DirectLake - lh_tinkle_financiero'
+

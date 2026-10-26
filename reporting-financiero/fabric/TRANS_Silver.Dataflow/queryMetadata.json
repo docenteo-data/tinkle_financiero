@@ -1,0 +1,133 @@
+{
+  "formatVersion": "202502",
+  "computeEngineSettings": {
+    "allowModernEvaluationEngine": true
+  },
+  "name": "TRANS_Carga_datos",
+  "queryGroups": [
+    {
+      "id": "80896ea4-d3a7-4b6a-a55e-101409426c72",
+      "name": "Transformaciones",
+      "description": "",
+      "order": 1
+    }
+  ],
+  "documentLocale": "en-US",
+  "queriesMetadata": {
+    "DefaultDestination": {
+      "queryId": "1e3f20cf-2a32-495d-8f3e-080dc01520a6",
+      "queryName": "DefaultDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    },
+    "200_New_MMS_trans": {
+      "queryId": "715768d7-86fc-405c-9672-325c2b25fbe5",
+      "queryName": "200_New_MMS_trans",
+      "queryGroupId": "80896ea4-d3a7-4b6a-a55e-101409426c72",
+      "loadEnabled": false
+    },
+    "200_MMS_DataDestination": {
+      "queryId": "a8c01050-c581-4340-a206-97ae01684ac7",
+      "queryName": "200_MMS_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    },
+    "200_Portugal_DataDestination": {
+      "queryId": "1e1512b7-0dfd-4dfb-a7be-98073c33f27d",
+      "queryName": "200_Portugal_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    },
+    "200_New_Oracle_trans": {
+      "queryId": "f3eeb9cf-2b2c-48be-8fbe-7458835b2d30",
+      "queryName": "200_New_Oracle_trans",
+      "queryGroupId": "80896ea4-d3a7-4b6a-a55e-101409426c72",
+      "loadEnabled": false
+    },
+    "200_New_HAPA_trans": {
+      "queryId": "9c3fc0f3-8204-4b25-8627-75b782e62cc5",
+      "queryName": "200_New_HAPA_trans",
+      "queryGroupId": "80896ea4-d3a7-4b6a-a55e-101409426c72",
+      "loadEnabled": false
+    },
+    "200_New_Agings_Proveedores": {
+      "queryId": "19883f69-c64e-4abc-9f16-8392bb5df21e",
+      "queryName": "200_New_Agings_Proveedores",
+      "queryGroupId": "80896ea4-d3a7-4b6a-a55e-101409426c72",
+      "loadEnabled": false
+    },
+    "200_New_Agings_Clientes": {
+      "queryId": "71bd6be3-0763-419b-87e2-1e7ecd5f7bd4",
+      "queryName": "200_New_Agings_Clientes",
+      "queryGroupId": "80896ea4-d3a7-4b6a-a55e-101409426c72",
+      "loadEnabled": false
+    },
+    "200_Portugal_trans": {
+      "queryId": "b67d4d27-5008-4160-bc6a-e02d46d8a3a0",
+      "queryName": "200_Portugal_trans",
+      "queryGroupId": "80896ea4-d3a7-4b6a-a55e-101409426c72",
+      "loadEnabled": false
+    },
+    "200_HAPA": {
+      "queryId": "3c324b99-26ea-44d6-89a9-0a7a8bc18c7a",
+      "queryName": "200_HAPA",
+      "queryGroupId": "80896ea4-d3a7-4b6a-a55e-101409426c72",
+      "loadEnabled": false
+    },
+    "200_Oracle": {
+      "queryId": "0c1d7d13-15fb-4f00-9a0b-bfac1da98794",
+      "queryName": "200_Oracle",
+      "queryGroupId": "80896ea4-d3a7-4b6a-a55e-101409426c72",
+      "loadEnabled": false
+    },
+    "200_MMS": {
+      "queryId": "57c74e39-cf07-4b7b-b012-615f9b15ff07",
+      "queryName": "200_MMS",
+      "queryGroupId": "80896ea4-d3a7-4b6a-a55e-101409426c72",
+      "loadEnabled": false
+    },
+    "pFechaContable_New_Oracle": {
+      "queryId": "ea4ade2e-9084-4adf-a941-b925544dcde2",
+      "queryName": "pFechaContable_New_Oracle",
+      "queryGroupId": "80896ea4-d3a7-4b6a-a55e-101409426c72",
+      "loadEnabled": false
+    },
+    "pFecha_New_HAPA": {
+      "queryId": "792636fe-b0c7-4640-9129-2f63c710f973",
+      "queryName": "pFecha_New_HAPA",
+      "queryGroupId": "80896ea4-d3a7-4b6a-a55e-101409426c72",
+      "loadEnabled": false
+    },
+    "200_HAPA_DataDestination": {
+      "queryId": "8903302b-3e55-461c-8caa-110c4ad96219",
+      "queryName": "200_HAPA_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    },
+    "200_Oracle_DataDestination": {
+      "queryId": "6e121299-063b-4c82-8adc-475ac3990d8e",
+      "queryName": "200_Oracle_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    },
+    "200_New_Agings_Clientes_DataDestination": {
+      "queryId": "d1f7dbbd-c0f1-42a9-a1cf-4ae6c43c8fd5",
+      "queryName": "200_New_Agings_Clientes_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    },
+    "200_New_Agings_Proveedores_DataDestination": {
+      "queryId": "c5571991-67bc-444c-a544-721f4d89a9dd",
+      "queryName": "200_New_Agings_Proveedores_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    }
+  },
+  "connections": [
+    {
+      "path": "Lakehouse",
+      "kind": "Lakehouse",
+      "connectionId": "{\"ClusterId\":\"1caeaa44-8edc-458c-a1b4-c546849cf97d\",\"DatasourceId\":\"ebd2d2e1-1cee-4cb0-8333-e6349b6c8528\"}"
+    }
+  ]
+}

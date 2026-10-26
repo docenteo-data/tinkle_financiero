@@ -1,0 +1,65 @@
+table Dim_equipos
+	lineageTag: 9583418c-b1d2-462c-aff1-ee851d1ea9ed
+	sourceLineageTag: [300].[Dim_equipos]
+
+	column EquipoKey
+		dataType: string
+		lineageTag: 2ef7f4b1-ea91-4d3f-a01d-4dacac9d6aad
+		sourceLineageTag: EquipoKey
+		summarizeBy: none
+		sourceColumn: EquipoKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column CodigoDirectora
+		dataType: string
+		lineageTag: dfed6357-3dd7-4c85-9df8-598c80126a95
+		sourceLineageTag: CodigoDirectora
+		summarizeBy: none
+		sourceColumn: CodigoDirectora
+
+		annotation SummarizationSetBy = Automatic
+
+	column Equipo
+		dataType: string
+		lineageTag: 85458088-400d-4a21-80bd-fbeb0b7530ef
+		sourceLineageTag: Equipo
+		summarizeBy: none
+		sourceColumn: Equipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Directora
+		dataType: string
+		lineageTag: 9cc35cd7-27f6-4c68-be87-d016daa7ca29
+		sourceLineageTag: Directora
+		summarizeBy: none
+		sourceColumn: Directora
+
+		annotation SummarizationSetBy = Automatic
+
+	column CodigoCDC
+		dataType: string
+		lineageTag: c7116a87-135d-4162-9f2e-3621142f7888
+		sourceLineageTag: CodigoCDC
+		summarizeBy: none
+		sourceColumn: CodigoCDC
+
+		annotation SummarizationSetBy = Automatic
+
+	column CentroCoste
+		dataType: string
+		lineageTag: 38828b31-ad21-4f49-9f61-539eb2618c78
+		sourceLineageTag: CentroCoste
+		summarizeBy: none
+		sourceColumn: CentroCoste
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_equipos = entity
+		mode: directLake
+		source
+			entityName: Dim_equipos
+			schemaName: 300
+			expressionSource: 'DirectLake - lh_tinkle_financiero'
+

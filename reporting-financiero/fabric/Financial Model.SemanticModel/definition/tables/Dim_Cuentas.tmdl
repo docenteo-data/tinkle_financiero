@@ -1,0 +1,137 @@
+table Dim_Cuentas
+	lineageTag: d9671607-6b8d-4190-9654-045923a7e927
+	sourceLineageTag: [300].[Dim_Cuentas]
+
+	column Cuenta
+		dataType: string
+		lineageTag: ca20da4e-ee19-4c2a-95be-f8da2086a3d4
+		sourceLineageTag: Cuenta
+		summarizeBy: none
+		sourceColumn: Cuenta
+
+		annotation SummarizationSetBy = Automatic
+
+	column Descripcion
+		dataType: string
+		lineageTag: ea36dab7-d12d-4d8b-931b-232d08b78685
+		sourceLineageTag: Descripcion
+		summarizeBy: none
+		sourceColumn: Descripcion
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mapeo Oracle'
+		dataType: string
+		lineageTag: 1f7aac27-440e-4077-af80-3a2c6127346b
+		sourceLineageTag: Mapeo Oracle
+		summarizeBy: none
+		sourceColumn: Mapeo Oracle
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cuenta_magnitude
+		dataType: string
+		lineageTag: a8956529-4494-41ad-9dc4-64c60f57dc44
+		sourceLineageTag: Cuenta_magnitude
+		summarizeBy: none
+		sourceColumn: Cuenta_magnitude
+
+		annotation SummarizationSetBy = Automatic
+
+	column Descripcion_magnitud
+		dataType: string
+		lineageTag: f3b3d20b-6871-400f-a6a8-a15269935467
+		sourceLineageTag: Descripcion_magnitud
+		summarizeBy: none
+		sourceColumn: Descripcion_magnitud
+
+		annotation SummarizationSetBy = Automatic
+
+	column Origen_map
+		dataType: string
+		lineageTag: 6fab65a9-bc57-4ea9-bb79-faa0a2543146
+		sourceLineageTag: Origen_map
+		summarizeBy: none
+		sourceColumn: Origen_map
+
+		annotation SummarizationSetBy = Automatic
+
+	column TIPO
+		dataType: string
+		lineageTag: b2ea3098-c141-49b0-8234-a3f363204b07
+		sourceLineageTag: TIPO
+		summarizeBy: none
+		sourceColumn: TIPO
+
+		annotation SummarizationSetBy = Automatic
+
+	column CUENTA_1
+		dataType: string
+		lineageTag: 278b33b6-fc48-4ee3-9288-75923919173b
+		sourceLineageTag: CUENTA_1
+		summarizeBy: none
+		sourceColumn: CUENTA_1
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'MUESTRA DE TINKLE - DESCRIPCION'
+		dataType: string
+		lineageTag: ced96256-7403-48d0-a253-8a8f73a59d9f
+		sourceLineageTag: MUESTRA DE TINKLE - DESCRIPCION
+		summarizeBy: none
+		sourceColumn: MUESTRA DE TINKLE - DESCRIPCION
+
+		annotation SummarizationSetBy = Automatic
+
+	column ACCOUINT
+		dataType: string
+		lineageTag: cf7aa512-afb1-4851-bc4d-cdc71cc96c03
+		sourceLineageTag: ACCOUINT
+		summarizeBy: none
+		sourceColumn: ACCOUINT
+
+		annotation SummarizationSetBy = Automatic
+
+	column DESCRIPTION
+		dataType: string
+		lineageTag: 88b1b656-5921-40ef-a9da-5025ef7e8935
+		sourceLineageTag: DESCRIPTION
+		summarizeBy: none
+		sourceColumn: DESCRIPTION
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Account
+		dataType: string
+		lineageTag: 65a720fe-124f-4b3f-af8b-534a299a1acf
+		sourceLineageTag: ID_Account
+		summarizeBy: none
+		sourceColumn: ID_Account
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cuenta & descr. _magnitud_'
+		dataType: string
+		lineageTag: 351f6144-df33-40eb-8cda-2d23d48fc8f8
+		sourceLineageTag: Cuenta & descr. _magnitud_
+		summarizeBy: none
+		sourceColumn: Cuenta & descr. _magnitud_
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cuenta & Descripción'
+		dataType: string
+		lineageTag: 0a84731f-1eb2-4412-95dc-9c1ae7b8cb18
+		sourceLineageTag: Cuenta & Descripción
+		summarizeBy: none
+		sourceColumn: Cuenta & Descripción
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Cuentas = entity
+		mode: directLake
+		source
+			entityName: Dim_Cuentas
+			schemaName: 300
+			expressionSource: 'DirectLake - lh_tinkle_financiero'
+

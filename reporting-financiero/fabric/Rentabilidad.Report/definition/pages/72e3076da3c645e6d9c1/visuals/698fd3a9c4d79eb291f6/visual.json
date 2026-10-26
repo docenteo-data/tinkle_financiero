@@ -1,0 +1,387 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "698fd3a9c4d79eb291f6",
+  "position": {
+    "x": 15.960591133004927,
+    "y": 109.95073891625616,
+    "z": 5000,
+    "height": 597.63546798029552,
+    "width": 1252.0197044334975,
+    "tabOrder": 5000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_Clientes"
+                    }
+                  },
+                  "Property": "Descripción"
+                }
+              },
+              "queryRef": "Dim_Clientes.Descripción",
+              "nativeQueryRef": "Descripción"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Honorarios Real"
+                }
+              },
+              "queryRef": "_Medidas.Honorarios Real1",
+              "nativeQueryRef": "Honorarios Real1"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Producción Real"
+                }
+              },
+              "queryRef": "_Medidas.Producción Real",
+              "nativeQueryRef": "Producción Real1"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Gross Income Real"
+                }
+              },
+              "queryRef": "_Medidas.Gross Income Real1",
+              "nativeQueryRef": "Gross Income Real1"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Honorarios MMS"
+                }
+              },
+              "queryRef": "_Medidas.Honorarios MMS1",
+              "nativeQueryRef": "Honorarios MMS1"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Producción MMS"
+                }
+              },
+              "queryRef": "_Medidas.Producción MMS1",
+              "nativeQueryRef": "Producción MMS1"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Gross income MMS"
+                }
+              },
+              "queryRef": "_Medidas.Gross income MMS1",
+              "nativeQueryRef": "Gross income MMS1"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Desviación Gross Income"
+                }
+              },
+              "queryRef": "_Medidas.Desviación Gross Income1",
+              "nativeQueryRef": "Desviación Gross Income1"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "% Desviación Gross Income"
+                }
+              },
+              "queryRef": "_Medidas.% Desviación Gross Income1",
+              "nativeQueryRef": "% Desviación Gross Income1"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Estado GI"
+                }
+              },
+              "queryRef": "_Medidas.Estado GI1",
+              "nativeQueryRef": "Estado",
+              "displayName": "Estado"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Dim_Clientes"
+                  }
+                },
+                "Property": "Descripción"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "379.7701143894869D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Dim_Clientes.Descripción"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "96.4717271399208D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Medidas.Gross income MMS1"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "97.86547013467319D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Medidas.Desviación Gross Income1"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "95.04600808598461D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Medidas.% Desviación Gross Income1"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "92.97337296606044D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Medidas.Producción MMS1"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "98.95033626952248D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Medidas.Honorarios MMS1"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "95.38055434463845D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Medidas.Gross Income Real1"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "95.99050754908703D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Medidas.Producción Real"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "85.25745230556711D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Medidas.Honorarios Real1"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "82.32505355791142D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Medidas.Estado GI1"
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {
+            "columnAdjustment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'fixedWidth'"
+                }
+              }
+            },
+            "defaultColumnWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "90D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "lockAspect": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,707 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "e2e0f1acd20a5be0b47a",
+  "position": {
+    "x": 16,
+    "y": 96,
+    "z": 1000,
+    "height": 608,
+    "width": 1248,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Compañia"
+                }
+              },
+              "queryRef": "MMS.Compañia",
+              "nativeQueryRef": "Compañia"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Cliente"
+                }
+              },
+              "queryRef": "MMS.Cliente",
+              "nativeQueryRef": "Cliente"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Campaña"
+                }
+              },
+              "queryRef": "MMS.Campaña",
+              "nativeQueryRef": "Campaña"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "SubCampaña"
+                }
+              },
+              "queryRef": "MMS.SubCampaña",
+              "nativeQueryRef": "SubCampaña"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Nombre Usuario Orden"
+                }
+              },
+              "queryRef": "MMS.Nombre Usuario Orden",
+              "nativeQueryRef": "Nombre Usuario",
+              "displayName": "Nombre Usuario"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "F. Presupuesto"
+                }
+              },
+              "queryRef": "MMS.F. Presupuesto",
+              "nativeQueryRef": "F. Presupuesto"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "MMS"
+                        }
+                      },
+                      "Property": "Presupuesto"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(MMS.Presupuesto)",
+              "nativeQueryRef": "Suma de Presupuesto"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Estado Orden"
+                }
+              },
+              "queryRef": "MMS.Estado Orden",
+              "nativeQueryRef": "Estado Orden"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "F. Contrato"
+                }
+              },
+              "queryRef": "MMS.F. Contrato",
+              "nativeQueryRef": "F. Contrato"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Cod. Proveedor"
+                }
+              },
+              "queryRef": "Sum(MMS.Cod. Proveedor)",
+              "nativeQueryRef": "Cod. Proveedor"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Proveedor"
+                }
+              },
+              "queryRef": "MMS.Proveedor",
+              "nativeQueryRef": "Proveedor"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Nº Factura Cli."
+                }
+              },
+              "queryRef": "Sum(MMS.Nº Factura Cli.)",
+              "nativeQueryRef": "Nº Factura Cli."
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Fecha Factura Cli."
+                }
+              },
+              "queryRef": "MMS.Fecha Factura Cli.",
+              "nativeQueryRef": "Fecha Factura Cli."
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "MMS"
+                        }
+                      },
+                      "Property": "Neto Compra _Sum_"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(MMS.Neto Compra _Sum_)",
+              "nativeQueryRef": "Suma de Neto Compra _Sum_"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "MMS"
+                        }
+                      },
+                      "Property": "Neto Venta _Sum_"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(MMS.Neto Venta _Sum_)",
+              "nativeQueryRef": "Suma de Neto Venta _Sum_"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "MMS"
+                        }
+                      },
+                      "Property": "IMPORTE"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(MMS.IMPORTE)",
+              "nativeQueryRef": "Suma de IMPORTE"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "values": [
+        {
+          "properties": {
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "outlineColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {}
+        }
+      ],
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'center'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "divider": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#0197D6'"
+                    }
+                  }
+                }
+              }
+            },
+            "ignorePadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "1e20ae5d0bb9d29afbb6",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Campaña"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "48ca87a185b476db2221",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Cliente"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "cede4b43f8ad695b50df",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Compañia"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "2607526a0d92fa773137",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "SubCampaña"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "dbb70e328118d4cb517b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Nombre Usuario Orden"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "19ccde8f14834bea4aa5",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "MMS"
+                  }
+                },
+                "Property": "Presupuesto"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "cc5aac902750496b4443",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "F. Presupuesto"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "d9f67ad9abab5d86ecdd",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Estado Orden"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "6a364b5b527c904bd480",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "F. Contrato"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "e69eb5ac6638e2a85b55",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Cod. Proveedor"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "79abca7721733e932dfd",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Proveedor"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "38a409be0517fcc60e70",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "MMS"
+                  }
+                },
+                "Property": "Neto Compra _Sum_"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "426815eb24a1dd4a8f0c",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "MMS"
+                  }
+                },
+                "Property": "Neto Venta _Sum_"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "dc8fbb76492507330071",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "MMS"
+                  }
+                },
+                "Property": "IMPORTE"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "9cde54464062c743a7e1",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Nº Factura Cli."
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "5843eb1e655cfc987272",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Fecha Factura Cli."
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

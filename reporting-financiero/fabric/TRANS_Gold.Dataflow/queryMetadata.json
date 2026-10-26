@@ -1,0 +1,75 @@
+{
+  "formatVersion": "202502",
+  "computeEngineSettings": {
+    "allowModernEvaluationEngine": true
+  },
+  "name": "TRANS_GOLD",
+  "queryGroups": [],
+  "documentLocale": "en-US",
+  "queriesMetadata": {
+    "Oracle_historico": {
+      "queryId": "0ed677ac-8dd4-44dc-bb80-0deff80844e6",
+      "queryName": "Oracle_historico"
+    },
+    "HAPA": {
+      "queryId": "bbf10c3d-8f78-4c91-87f8-f0fbf536161c",
+      "queryName": "HAPA"
+    },
+    "Portugal": {
+      "queryId": "0f7fa42a-29f1-4274-b352-faf6c0ff47d0",
+      "queryName": "Portugal"
+    },
+    "200_Mapping Portugal": {
+      "queryId": "0f3d26d8-c931-42c4-9cab-bf276bb7b4f4",
+      "queryName": "200_Mapping Portugal"
+    },
+    "200_Mapping_HAPA": {
+      "queryId": "1c3cc321-633e-4591-a48a-8d867f9a0093",
+      "queryName": "200_Mapping_HAPA"
+    },
+    "200_COA_Oracle": {
+      "queryId": "a486e442-c6df-4eaf-9ef2-31ad20a0e3bf",
+      "queryName": "200_COA_Oracle"
+    },
+    "Dim_mapeo_cuentas": {
+      "queryId": "e11232d3-752b-4a97-959d-92ba2f4fd538",
+      "queryName": "Dim_mapeo_cuentas",
+      "loadEnabled": false
+    },
+    "Fact_Actuals_DataDestination": {
+      "queryId": "f4a7c679-9468-4ca8-9443-1ec0c2898ca2",
+      "queryName": "Fact_Actuals_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    },
+    "Dim_Cuentas": {
+      "queryId": "dc4474ce-e043-4069-aa68-c869773a6cbb",
+      "queryName": "Dim_Cuentas",
+      "loadEnabled": false
+    },
+    "Fact_Actuals": {
+      "queryId": "ff558b7c-e08c-4c19-9780-822e9672ca4e",
+      "queryName": "Fact_Actuals",
+      "loadEnabled": false
+    },
+    "Dim_mapeo_cuentas_DataDestination": {
+      "queryId": "0ec8e3da-1cd6-40a9-a874-bba5521b5e43",
+      "queryName": "Dim_mapeo_cuentas_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    },
+    "Dim_Cuentas_DataDestination": {
+      "queryId": "37307d89-ddea-4e56-ab63-497bfbd489bf",
+      "queryName": "Dim_Cuentas_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    }
+  },
+  "connections": [
+    {
+      "path": "Lakehouse",
+      "kind": "Lakehouse",
+      "connectionId": "{\"ClusterId\":\"1caeaa44-8edc-458c-a1b4-c546849cf97d\",\"DatasourceId\":\"ebd2d2e1-1cee-4cb0-8333-e6349b6c8528\"}"
+    }
+  ]
+}

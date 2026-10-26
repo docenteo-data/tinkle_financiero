@@ -1,0 +1,168 @@
+table Dim_Calendar
+	lineageTag: a1e7c734-2434-49f9-81fd-e6ff4f0adb3a
+	sourceLineageTag: [300].[Dim_Calendar]
+
+	column Fecha
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f5344b31-ffb4-4764-b8a2-dbfa592a2924
+		sourceLineageTag: Fecha
+		summarizeBy: none
+		sourceColumn: Fecha
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ejercicio
+		dataType: string
+		lineageTag: d0381817-34ba-42da-89f5-e354edc52a45
+		sourceLineageTag: Ejercicio
+		summarizeBy: none
+		sourceColumn: Ejercicio
+
+		changedProperty = DataType
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+	column NUMMES
+		dataType: int64
+		formatString: 0
+		lineageTag: f040919b-eb76-4ac5-8b89-eec91e5ae1de
+		sourceLineageTag: NUMMES
+		summarizeBy: sum
+		sourceColumn: NUMMES
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes
+		dataType: string
+		lineageTag: 281be114-6aa1-49f4-b91e-5f679435d59a
+		sourceLineageTag: Mes
+		summarizeBy: none
+		sourceColumn: Mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes_Corto
+		dataType: string
+		lineageTag: 1b246d98-abd6-423f-8d9b-0fc8c6b60489
+		sourceLineageTag: Mes_Corto
+		summarizeBy: none
+		sourceColumn: Mes_Corto
+
+		annotation SummarizationSetBy = Automatic
+
+	column PERIODO
+		dataType: int64
+		formatString: 0
+		lineageTag: ed8f014a-5b6a-4e43-8cd1-ccc215bdfcd3
+		sourceLineageTag: PERIODO
+		summarizeBy: sum
+		sourceColumn: PERIODO
+
+		annotation SummarizationSetBy = Automatic
+
+	column Año_Mes
+		dataType: string
+		lineageTag: c730f2ed-14ff-436d-9633-56232d4b94d2
+		sourceLineageTag: Año_Mes
+		summarizeBy: none
+		sourceColumn: Año_Mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trimestre
+		dataType: string
+		lineageTag: e7fe975b-3888-499c-8bd6-a242e3a0dace
+		sourceLineageTag: Trimestre
+		summarizeBy: none
+		sourceColumn: Trimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column Num_Trimestre
+		dataType: int64
+		formatString: 0
+		lineageTag: b09ca540-300b-4402-b1a1-8b4321b84221
+		sourceLineageTag: Num_Trimestre
+		summarizeBy: sum
+		sourceColumn: Num_Trimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column Dia
+		dataType: int64
+		formatString: 0
+		lineageTag: 7dcbad10-a8d5-4ca8-86ca-db404110c6b9
+		sourceLineageTag: Dia
+		summarizeBy: sum
+		sourceColumn: Dia
+
+		annotation SummarizationSetBy = Automatic
+
+	column Dia_Semana
+		dataType: int64
+		formatString: 0
+		lineageTag: e2a06b55-bb56-46bb-b3f4-2aa9a4be199b
+		sourceLineageTag: Dia_Semana
+		summarizeBy: sum
+		sourceColumn: Dia_Semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nombre_Dia_Semana
+		dataType: string
+		lineageTag: 340fa6eb-b12a-41d4-9a57-a1d80a0e25eb
+		sourceLineageTag: Nombre_Dia_Semana
+		summarizeBy: none
+		sourceColumn: Nombre_Dia_Semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column Inicio_Mes
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 907d2266-e9d1-4fa4-95df-5d30d14ae86f
+		sourceLineageTag: Inicio_Mes
+		summarizeBy: none
+		sourceColumn: Inicio_Mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fin_Mes
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f45e353c-72ee-4e5a-8437-e2ee258299e2
+		sourceLineageTag: Fin_Mes
+		summarizeBy: none
+		sourceColumn: Fin_Mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column Orden_Mes
+		dataType: int64
+		formatString: 0
+		lineageTag: def60b9b-c3d1-4a3f-9771-82898060b415
+		sourceLineageTag: Orden_Mes
+		summarizeBy: none
+		sourceColumn: Orden_Mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Año_Mes - Copia'
+		dataType: string
+		lineageTag: 52d21168-3f24-414e-9887-8e5114f89323
+		sourceLineageTag: Año_Mes - Copia
+		summarizeBy: none
+		sourceColumn: Año_Mes - Copia
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Calendar = entity
+		mode: directLake
+		source
+			entityName: Dim_Calendar
+			schemaName: 300
+			expressionSource: 'DirectLake - lh_tinkle_financiero'
+

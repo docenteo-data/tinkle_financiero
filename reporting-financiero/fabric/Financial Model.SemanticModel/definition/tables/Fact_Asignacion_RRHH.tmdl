@@ -1,0 +1,122 @@
+table Fact_Asignacion_RRHH
+	lineageTag: af71fa86-f1ca-4d6d-8727-0f4f6ea16aae
+	sourceLineageTag: [300].[Fact_Asignacion_RRHH]
+
+	column CodigoDirectora
+		dataType: string
+		lineageTag: 445438c5-a93b-42cd-813c-9ad4c5490cd6
+		sourceLineageTag: CodigoDirectora
+		summarizeBy: none
+		sourceColumn: CodigoDirectora
+
+		annotation SummarizationSetBy = Automatic
+
+	column Equipo
+		dataType: string
+		lineageTag: 5df87985-9b6e-4b0a-ba58-3369324816d0
+		sourceLineageTag: Equipo
+		summarizeBy: none
+		sourceColumn: Equipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column ClienteOracle
+		dataType: string
+		lineageTag: a46cb3f6-3bf6-4870-a453-0b0e9b2226dc
+		sourceLineageTag: ClienteOracle
+		summarizeBy: none
+		sourceColumn: ClienteOracle
+
+		annotation SummarizationSetBy = Automatic
+
+	column ClienteMMS
+		dataType: string
+		lineageTag: fce90c4b-ae90-4893-aa9a-bfd1b2f8b6a4
+		sourceLineageTag: ClienteMMS
+		summarizeBy: none
+		sourceColumn: ClienteMMS
+
+		annotation SummarizationSetBy = Automatic
+
+	column Descripcion
+		dataType: string
+		lineageTag: b844cae3-9a89-4418-81fd-6cc67d539fb5
+		sourceLineageTag: Descripcion
+		summarizeBy: none
+		sourceColumn: Descripcion
+
+		annotation SummarizationSetBy = Automatic
+
+	column Empleado
+		dataType: string
+		lineageTag: 26a2a623-5d9f-4bda-a6f1-dd40641e73e1
+		sourceLineageTag: Empleado
+		summarizeBy: none
+		sourceColumn: Empleado
+
+		annotation SummarizationSetBy = Automatic
+
+	column EmpleadoPosicion
+		dataType: int64
+		formatString: 0
+		lineageTag: 2d283e8f-f4cb-416b-8001-79259f82de8f
+		sourceLineageTag: EmpleadoPosicion
+		summarizeBy: sum
+		sourceColumn: EmpleadoPosicion
+
+		annotation SummarizationSetBy = Automatic
+
+	column PctDedicacion
+		dataType: double
+		lineageTag: 75842e89-803a-4780-b276-17693ceaf95d
+		sourceLineageTag: PctDedicacion
+		summarizeBy: sum
+		sourceColumn: PctDedicacion
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TipoDedicacion
+		dataType: string
+		lineageTag: 6eb3bcfb-4a53-46df-a8f8-28efca4eb53a
+		sourceLineageTag: TipoDedicacion
+		summarizeBy: none
+		sourceColumn: TipoDedicacion
+
+		annotation SummarizationSetBy = Automatic
+
+	column ArchivoOrigen
+		dataType: string
+		lineageTag: bec125e8-5ab5-42d0-96b2-a8771e93e313
+		sourceLineageTag: ArchivoOrigen
+		summarizeBy: none
+		sourceColumn: ArchivoOrigen
+
+		annotation SummarizationSetBy = Automatic
+
+	column HojaOrigen
+		dataType: string
+		lineageTag: da785b63-31be-4fba-ac94-3ff6c81702df
+		sourceLineageTag: HojaOrigen
+		summarizeBy: none
+		sourceColumn: HojaOrigen
+
+		annotation SummarizationSetBy = Automatic
+
+	column EquipoKey
+		dataType: string
+		lineageTag: 6257dd47-6e61-4f26-86a1-957eaae9b866
+		sourceLineageTag: EquipoKey
+		summarizeBy: none
+		sourceColumn: EquipoKey
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Fact_Asignacion_RRHH = entity
+		mode: directLake
+		source
+			entityName: Fact_Asignacion_RRHH
+			schemaName: 300
+			expressionSource: 'DirectLake - lh_tinkle_financiero'
+

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "d1e8f95966874630f954",
+  "displayName": "DATOS MMS",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280
+}

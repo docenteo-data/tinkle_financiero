@@ -1,0 +1,103 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "name": "Grabar balance",
+        "type": "Copy",
+        "dependsOn": [
+          {
+            "activity": "Notebook1",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "source": {
+            "type": "BinarySource",
+            "storeSettings": {
+              "type": "AzureBlobStorageReadSettings",
+              "recursive": true,
+              "wildcardFolderPath": "Exportaciones/Balance",
+              "wildcardFileName": "*.txt"
+            },
+            "formatSettings": {
+              "type": "BinaryReadSettings"
+            },
+            "datasetSettings": {
+              "annotations": [],
+              "connectionSettings": {
+                "name": "lh_tinkle_financiero",
+                "properties": {
+                  "annotations": [],
+                  "type": "Lakehouse",
+                  "typeProperties": {
+                    "workspaceId": "b31820dc-4b4f-4696-9a96-bbee438e9306",
+                    "artifactId": "4d2305f1-7ef6-42c3-87ed-aed12f143ac2",
+                    "rootFolder": "Files"
+                  },
+                  "externalReferences": {
+                    "connection": "ebd2d2e1-1cee-4cb0-8333-e6349b6c8528"
+                  }
+                }
+              },
+              "type": "Binary",
+              "typeProperties": {
+                "location": {
+                  "type": "LakehouseLocation"
+                }
+              }
+            }
+          },
+          "sink": {
+            "type": "BinarySink",
+            "storeSettings": {
+              "type": "SharePointOnlineFileWriteSettings",
+              "copyBehavior": "PreserveHierarchy"
+            },
+            "datasetSettings": {
+              "annotations": [],
+              "type": "Binary",
+              "typeProperties": {
+                "location": {
+                  "type": "SharePointOnlineFileStoreLocation",
+                  "folderPath": "Shared Documents/Reporting Financiero/2. Salida de ficheros/Balance"
+                }
+              },
+              "externalReferences": {
+                "connection": "c98a26e7-dfdc-4d8a-9ea2-614a2dfa998a"
+              }
+            }
+          },
+          "enableStaging": false
+        }
+      },
+      {
+        "name": "Notebook1",
+        "type": "TridentNotebook",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "notebookId": "c649ae24-2b54-4fce-bd5c-d23a9516ec37",
+          "workspaceId": "b31820dc-4b4f-4696-9a96-bbee438e9306"
+        },
+        "externalReferences": {
+          "connection": "40de0eb8-9c86-4d4a-99d0-31d4bd87fdcb"
+        }
+      }
+    ]
+  }
+}

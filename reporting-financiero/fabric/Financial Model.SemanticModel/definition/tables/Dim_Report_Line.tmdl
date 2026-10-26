@@ -1,0 +1,106 @@
+table Dim_Report_Line
+	lineageTag: 42e7eadc-9bcf-434c-beb6-6786b0bc8297
+	sourceLineageTag: [300].[Dim_Report_Line]
+
+	column Orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 0c09a1c1-987d-46e0-9202-14fa7acdafa6
+		sourceLineageTag: Orden
+		summarizeBy: none
+		sourceColumn: Orden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fila_Excel
+		dataType: int64
+		formatString: 0
+		lineageTag: c812635d-8114-44ac-a124-544c64eca435
+		sourceLineageTag: Fila_Excel
+		summarizeBy: none
+		sourceColumn: Fila_Excel
+
+		annotation SummarizationSetBy = Automatic
+
+	column Row_ID
+		dataType: string
+		lineageTag: fd610c28-e10e-4777-9539-dc3ddea22727
+		sourceLineageTag: Row_ID
+		summarizeBy: none
+		sourceColumn: Row_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Etiqueta
+		dataType: string
+		lineageTag: ba03c6a4-629e-430c-baeb-f158fae7372b
+		sourceLineageTag: Etiqueta
+		summarizeBy: none
+		sourceColumn: Etiqueta
+		sortByColumn: Orden
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Codigo_Reporte
+		dataType: string
+		lineageTag: 9e95d9c2-73ef-405a-98f0-25da3e8a5743
+		sourceLineageTag: Codigo_Reporte
+		summarizeBy: none
+		sourceColumn: Codigo_Reporte
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cuenta_Visible
+		dataType: string
+		lineageTag: 5bd93caf-1657-4f74-8492-45beec8192ca
+		sourceLineageTag: Cuenta_Visible
+		summarizeBy: none
+		sourceColumn: Cuenta_Visible
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tipo_Fila
+		dataType: string
+		lineageTag: 08e30c2e-9e0c-4f0e-91c9-f6b6fed40c17
+		sourceLineageTag: Tipo_Fila
+		summarizeBy: none
+		sourceColumn: Tipo_Fila
+
+		annotation SummarizationSetBy = Automatic
+
+	column Clase_Formato
+		dataType: string
+		lineageTag: 83dcd19c-1600-43e9-81e9-21e901c61416
+		sourceLineageTag: Clase_Formato
+		summarizeBy: none
+		sourceColumn: Clase_Formato
+
+		annotation SummarizationSetBy = Automatic
+
+	column Reporte
+		dataType: string
+		lineageTag: f1a58e92-35f2-454b-96d3-d7a61a461be3
+		sourceLineageTag: Reporte
+		summarizeBy: none
+		sourceColumn: Reporte
+
+		annotation SummarizationSetBy = Automatic
+
+	column Report_Line_Key
+		dataType: string
+		lineageTag: ef5ac4b0-0022-498f-93d9-37e9467ae4fc
+		sourceLineageTag: Report_Line_Key
+		summarizeBy: none
+		sourceColumn: Report_Line_Key
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Report_Line = entity
+		mode: directLake
+		source
+			entityName: Dim_Report_Line
+			schemaName: 300
+			expressionSource: 'DirectLake - lh_tinkle_financiero'
+

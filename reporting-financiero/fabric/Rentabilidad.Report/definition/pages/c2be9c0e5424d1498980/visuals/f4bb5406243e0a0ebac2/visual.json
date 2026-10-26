@@ -1,0 +1,776 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "f4bb5406243e0a0ebac2",
+  "position": {
+    "x": 0,
+    "y": 146.10193457163052,
+    "z": 0,
+    "height": 573.89806542836948,
+    "width": 1272.403967692868,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_RRHH"
+                    }
+                  },
+                  "Property": "NOMBRE"
+                }
+              },
+              "queryRef": "Dim_RRHH.NOMBRE",
+              "nativeQueryRef": "NOMBRE"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_RRHH"
+                    }
+                  },
+                  "Property": "OFICINA"
+                }
+              },
+              "queryRef": "Dim_RRHH.OFICINA",
+              "nativeQueryRef": "OFICINA"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_RRHH"
+                    }
+                  },
+                  "Property": "Fecha inicio_"
+                }
+              },
+              "queryRef": "Dim_RRHH.Fecha inicio_",
+              "nativeQueryRef": "Fecha inicio",
+              "displayName": "Fecha inicio"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_RRHH"
+                    }
+                  },
+                  "Property": "Fecha fin_"
+                }
+              },
+              "queryRef": "Dim_RRHH.Fecha fin_",
+              "nativeQueryRef": "Fecha fin",
+              "displayName": "Fecha fin"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_RRHH"
+                    }
+                  },
+                  "Property": "Jornada"
+                }
+              },
+              "queryRef": "Sum(Dim_RRHH.Jornada)",
+              "nativeQueryRef": "Jornada"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "2025_salario"
+                }
+              },
+              "queryRef": "_Medidas.2025_salario1",
+              "nativeQueryRef": "2025_salario1"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "2026_salario"
+                }
+              },
+              "queryRef": "_Medidas.2026_salario1",
+              "nativeQueryRef": "2026_salario1"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_RRHH"
+                    }
+                  },
+                  "Property": "SUBIDA SALARIAL 2026"
+                }
+              },
+              "queryRef": "Sum(Dim_RRHH.SUBIDA SALARIAL 2026)",
+              "nativeQueryRef": "SUBIDA SALARIAL 2026"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_RRHH"
+                    }
+                  },
+                  "Property": "Fecha subida"
+                }
+              },
+              "queryRef": "Dim_RRHH.Fecha subida",
+              "nativeQueryRef": "Fecha subida"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_RRHH"
+                    }
+                  },
+                  "Property": "IPC 2026 _INCLUIDO MEDIANA DE 2025 HASTA CONFIRMACION_"
+                }
+              },
+              "queryRef": "Sum(Dim_RRHH.IPC 2026 _INCLUIDO MEDIANA DE 2025 HASTA CONFIRMACION_)",
+              "nativeQueryRef": "IPC 2026",
+              "displayName": "IPC 2026"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Coste SSGG 2026"
+                }
+              },
+              "queryRef": "_Medidas.Coste SSGG 2026",
+              "nativeQueryRef": "Coste SSGG 2026"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "2026_Coste_total_salarial"
+                }
+              },
+              "queryRef": "_Medidas.2026_Coste_total_salarial1",
+              "nativeQueryRef": "2026_Coste_total_salarial1"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Dim_RRHH"
+                    }
+                  },
+                  "Property": "Bonus 2025"
+                }
+              },
+              "queryRef": "Sum(Dim_RRHH.Bonus 2025)",
+              "nativeQueryRef": "Bonus 2025"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Coste SSGG Bonus 2025"
+                }
+              },
+              "queryRef": "_Medidas.Coste SSGG Bonus 2025",
+              "nativeQueryRef": "Coste SSGG Bonus 20251"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "COSTE TOTAL CON BONUS Y GRATIFICACION"
+                }
+              },
+              "queryRef": "_Medidas.COSTE TOTAL CON BONUS Y GRATIFICACION1",
+              "nativeQueryRef": "COSTE TOTAL CON BONUS Y GRATIFICACION1"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "DIF salarial año anterior"
+                }
+              },
+              "queryRef": "_Medidas.DIF salarial año anterior1",
+              "nativeQueryRef": "DIF salarial año anterior1"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Dim_RRHH"
+                  }
+                },
+                "Property": "NOMBRE"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "columnAdjustment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'fixedWidth'"
+                }
+              }
+            },
+            "defaultColumnWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "90D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "205.93864134404674D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Dim_RRHH.NOMBRE"
+          }
+        },
+        {
+          "properties": {},
+          "selector": {
+            "metadata": "Dim_RRHH.OFICINA"
+          }
+        },
+        {
+          "properties": {},
+          "selector": {
+            "metadata": "Dim_RRHH.Fecha inicio_"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "73.17019722425128D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(Dim_RRHH.Jornada)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "185.34074948618067D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Medidas.COSTE TOTAL CON BONUS Y GRATIFICACION1"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "122.72461650840029D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(Dim_RRHH.SUBIDA SALARIAL 2026)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "112.60223048327137D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Medidas.2026_salario1"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "125.68774673742882D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "_Medidas.2025_salario1"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'REAL'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "d943742aeebd98fbbdfb",
+        "ordinal": 0,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Ejercicio"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User"
+      },
+      {
+        "name": "dcb789797edaa8437a43",
+        "ordinal": 1,
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Fact_Actuals"
+                  }
+                },
+                "Property": "Debe"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      },
+      {
+        "name": "4eebf4268d62e0267f53",
+        "ordinal": 2,
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Fact_Actuals"
+                  }
+                },
+                "Property": "Haber"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      },
+      {
+        "name": "2828c6ce0370cb38a159",
+        "ordinal": 3,
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Fact_Actuals"
+                  }
+                },
+                "Property": "Saldo"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      },
+      {
+        "name": "920890b5336f59634455",
+        "ordinal": 4,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_Actuals"
+              }
+            },
+            "Property": "Cuenta_origen"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User"
+      },
+      {
+        "name": "b670c5c62c8425bddbf3",
+        "ordinal": 5,
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Medidas"
+              }
+            },
+            "Property": "Importe Base"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      },
+      {
+        "name": "6600f0741129549372b3",
+        "ordinal": 6,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_RRHH"
+              }
+            },
+            "Property": "CENTRO DE COSTE"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User"
+      },
+      {
+        "name": "3b22ed412124322ef7b2",
+        "ordinal": 7,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_Clientes"
+              }
+            },
+            "Property": "Cliente ORACLE"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User",
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "62e9a56d1df8a09c4978",
+        "ordinal": 8,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_RRHH"
+              }
+            },
+            "Property": "NOMBRE"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "c8eba2695d48d1fdef68",
+        "ordinal": 9,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_RRHH"
+              }
+            },
+            "Property": "OFICINA"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "2ef830b9e88b68e73584",
+        "ordinal": 10,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_RRHH"
+              }
+            },
+            "Property": "Fecha inicio_"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "1ee4653fc21df8409855",
+        "ordinal": 11,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_RRHH"
+              }
+            },
+            "Property": "SALARIO 2025"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      },
+      {
+        "name": "03b18580f4fbe610e621",
+        "ordinal": 12,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_RRHH"
+              }
+            },
+            "Property": "SALARIO ANUAL 2026"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      },
+      {
+        "name": "8693b3621d00475ae364",
+        "ordinal": 13,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_RRHH"
+              }
+            },
+            "Property": "Fecha fin_"
+          }
+        },
+        "type": "RelativeDate"
+      },
+      {
+        "name": "c349a21a1e590a42ed89",
+        "ordinal": 14,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_RRHH"
+              }
+            },
+            "Property": "Jornada"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "d85fda1b26a5c6c2bbe9",
+        "ordinal": 15,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_RRHH"
+              }
+            },
+            "Property": "SUBIDA SALARIAL 2026"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "a63bf27c5f446c9d3de1",
+        "ordinal": 16,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_RRHH"
+              }
+            },
+            "Property": "Fecha subida"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "eb8fcf440dd521768a2d",
+        "ordinal": 17,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Dim_RRHH"
+              }
+            },
+            "Property": "IPC 2026 _INCLUIDO MEDIANA DE 2025 HASTA CONFIRMACION_"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "c137adffcb8724cc887d",
+        "ordinal": 18,
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Schema": "extension",
+                "Entity": "_Medidas"
+              }
+            },
+            "Property": "2026_salario"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      },
+      {
+        "name": "599a4eb9661d185950e0",
+        "ordinal": 19,
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Schema": "extension",
+                "Entity": "_Medidas"
+              }
+            },
+            "Property": "2026_salario_total"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      },
+      {
+        "name": "43cbc3392363fb2c6e9b",
+        "ordinal": 20,
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Schema": "extension",
+                "Entity": "_Medidas"
+              }
+            },
+            "Property": "Coste SSGG 2026"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      }
+    ],
+    "filterSortOrder": "Custom"
+  }
+}

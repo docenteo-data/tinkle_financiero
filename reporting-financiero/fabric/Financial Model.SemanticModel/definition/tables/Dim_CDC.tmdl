@@ -1,0 +1,56 @@
+table Dim_CDC
+	lineageTag: aa5f0f19-ce94-48ee-ae9c-ccde3f2db601
+	sourceLineageTag: [300].[Dim_CDC]
+
+	column 'Código CDC ORACLE'
+		dataType: string
+		lineageTag: 2fb42ff3-bbf6-4a98-acf1-c1ea03f0b56f
+		sourceLineageTag: Código CDC ORACLE
+		summarizeBy: none
+		sourceColumn: Código CDC ORACLE
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nombre
+		dataType: string
+		lineageTag: b59c2158-205b-490b-bd80-b6a25f43e4f1
+		sourceLineageTag: Nombre
+		summarizeBy: none
+		sourceColumn: Nombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'INICIALES CAPTIO'
+		dataType: string
+		lineageTag: 512eb510-f72f-49df-b55c-b5f6b32063d2
+		sourceLineageTag: INICIALES CAPTIO
+		summarizeBy: none
+		sourceColumn: INICIALES CAPTIO
+
+		annotation SummarizationSetBy = Automatic
+
+	column Directora
+		dataType: string
+		lineageTag: 786c7710-d7c6-4187-9775-48de9222b4f2
+		sourceLineageTag: Directora
+		summarizeBy: none
+		sourceColumn: Directora
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CENTRO DE COSTE'
+		dataType: string
+		lineageTag: 1884aaa7-ed0d-49e2-b1a7-320c25d19d78
+		sourceLineageTag: CENTRO DE COSTE
+		summarizeBy: none
+		sourceColumn: CENTRO DE COSTE
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_CDC = entity
+		mode: directLake
+		source
+			entityName: Dim_CDC
+			schemaName: 300
+			expressionSource: 'DirectLake - lh_tinkle_financiero'
+

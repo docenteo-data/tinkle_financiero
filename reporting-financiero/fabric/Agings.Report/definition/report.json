@@ -1,0 +1,103 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY26SU05",
+      "reportVersionAtImport": {
+        "visual": "2.9.0",
+        "report": "3.3.0",
+        "page": "2.3.1"
+      },
+      "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "TinkleFinance-8f3a1c2b.json22538771339792252.json",
+      "reportVersionAtImport": {
+        "visual": "2.10.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
+      "type": "RegisteredResources"
+    }
+  },
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "true"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "resourcePackages": [
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "home8476152403413421.png",
+          "path": "home8476152403413421.png",
+          "type": "Image"
+        },
+        {
+          "name": "Intrum_Logo_RGB_Black9497611836728043.jpg",
+          "path": "Intrum_Logo_RGB_Black9497611836728043.jpg",
+          "type": "Image"
+        },
+        {
+          "name": "tinkle_logo_16012824714953504452436496.jpg",
+          "path": "tinkle_logo_16012824714953504452436496.jpg",
+          "type": "Image"
+        },
+        {
+          "name": "TinkleFinance-8f3a1c2b.json22538771339792252.json",
+          "path": "TinkleFinance-8f3a1c2b.json22538771339792252.json",
+          "type": "Image"
+        },
+        {
+          "name": "WhatsApp-Image-2024-05-06-at-18868048989091587.jpg",
+          "path": "WhatsApp-Image-2024-05-06-at-18868048989091587.jpg",
+          "type": "Image"
+        }
+      ]
+    },
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "CY26SU05",
+          "path": "BaseThemes/CY26SU05.json",
+          "type": "BaseTheme"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "useEnhancedTooltips": true,
+    "useDefaultAggregateDisplayName": true
+  }
+}

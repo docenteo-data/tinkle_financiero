@@ -1,0 +1,111 @@
+table Presupuestos
+	lineageTag: 17e12b0e-1eb9-42d6-9014-ff2fe51aee5d
+	sourceLineageTag: [200].[Presupuestos]
+
+	column Sociedad
+		dataType: string
+		lineageTag: 34732a8d-51e8-43da-af3f-eab72f4a6c04
+		sourceLineageTag: Sociedad
+		summarizeBy: none
+		sourceColumn: Sociedad
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cuenta
+		dataType: string
+		lineageTag: 687781e9-772b-42b2-b6fe-191478f853dd
+		sourceLineageTag: Cuenta
+		summarizeBy: none
+		sourceColumn: Cuenta
+
+		annotation SummarizationSetBy = Automatic
+
+	column Año_mes
+		dataType: int64
+		formatString: 0
+		lineageTag: f9ed4252-97e9-49f7-9c7a-a89bc6dd1554
+		sourceLineageTag: Año_mes
+		summarizeBy: sum
+		sourceColumn: Año_mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column Forecast
+		dataType: string
+		lineageTag: c44ea2d5-f14e-4dd8-846f-f7d45f7552bb
+		sourceLineageTag: Forecast
+		summarizeBy: none
+		sourceColumn: Forecast
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fecha
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: e891a3b7-6425-4dfb-9c6f-2b75e89fa200
+		sourceLineageTag: Fecha
+		summarizeBy: none
+		sourceColumn: Fecha
+
+		changedProperty = DataType
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Tipo Forecast'
+		dataType: string
+		lineageTag: d19d688e-710e-4d51-b5bf-8c5edc74fc4c
+		sourceLineageTag: Tipo Forecast
+		summarizeBy: none
+		sourceColumn: Tipo Forecast
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes_num
+		dataType: string
+		lineageTag: d3f7ffd4-f805-49ec-91e6-c7d7063b38ce
+		sourceLineageTag: Mes_num
+		summarizeBy: none
+		sourceColumn: Mes_num
+
+		annotation SummarizationSetBy = Automatic
+
+	column Valor
+		dataType: double
+		lineageTag: 6fb50127-d52d-4301-96ce-8f0608bbf163
+		sourceLineageTag: Valor
+		summarizeBy: sum
+		sourceColumn: Valor
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CodigoSociedad
+		dataType: string
+		lineageTag: f023044b-07a1-40e8-8335-c8d5759b08dd
+		sourceLineageTag: CodigoSociedad
+		summarizeBy: none
+		sourceColumn: CodigoSociedad
+
+		annotation SummarizationSetBy = Automatic
+
+	column Año
+		dataType: string
+		lineageTag: 5b839914-89f4-48ea-8c44-85ce767860bf
+		sourceLineageTag: Año
+		summarizeBy: none
+		sourceColumn: Año
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Presupuestos = entity
+		mode: directLake
+		source
+			entityName: Presupuestos
+			schemaName: 200
+			expressionSource: 'DirectLake - lh_tinkle_financiero'
+

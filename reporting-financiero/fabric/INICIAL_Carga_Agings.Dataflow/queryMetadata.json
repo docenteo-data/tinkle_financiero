@@ -1,0 +1,40 @@
+{
+  "formatVersion": "202502",
+  "computeEngineSettings": {
+    "allowModernEvaluationEngine": true
+  },
+  "name": "INICIAL_Carga_Agings",
+  "queryGroups": [],
+  "documentLocale": "en-US",
+  "queriesMetadata": {
+    "Carga Aging Clientes historico": {
+      "queryId": "68e96f6b-a938-4694-b2a2-bdb3446604ce",
+      "queryName": "Carga Aging Clientes historico",
+      "loadEnabled": false
+    },
+    "Carga Aging Clientes historico_DataDestination": {
+      "queryId": "761bda8a-f8ab-454a-b48e-04c9761547c6",
+      "queryName": "Carga Aging Clientes historico_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    },
+    "Carga Aging Proveedores historico": {
+      "queryId": "c2a62f44-1e32-45db-8449-a2caf49b884e",
+      "queryName": "Carga Aging Proveedores historico",
+      "loadEnabled": false
+    },
+    "Carga Aging Proveedores historico_DataDestination": {
+      "queryId": "c6f3e074-498b-4690-9e96-8e22eaae687f",
+      "queryName": "Carga Aging Proveedores historico_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    }
+  },
+  "connections": [
+    {
+      "path": "Lakehouse",
+      "kind": "Lakehouse",
+      "connectionId": "{\"ClusterId\":\"1caeaa44-8edc-458c-a1b4-c546849cf97d\",\"DatasourceId\":\"ebd2d2e1-1cee-4cb0-8333-e6349b6c8528\"}"
+    }
+  ]
+}
