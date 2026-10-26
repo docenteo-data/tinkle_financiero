@@ -36,3 +36,7 @@ Thumbs.db
 **/.pbi/localSettings.json
 **/.pbi/cache.abf
 *.pbix
+
+# ralph-vault: planes temporales del bucle e informes
+plan/
+vault/.ralphvault/reports/

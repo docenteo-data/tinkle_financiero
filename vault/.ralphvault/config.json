@@ -14,8 +14,18 @@
   },
   "repos": [
     {
-      "name": "reporting-financiero",
-      "source": "reporting-financiero",
+      "name": "rf-fabric",
+      "source": "reporting-financiero/fabric",
+      "source_kind": "path",
+      "kind": "subdir",
+      "stack": "generic",
+      "phase": "pending",
+      "last_sync_commit": null,
+      "last_reconcile_commit": null
+    },
+    {
+      "name": "rf-scripts",
+      "source": "reporting-financiero/scripts",
       "source_kind": "path",
       "kind": "subdir",
       "stack": "python",
