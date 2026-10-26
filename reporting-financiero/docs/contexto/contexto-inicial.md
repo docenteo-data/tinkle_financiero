@@ -1,3 +1,5 @@
+> Documento histórico: es el CLAUDE.md que usaba el proyecto en OneDrive antes del repositorio (septiembre de 2026). Lo vigente está en CONTEXT.md (glosario), Documentacion_Tinkle_Financiero.md (arquitectura) y ../flujo-fabric.md (forma de trabajo). Algunos datos ya no son exactos: la capacidad no es F4 y no consta ninguna fuente SAGE en Fabric.
+
 CLAUDE.md - Proyecto Reporting Tinkle (Docenteo)
 
 Este fichero da contexto a Claude Code sobre el proyecto. Leelo al inicio de cada sesion.

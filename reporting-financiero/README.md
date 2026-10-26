@@ -17,9 +17,9 @@ Sustituir el reporting financiero de Tinkle basado en Excel (Oracle, Portugal, H
     fabric/<Nombre>.<Tipo>/   definiciones de los items del workspace "Tinkle - Financiero", exportadas
                               con scripts/exportar_fabric.py: modelos semánticos (TMDL), informes (PBIR),
                               dataflows (Power Query M), pipelines y el notebook de ficheros de Grupo
-    fabric/sql/               vistas del lakehouse para los ficheros de Grupo (Balance y Saldos 4_7)
-    fabric/temas/             temas de Power BI
-    fabric/esquema_lh_...tsv  esquema de las capas 100 y 200 del lakehouse lh_tinkle_financiero
+    fabric/sql/               vistas del SQL endpoint del lakehouse (<esquema>.<vista>.sql), exportadas
+    fabric/lakehouse/         esquema de columnas de las capas 100, 200 y 300 (esquema.tsv), exportado
+    fabric/temas/             temas de Power BI (manual)
     notebooks/                borradores locales (Ageing), aún no publicados en Fabric
     scripts/                  exportación, publicación y consultas SQL de Fabric
     tests/                    tests de los scripts (los de Fabric, con FABRIC_E2E=1)
