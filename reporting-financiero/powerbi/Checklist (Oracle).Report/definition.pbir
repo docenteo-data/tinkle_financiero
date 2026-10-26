@@ -1,9 +1,0 @@
-{
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definitionProperties/2.0.0/schema.json",
-  "version": "4.0",
-  "datasetReference": {
-    "byConnection": {
-      "connectionString": "Data Source=\"powerbi://api.powerbi.com/v1.0/74ab7d37-cd81-40fd-82e4-cd9c35f4345a/Tinkle - Financiero\";initial catalog=\"Modelo Financiero Tinkle\";access mode=readonly;integrated security=ClaimsToken;semanticmodelid=5e2cbe11-1790-4128-b9f0-cc48069f6deb"
-    }
-  }
-}

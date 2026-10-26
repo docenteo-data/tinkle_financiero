@@ -1,0 +1,170 @@
+table '200 Aging_Proveedores'
+	lineageTag: dc7006e0-bbbd-4a85-b25f-86e7b31caf96
+
+	column Compañía
+		dataType: string
+		lineageTag: 0b03a657-aae7-497b-a0ee-0e3aa7456f36
+		summarizeBy: none
+		sourceColumn: Compañía
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cod. Proveedor'
+		dataType: string
+		lineageTag: be634740-c26c-4dae-acc2-31e806de49b0
+		summarizeBy: none
+		sourceColumn: Cod. Proveedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Proveedor
+		dataType: string
+		lineageTag: 9277f700-32bf-43f5-9ba5-b524c58d97bc
+		summarizeBy: none
+		sourceColumn: Proveedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CIF Proveedor'
+		dataType: string
+		lineageTag: 5661eee9-6075-4cbd-aa9b-d00fb45dd04b
+		summarizeBy: none
+		sourceColumn: CIF Proveedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº Factura'
+		dataType: string
+		lineageTag: ff26b97e-4325-464e-a82e-f75dbcaf8f5e
+		summarizeBy: none
+		sourceColumn: Nº Factura
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Factura'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 32f30b69-7455-4dbb-93fd-db09737dc306
+		summarizeBy: none
+		sourceColumn: Fecha Factura
+
+		variation Variación
+			isDefault
+			relationship: 805b3e8a-e81b-4783-ac67-34d2f6c4c605
+			defaultHierarchy: LocalDateTable_35ed86e0-4105-43f6-b2eb-3d00a9217c5c.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Fecha Vencimiento'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: c7c3f4a6-0451-4cd6-9a02-8f8f65b13edf
+		summarizeBy: none
+		sourceColumn: Fecha Vencimiento
+
+		variation Variación
+			isDefault
+			relationship: 32429f4e-58a4-4c2c-b91a-d5af632dbde0
+			defaultHierarchy: LocalDateTable_95bb5015-cd8e-496c-acea-9ffebc6563ff.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Fecha Contable'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d15e7a4b-836f-43f5-bc58-ff25e677dcd2
+		summarizeBy: none
+		sourceColumn: Fecha Contable
+
+		variation Variación
+			isDefault
+			relationship: e3f9e70b-b201-4753-9cc0-be929200d459
+			defaultHierarchy: LocalDateTable_eff1fae8-2fcf-4827-ae27-0ddc7905188d.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Medio
+		dataType: string
+		lineageTag: 9c69b95d-4cbb-4829-93fc-1f4b9181794b
+		summarizeBy: none
+		sourceColumn: Medio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Moneda
+		dataType: string
+		lineageTag: 879c9eb7-c0e3-43e1-80a0-167fb5b9a8ad
+		summarizeBy: none
+		sourceColumn: Moneda
+
+		annotation SummarizationSetBy = Automatic
+
+	column Método
+		dataType: string
+		lineageTag: e3942ea4-4a54-4f4e-97ad-d260c6f4a44e
+		summarizeBy: none
+		sourceColumn: Método
+
+		annotation SummarizationSetBy = Automatic
+
+	column IBAN
+		dataType: string
+		lineageTag: 2db4c121-df72-4090-b55e-a4dfff8286f6
+		summarizeBy: none
+		sourceColumn: IBAN
+
+		annotation SummarizationSetBy = Automatic
+
+	column Imp_Factura
+		dataType: double
+		lineageTag: efff64ad-a6b1-4902-a0ba-176272ffd825
+		summarizeBy: sum
+		sourceColumn: Imp_Factura
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Imp_Pendiente
+		dataType: double
+		lineageTag: 5e433beb-6d98-4125-951b-1d51bb521e60
+		summarizeBy: sum
+		sourceColumn: Imp_Pendiente
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Imp_Vencido
+		dataType: double
+		lineageTag: 56f9387f-c2ab-47c9-828a-801fb3b1e76c
+		summarizeBy: sum
+		sourceColumn: Imp_Vencido
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ID_aging = '200 Aging_Proveedores'[CIF Proveedor]&'200 Aging_Proveedores'[Nº Factura]&LEFT('200 Aging_Proveedores'[Compañía],10)&'200 Aging_Proveedores'[IBAN]
+		lineageTag: 2f1f329b-8de1-47bb-ade9-781c81c5ddac
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition '200 Aging_Proveedores' = m
+		mode: import
+		source =
+				let
+				    Origen = Sql.Database("g562w5ebzx6ubaxezwodl5buli-3qqbrm2pjolenguwxpxehdutay.datawarehouse.fabric.microsoft.com", "lh_tinkle_financiero"),
+				    #"200_Aging_Proveedores" = Origen{[Schema="200",Item="Aging_Proveedores"]}[Data]
+				in
+				    #"200_Aging_Proveedores"
+
+	annotation PBI_ResultType = Table
+

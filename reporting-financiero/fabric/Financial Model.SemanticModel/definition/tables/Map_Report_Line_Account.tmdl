@@ -1,0 +1,84 @@
+table Map_Report_Line_Account
+	lineageTag: fbd88975-cb7a-4b64-968e-e135c6298178
+	sourceLineageTag: [300].[Map_Report_Line_Account]
+
+	column Tipo_Origen
+		dataType: string
+		lineageTag: 7381ae7d-5d6c-400d-b382-009311e2de06
+		sourceLineageTag: Tipo_Origen
+		summarizeBy: none
+		sourceColumn: Tipo_Origen
+
+		annotation SummarizationSetBy = Automatic
+
+	column Referencia
+		dataType: string
+		lineageTag: c5c430dd-c0ae-420d-852f-e2b9e91ea176
+		sourceLineageTag: Referencia
+		summarizeBy: none
+		sourceColumn: Referencia
+
+		annotation SummarizationSetBy = Automatic
+
+	column Signo
+		dataType: int64
+		formatString: 0
+		lineageTag: 79fa6820-293a-4925-a787-4b834e7ee3f7
+		sourceLineageTag: Signo
+		summarizeBy: sum
+		sourceColumn: Signo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tipo_Mapeo
+		dataType: string
+		lineageTag: 5cc07be5-bae8-4a56-bfe4-d9be62b31113
+		sourceLineageTag: Tipo_Mapeo
+		summarizeBy: none
+		sourceColumn: Tipo_Mapeo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Row_ID
+		dataType: string
+		lineageTag: 9dec9f0f-58ee-4055-8685-b4c0445a721e
+		sourceLineageTag: Row_ID
+		summarizeBy: none
+		sourceColumn: Row_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Report_Line_Key
+		dataType: string
+		lineageTag: 2a1af7c1-e190-46f0-b4a3-77d2935110b3
+		sourceLineageTag: Report_Line_Key
+		summarizeBy: none
+		sourceColumn: Report_Line_Key
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cuenta
+		dataType: string
+		lineageTag: 0eba9eb8-5cc3-4e8b-9082-3a5e88f5048a
+		sourceLineageTag: Cuenta
+		summarizeBy: none
+		sourceColumn: Cuenta
+
+		annotation SummarizationSetBy = Automatic
+
+	column Reporte
+		dataType: string
+		lineageTag: 8631f9a6-589b-405f-bebd-e2a8fa4e8059
+		sourceLineageTag: Reporte
+		summarizeBy: none
+		sourceColumn: Reporte
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Map_Report_Line_Account = entity
+		mode: directLake
+		source
+			entityName: Map_Report_Line_Account
+			schemaName: 300
+			expressionSource: 'DirectLake - lh_tinkle_financiero'
+

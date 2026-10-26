@@ -1,0 +1,46 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/reportExtension/1.0.0/schema.json",
+  "name": "extension",
+  "entities": [
+    {
+      "name": "_Medidas",
+      "measures": [
+        {
+          "name": "REAL (Fees & other)",
+          "dataType": "Double",
+          "expression": "CALCULATE([Importe Base],OR(Dim_Cuentas[Cuenta_magnitude]=\"X60000\",Dim_Cuentas[Cuenta_magnitude]=\"X70000\"))",
+          "formatString": "#,0.00\\ \"€\";-#,0.00\\ \"€\";#,0.00\\ \"€\"",
+          "references": {
+            "measures": [
+              {
+                "entity": "_Medidas",
+                "name": "Importe Base"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Acordado anual",
+          "dataType": "Double",
+          "expression": "SUM(MMS[IMPORTE])-[REAL (Fees & other)]",
+          "formatString": "#,0.00\\ \"€\";-#,0.00\\ \"€\";#,0.00\\ \"€\"",
+          "references": {
+            "measures": [
+              {
+                "schema": "extension",
+                "entity": "_Medidas",
+                "name": "REAL (Fees & other)"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Importe MMS",
+          "dataType": "Double",
+          "expression": "SUM(MMS[IMPORTE])",
+          "formatString": "#,0.00\\ \"€\";-#,0.00\\ \"€\";#,0.00\\ \"€\""
+        }
+      ]
+    }
+  ]
+}

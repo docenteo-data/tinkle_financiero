@@ -1,0 +1,211 @@
+table Aging_Clientes_Snapshot
+	isHidden
+	lineageTag: f5e64796-1985-464d-9838-6d58bde8247a
+
+	measure 'Saldo pendiente' = SUM(Aging_Clientes_Snapshot[Saldo Pend])
+		formatString: #,0.00
+		isHidden
+		lineageTag: c5747d75-cd1d-4dfe-9610-f57d8aa0217f
+
+	measure 'Facturas clientes' = DISTINCTCOUNTNOBLANK(Aging_Clientes_Snapshot[Nº Factura])
+		formatString: 0
+		isHidden
+		lineageTag: 93035d2b-5057-4bf8-8c9b-aec07d88c250
+
+	column Date
+		isHidden
+		formatString: Short Date
+		lineageTag: 3ce9e725-41c6-4afb-acd6-4c47ecb09ffc
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'F.Factura'
+		isHidden
+		formatString: Short Date
+		lineageTag: eb3616e2-1e67-4c50-af89-e52915bb7533
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [F.Factura]
+
+		variation Variación
+			isDefault
+			relationship: 317d7a0d-ce2a-4945-bdc5-7dee2645aa83
+			defaultHierarchy: LocalDateTable_223869e1-5961-4605-aec9-982383b04d2b.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'F.Vto'
+		isHidden
+		formatString: Short Date
+		lineageTag: 16488132-0ac9-42ae-a7d9-21eb3f63d1b4
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [F.Vto]
+
+		variation Variación
+			isDefault
+			relationship: 5f4bd654-7722-434a-99cb-fb4fba01d68f
+			defaultHierarchy: LocalDateTable_9f5685e3-6fb2-4042-9e25-a3f335626f54.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column DaysDue
+		isHidden
+		formatString: 0
+		lineageTag: 1c9a6d25-7b00-4a09-bf99-7ade4a707462
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [DaysDue]
+
+		annotation SummarizationSetBy = Automatic
+
+	column AgingBucket
+		isHidden
+		lineageTag: 56430eae-1628-421d-933f-b1ce13804e2c
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [AgingBucket]
+
+		annotation SummarizationSetBy = Automatic
+
+	column NIF
+		isHidden
+		lineageTag: 68475946-20a1-4519-9228-b3869ede24e1
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NIF]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº Factura'
+		isHidden
+		lineageTag: 9b2743f8-e806-4185-b8bb-37bb9f8e6069
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Nº Factura]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nombre cliente'
+		isHidden
+		lineageTag: 85f8b49e-08f5-4db5-9791-a90b975bfaf7
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Nombre cliente]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Proveedor
+		isHidden
+		lineageTag: 047fdc42-d85e-4fa7-b9f8-454f2c799cba
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Proveedor]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Saldo Pend'
+		isHidden
+		lineageTag: 2822f31f-36f9-40e8-a031-a8fee79bb1c1
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Saldo Pend]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ID_aging
+		lineageTag: 742e3a9d-38b2-4b6a-91b9-269331c60a2e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [ID_aging]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Aging_Clientes_Snapshot = calculated
+		mode: import
+		source =
+				
+				VAR FechasCorte =
+				    CALENDAR(
+				        DATE(2026, 1, 1),
+				        DATE(2027, 12, 31)
+				    )
+				
+				VAR Facturas =
+				    SELECTCOLUMNS(
+				        '200 Aging_Clientes',
+				        "ID_aging",
+				            '200 Aging_Clientes'[NIF]&'200 Aging_Clientes'[Nº Factura]&INT('200 Aging_Clientes'[F. Vto.]),
+				        "NIF", '200 Aging_Clientes'[NIF],
+				        "Nº Factura", '200 Aging_Clientes'[Nº Factura],
+				        "F.Factura", '200 Aging_Clientes'[F.Factura],
+				        "F.Vto", '200 Aging_Clientes'[F. Vto.],
+				        "Nombre cliente", '200 Aging_Clientes'[Nombre Cliente],
+				        "Saldo Pend", '200 Aging_Clientes'[S_Pendiente],
+				        "Proveedor", '200 Aging_Clientes'[Proveedor]
+				    )
+				
+				VAR Base =
+				    FILTER(
+				        CROSSJOIN(
+				            FechasCorte,
+				            Facturas
+				        ),
+				        [F.Factura] <= [Date]
+				    )
+				
+				RETURN
+				ADDCOLUMNS(
+				    Base,
+				
+				    "DaysDue",
+				        VAR FechaCorte = [Date]
+				        VAR FechaVto = [F.Vto]
+				        RETURN
+				            IF(
+				                ISBLANK(FechaVto),
+				                BLANK(),
+				                DATEDIFF(
+				                    FechaVto,
+				                    FechaCorte,
+				                    DAY
+				                )
+				            ),
+				
+				    "AgingBucket",
+				        VAR FechaCorte2 = [Date]
+				        VAR FechaVto2 = [F.Vto]
+				
+				        VAR Dias =
+				            IF(
+				                ISBLANK(FechaVto2),
+				                BLANK(),
+				                DATEDIFF(
+				                    FechaVto2,
+				                    FechaCorte2,
+				                    DAY
+				                )
+				            )
+				
+				        RETURN
+				            SWITCH(
+				                TRUE(),
+				                ISBLANK(Dias), BLANK(),
+				                Dias <= 0,   "A- NOT DUE",
+				                Dias <= 30,  "B- 0-30 Days",
+				                Dias <= 60,  "C- 31-60 Days",
+				                Dias <= 90,  "D- 61-90 Days",
+				                Dias <= 120, "E- 90-120 Days",
+				                Dias <= 180, "F- 121-180 Days",
+				                Dias <= 365, "G- 181-365 Days",
+				                "H- Over 1 Year"
+				            )
+				)
+
+	annotation PBI_Id = d01e0cc2e25a47bf93816055895ce9ce
+

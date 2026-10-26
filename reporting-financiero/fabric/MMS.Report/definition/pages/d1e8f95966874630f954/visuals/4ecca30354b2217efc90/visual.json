@@ -1,0 +1,364 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "name": "4ecca30354b2217efc90",
+  "position": {
+    "x": 9.5167286245353164,
+    "y": 0,
+    "z": 0,
+    "height": 719.70260223048331,
+    "width": 1270.4832713754647,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Pais Empresa"
+                }
+              },
+              "queryRef": "MMS.Pais Empresa",
+              "nativeQueryRef": "Pais Empresa"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Pais Empresa Proveedor"
+                }
+              },
+              "queryRef": "MMS.Pais Empresa Proveedor",
+              "nativeQueryRef": "Pais Empresa Proveedor"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Medio"
+                }
+              },
+              "queryRef": "MMS.Medio",
+              "nativeQueryRef": "Medio"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Cod. Proveedor"
+                }
+              },
+              "queryRef": "Sum(MMS.Cod. Proveedor)",
+              "nativeQueryRef": "Cod. Proveedor"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Proveedor"
+                }
+              },
+              "queryRef": "MMS.Proveedor",
+              "nativeQueryRef": "Proveedor"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Grupo Soporte"
+                }
+              },
+              "queryRef": "MMS.Grupo Soporte",
+              "nativeQueryRef": "Grupo Soporte"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Exclusivista"
+                }
+              },
+              "queryRef": "MMS.Exclusivista",
+              "nativeQueryRef": "Exclusivista"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Grupo Negociación"
+                }
+              },
+              "queryRef": "MMS.Grupo Negociación",
+              "nativeQueryRef": "Grupo Negociación"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Grupo Negociación Táctica"
+                }
+              },
+              "queryRef": "MMS.Grupo Negociación Táctica",
+              "nativeQueryRef": "Grupo Negociación Táctica"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Ind. Auditado Grupo Negociación Táctica"
+                }
+              },
+              "queryRef": "MMS.Ind. Auditado Grupo Negociación Táctica",
+              "nativeQueryRef": "Ind. Auditado Grupo Negociación Táctica"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Grupo Soporte Comercial"
+                }
+              },
+              "queryRef": "MMS.Grupo Soporte Comercial",
+              "nativeQueryRef": "Grupo Soporte Comercial"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "MMS"
+                    }
+                  },
+                  "Property": "Delegación"
+                }
+              },
+              "queryRef": "MMS.Delegación",
+              "nativeQueryRef": "Delegación"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "9224e181df9bbc36e91d",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Pais Empresa"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "0080abfc945e1534fc7b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Pais Empresa Proveedor"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "3e635888b33375f401ce",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Medio"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "dda79967948c206dff9c",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Cod. Proveedor"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "0043c2083461348ba5dd",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Proveedor"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "15de6a914eba88adc0c8",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Grupo Soporte"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "745536f3397baaa05131",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Exclusivista"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "cd944312259a0f095573",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Grupo Negociación"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "9f98a4d553473b901a01",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Grupo Negociación Táctica"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "f7ff64ac9def5766f427",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Ind. Auditado Grupo Negociación Táctica"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "c83ad725961f2c92c0ac",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Grupo Soporte Comercial"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "7449d869704aee23673e",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "MMS"
+              }
+            },
+            "Property": "Delegación"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

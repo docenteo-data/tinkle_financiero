@@ -1,0 +1,144 @@
+table '200 Aging_Clientes'
+	lineageTag: 4350bba2-8764-4412-8e94-6a3a323e4b90
+
+	column Proveedor
+		dataType: string
+		lineageTag: 4138380d-7b26-45f4-b350-188185bd47cb
+		summarizeBy: none
+		sourceColumn: Proveedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cobrador
+		dataType: string
+		lineageTag: ba73496c-a1fb-4407-856e-33cfb390f63f
+		summarizeBy: none
+		sourceColumn: Cobrador
+
+		annotation SummarizationSetBy = Automatic
+
+	column Interno
+		dataType: string
+		lineageTag: 5ffa8aa5-2cad-43a5-a548-f0af6006b956
+		summarizeBy: none
+		sourceColumn: Interno
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nombre Cliente'
+		dataType: string
+		lineageTag: 789d0c75-7b83-4d96-a81a-a1a149b3d201
+		summarizeBy: none
+		sourceColumn: Nombre Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Pais
+		dataType: string
+		lineageTag: 3637f9bb-4ece-4658-a801-540cf3bbe5e7
+		summarizeBy: none
+		sourceColumn: Pais
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº Factura'
+		dataType: string
+		lineageTag: f4818cf4-afc7-4a2b-b824-090e0cf97a66
+		summarizeBy: none
+		sourceColumn: Nº Factura
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'F. Envío  Presup.  Medio  Producto  F. Ins.'
+		dataType: string
+		lineageTag: ef04d1c6-ed37-44c0-85da-1a0380f83c9c
+		summarizeBy: none
+		sourceColumn: F. Envío  Presup.  Medio  Producto  F. Ins.
+
+		annotation SummarizationSetBy = Automatic
+
+	column NIF
+		dataType: string
+		lineageTag: 7f11bf05-20ca-4f59-9277-d5449f6052ce
+		summarizeBy: none
+		sourceColumn: NIF
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo Factura'
+		dataType: string
+		lineageTag: 347f64db-6570-4143-9115-6246c353a841
+		summarizeBy: none
+		sourceColumn: Tipo Factura
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'F.Factura'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 10386a54-6243-4d53-a940-12441e980fa8
+		summarizeBy: none
+		sourceColumn: F.Factura
+
+		variation Variación
+			isDefault
+			relationship: def86786-1010-4f27-ba25-fbcc628eeed3
+			defaultHierarchy: LocalDateTable_b31a4a8c-8a62-4ab5-addd-9d11046f07fa.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'F. Vto.'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: d185364b-2a9c-4e08-988d-8175cbad5fcf
+		summarizeBy: none
+		sourceColumn: F. Vto.
+
+		variation Variación
+			isDefault
+			relationship: 0b504815-bf7e-4840-965a-ee7ff1626ece
+			defaultHierarchy: LocalDateTable_f1426e26-29e9-4024-ad86-cb34f13b8a67.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Imp_Factura
+		dataType: double
+		lineageTag: 0cc3bb31-d00a-47f5-9ccb-0ba4ce5de7ac
+		summarizeBy: sum
+		sourceColumn: Imp_Factura
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column S_Pendiente
+		dataType: double
+		lineageTag: 026f077f-b015-472e-a2f4-637556cf7c27
+		summarizeBy: sum
+		sourceColumn: S_Pendiente
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ID_aging = '200 Aging_Clientes'[NIF]&'200 Aging_Clientes'[Nº Factura]&INT('200 Aging_Clientes'[F. Vto.])
+		lineageTag: 10cd74d7-be26-42bf-a417-34bba48fa94d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition '200 Aging_Clientes' = m
+		mode: import
+		source =
+				let
+				    Origen = Sql.Database("g562w5ebzx6ubaxezwodl5buli-3qqbrm2pjolenguwxpxehdutay.datawarehouse.fabric.microsoft.com", "lh_tinkle_financiero"),
+				    #"200_Aging_Clientes" = Origen{[Schema="200",Item="Aging_Clientes"]}[Data]
+				in
+				    #"200_Aging_Clientes"
+
+	annotation PBI_ResultType = Table
+

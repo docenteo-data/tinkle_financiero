@@ -1,0 +1,29 @@
+table Aux_CDC
+	lineageTag: f68a1152-402a-47a7-8aa6-fa8d18fdabd7
+	sourceLineageTag: [300].[Aux_CDC]
+
+	column CDC
+		dataType: string
+		lineageTag: 357502ad-c559-41d9-aa42-fd38cc2517b0
+		sourceLineageTag: CDC
+		summarizeBy: none
+		sourceColumn: CDC
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'INICIALES CAPTIO'
+		dataType: string
+		lineageTag: 1cf6b55d-dc39-4386-8cc5-0717287fdf8f
+		sourceLineageTag: INICIALES CAPTIO
+		summarizeBy: none
+		sourceColumn: INICIALES CAPTIO
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Aux_CDC = entity
+		mode: directLake
+		source
+			entityName: Aux_CDC
+			schemaName: 300
+			expressionSource: 'DirectLake - lh_tinkle_financiero'
+

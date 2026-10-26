@@ -1,0 +1,587 @@
+table _Medidas
+	lineageTag: 50dd12e7-db1a-4bfe-885c-5ec89b189338
+
+	measure 'ASOC01 - Statutory data' =
+			
+			VAR ResultadoCuentas =
+			    [Importe Reporting Cuentas]
+			
+			VAR MapeoMedidas =
+			    SUMMARIZE (
+			        FILTER (
+			            Map_Report_Line_Account,
+			            Map_Report_Line_Account[Tipo_Origen] = "Medida"
+			        ),
+			        Map_Report_Line_Account[Referencia],
+			        "Factor", SUM ( Map_Report_Line_Account[Signo] )
+			    )
+			
+			VAR ResultadoMedidas =
+			    SUMX (
+			        MapeoMedidas,
+			        VAR ReferenciaActual =
+			            Map_Report_Line_Account[Referencia]
+			
+			        VAR FactorActual =
+			            [Factor]
+			
+			        RETURN
+			            SWITCH (
+			                ReferenciaActual,
+			                "NET_INCOME", FactorActual * [Net Income Reporting],
+			                0
+			            )
+			    )
+			
+			RETURN
+			    COALESCE (
+			        ResultadoCuentas + ResultadoMedidas,
+			        0
+			    )
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: bad442e8-0615-4df8-8dbb-b061a1f40edb
+
+	measure FCT =
+			
+			VAR ResultadoCuentas =
+			    [Budget Reporting Cuentas]
+			
+			VAR MapeoMedidas =
+			    SUMMARIZE (
+			        FILTER (
+			            Map_Report_Line_Account,
+			            Map_Report_Line_Account[Tipo_Origen] = "Medida"
+			        ),
+			        Map_Report_Line_Account[Referencia],
+			        "Factor", SUM ( Map_Report_Line_Account[Signo] )
+			    )
+			
+			VAR ResultadoMedidas =
+			    SUMX (
+			        MapeoMedidas,
+			        VAR ReferenciaActual =
+			            Map_Report_Line_Account[Referencia]
+			        VAR FactorActual =
+			            [Factor]
+			        RETURN
+			            SWITCH (
+			                ReferenciaActual,
+			                "NET_INCOME",
+			                    FactorActual * [Budget Net Income],
+			                0
+			            )
+			    )
+			
+			VAR Resultado =
+			    COALESCE (
+			        ResultadoCuentas + ResultadoMedidas,
+			        0
+			    )
+			
+			RETURN
+			    -Resultado
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: 43da7955-82ae-4cc3-b491-8d30eb59475f
+
+	measure 'Budget Base' =
+			
+			VAR _BudgetMiles =
+			    SUM(Presupuestos[Valor])
+			
+			VAR _Escala =
+			    [Escala Seleccionado]
+			
+			RETURN
+			    _BudgetMiles * DIVIDE(1000, _Escala)
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: ec958772-54ca-4572-9cc8-b6298d84418b
+
+	measure 'Budget Net Income' =
+			
+			VAR NetIncomeKey =
+			    CALCULATE (
+			        SELECTEDVALUE ( Dim_Report_Line[Report_Line_Key] ),
+			        REMOVEFILTERS ( Dim_Report_Line ),
+			        Dim_Report_Line[Reporte] = "P&L",
+			        Dim_Report_Line[Fila_Excel] = 241
+			    )
+			
+			RETURN
+			    CALCULATE (
+			        [Budget Reporting Cuentas],
+			        REMOVEFILTERS ( Dim_Report_Line ),
+			        TREATAS (
+			            { NetIncomeKey },
+			            Dim_Report_Line[Report_Line_Key]
+			        )
+			    )
+		lineageTag: ec829358-c45d-420b-835e-c05ae91c7abe
+
+	measure 'Budget Reporting Cuentas' =
+			
+			VAR MapeoFila =
+			    SUMMARIZE (
+			        FILTER (
+			            Map_Report_Line_Account,
+			            Map_Report_Line_Account[Tipo_Origen] = "Cuenta"
+			        ),
+			        Map_Report_Line_Account[Cuenta],
+			        "Factor", SUM ( Map_Report_Line_Account[Signo] )
+			    )
+			
+			VAR Resultado =
+			    SUMX (
+			        MapeoFila,
+			
+			        VAR CuentaActual =
+			            Map_Report_Line_Account[Cuenta]
+			
+			        VAR FactorActual =
+			            [Factor]
+			
+			        RETURN
+			            FactorActual
+			                * CALCULATE (
+			                    [Budget Base],
+			                    TREATAS (
+			                        { CuentaActual },
+			                        Presupuestos[Cuenta]
+			                    )
+			                )
+			    )
+			
+			RETURN
+			    COALESCE ( Resultado, 0 )
+		lineageTag: 70f92e1c-dcb5-45a8-b5aa-8187eb8f9b5f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure DIF_ASOC01_FCT = [ASOC01 - Statutory data] - [FCT]
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: cb893303-2d40-4ed0-9429-970f62096f2b
+
+	measure 'Escala Seleccionado' = SELECTEDVALUE(Unidades[Valor], 1)
+		formatString: 0
+		lineageTag: ebc2bd18-1e46-473a-9964-c93c81ffd9b6
+
+	measure 'Importe Base' = DIVIDE(SUM ( Fact_Actuals[Saldo]),[Escala Seleccionado])
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: 35871f47-2aab-4fdb-98e7-70abec131a46
+
+	measure 'Importe Reporting Cuentas' =
+			
+			VAR MapeoFila =
+			    SUMMARIZE (
+			        FILTER (
+			            Map_Report_Line_Account,
+			            Map_Report_Line_Account[Tipo_Origen] = "Cuenta"
+			        ),
+			        Map_Report_Line_Account[Cuenta],
+			        "Factor", SUM ( Map_Report_Line_Account[Signo] )
+			    )
+			
+			VAR Resultado =
+			    SUMX (
+			        MapeoFila,
+			        VAR CuentaActual =
+			            Map_Report_Line_Account[Cuenta]
+			
+			        VAR FactorActual =
+			            [Factor]
+			
+			        RETURN
+			            FactorActual
+			                * CALCULATE (
+			                    [Importe Base],
+			                    REMOVEFILTERS (
+			                        Dim_Mapeo_Cuentas[Cuenta_magnitude]
+			                    ),
+			                    TREATAS (
+			                        { CuentaActual },
+			                        Dim_Mapeo_Cuentas[Cuenta_magnitude]
+			                    )
+			                )
+			    )
+			
+			RETURN
+			    COALESCE ( Resultado, 0 )
+		lineageTag: 5b34f25b-db85-465d-a221-65baadd78d7e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Net Income Reporting' =
+			
+			VAR NetIncomeKey =
+			    CALCULATE (
+			        SELECTEDVALUE ( Dim_Report_Line[Report_Line_Key] ),
+			        REMOVEFILTERS ( Dim_Report_Line ),
+			        Dim_Report_Line[Reporte] = "P&L",
+			        Dim_Report_Line[Fila_Excel] = 241
+			    )
+			
+			RETURN
+			    CALCULATE (
+			        [Importe Reporting Cuentas],
+			        REMOVEFILTERS ( Dim_Report_Line ),
+			        TREATAS (
+			            { NetIncomeKey },
+			            Dim_Report_Line[Report_Line_Key]
+			        )
+			    )
+		lineageTag: 1b56f050-8c7a-4b9b-bb93-0bce735b4d5f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'REAL (Fees & other)' = CALCULATE([Importe Base],OR(Dim_Cuentas[Cuenta_magnitude]="X60000",Dim_Cuentas[Cuenta_magnitude]="X70000"))
+		lineageTag: 54f41876-d17e-421a-9793-5f3a8423c871
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Importe MMS' = DIVIDE(SUM(MMS[IMPORTE]),[Escala Seleccionado])
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: 368cc385-6c77-4bd6-a9ad-9479a1759e7f
+
+	measure '% Desviación Gross Income' = DIVIDE([Desviación Gross Income],[Gross income MMS])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: dfa18a6e-a5f2-415c-ad68-655492e2d353
+
+	measure 'Desviación Gross Income' = [Gross Income Real]-[Gross income MMS]
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: d368bfae-f285-4b47-bbb3-62f285027aca
+
+	measure 'Estado GI' =
+			
+			VAR Real = [Gross Income Real]
+			VAR MMS_ = [Gross income MMS]
+			VAR Dif = [Desviación Gross Income]
+			RETURN
+			    SWITCH (
+			        TRUE(),
+			        ISBLANK(Real) && ISBLANK(MMS_), BLANK(),
+			        COALESCE(MMS_, 0) = 0 && COALESCE(Real, 0) <> 0, "Solo Real",
+			        COALESCE(Real, 0) = 0 && COALESCE(MMS_, 0) <> 0, "Solo MMS",
+			        ABS(Dif) < 1, "Cuadra",
+			        Dif > 0, "Real > MMS",
+			        "MMS > Real"
+			    )
+		lineageTag: 3ebd67c9-140e-4d3a-bad1-bb0c913c6d19
+
+	measure 'Gross income MMS' = [Honorarios MMS]+[Producción MMS]
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: 7b8cd3ce-c8a0-48d0-9ff3-e241acbf963d
+
+	measure 'Gross Income Real' = [Honorarios Real]+[Producción Real]+[Coste Producción]
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: 8260fa21-d197-4dd0-8fbe-31b86e45f851
+
+	measure 'Honorarios MMS' = CALCULATE ([Importe MMS],MMS[CATEGORIA] = "Honorarios")
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: d03c224a-7207-4962-9b24-c9b3e55f2b7a
+
+	measure 'Honorarios Real' = CALCULATE([Importe Base],Dim_Cuentas[Cuenta]="X705000")*-1
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: 956947c1-521b-4a23-b978-81d246416fa6
+
+	measure 'Producción MMS' =
+			
+			CALCULATE (
+			    [Importe MMS],
+			    MMS[CATEGORIA] = "Produccion"
+			)
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: a410d3b2-2302-4629-995e-c53682d3c17c
+
+	measure 'Producción Real' = CALCULATE([Importe Base],Dim_Cuentas[Cuenta]="X700000")*-1
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: 3f7a6efc-4ccf-4ed6-8435-57ac2cfe2c1a
+
+	measure 'Coste Producción' = CALCULATE([Importe Base],Dim_Cuentas[Cuenta]="X600000")*-1
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: b8cfce5a-65c8-4c78-96f1-8c35e477745b
+
+	measure 2025_salario = SUM(Dim_RRHH[SALARIO 2025])
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: 08554bd2-abeb-4e62-9f1c-f489218d454a
+
+	measure 2026_Coste_total_salarial = [2026_salario_total]+[Coste SSGG 2026]
+		formatString: #,0.00
+		lineageTag: d53a6e8d-9de4-477c-a14a-f4c1bc1e998e
+
+	measure 2026_salario = SUM(Dim_RRHH[SALARIO ANUAL 2026])
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: cf140fca-dbd3-4f04-8df9-f48d83babe80
+
+	measure 'Coste SSGG 2026' =
+			
+			VAR Salario = [2026_salario_total]
+			RETURN
+			    IF(
+			        ISBLANK(Salario),
+			        BLANK(),
+			        MIN(Salario, 61214.4) * 0.3227
+			            + MIN(MAX(Salario - 61214.4, 0), 6121.44) * 0.0115
+			            + MIN(MAX(Salario - 67335.84, 0), 24485.76) * 0.0125
+			            + MAX(Salario - 91821.6, 0) * 0.0146
+			    )
+		lineageTag: b7ef6a4e-2714-4efa-b8a3-2c8424fdb8e1
+
+	measure 2026_salario_total = [2026_salario]+SUM(Dim_RRHH[IPC 2026 _INCLUIDO MEDIANA DE 2025 HASTA CONFIRMACION_])+SUM(Dim_RRHH[SUBIDA SALARIAL 2026])
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: 95a14ac2-d137-4681-97ce-4e0f181cb200
+
+	measure 'Coste SSGG Bonus 2025' =
+			
+			VAR Bonus = SUM(Dim_RRHH[Bonus 2025])
+			RETURN
+			    IF(
+			        ISBLANK(Bonus),
+			        BLANK(),
+			        MIN(Bonus, 61214.4) * 0.3227
+			            + MIN(MAX(Bonus - 61214.4, 0), 6121.44) * 0.0115
+			            + MIN(MAX(Bonus - 67335.84, 0), 24485.76) * 0.0125
+			            + MAX(Bonus - 91821.6, 0) * 0.0146
+			    )
+		lineageTag: 0a7913ed-43da-4ec4-8d76-14c58e71b027
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'DIF salarial año anterior' = [COSTE TOTAL CON BONUS Y GRATIFICACION]-[2025_salario_total]
+		lineageTag: 498651e3-8f4d-4fa6-bdcf-1dd73902aa80
+
+	measure 'COSTE TOTAL CON BONUS Y GRATIFICACION' = ```
+			[2026_Coste_total_salarial]+[Coste SSGG Bonus 2025]+SUM(Dim_RRHH[Bonus 2025]) 
+			```
+		lineageTag: a2ec64e4-2dfd-485e-8d8d-cd8c6eca22a8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 2025_salario_total = [2025_salario]+[Coste SSGG 2026]+SUM(Dim_RRHH[Bonus 2025])+[Coste SSGG Bonus 2025]
+		formatString: #,0.00
+		lineageTag: 659a8d39-1a8f-422b-91aa-fef23f6977df
+
+	measure '% Dedicación' =
+			
+			SUM (
+			    Fact_Asignacion_RRHH[PctDedicacion]
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 182f7090-f6c5-489e-8ed9-6d85cbeca895
+
+	measure '% Dedicación Total Persona' =
+			
+			CALCULATE (
+			    [% Dedicación],
+			    REMOVEFILTERS ( 'Dim_Clientes' ),
+			    REMOVEFILTERS ( 'Dim_equipos' )
+			)
+		formatString: 0%;-0%;0%
+		lineageTag: 09a4533c-8677-42e2-94ab-4f7d8c4cba22
+
+	measure 'Estado Dedicación Persona' =
+			
+			VAR Pct = [% Dedicación Total Persona]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( Pct ), "Sin asignación",
+			        ABS ( Pct - 1 ) <= 0.001, "OK",
+			        Pct < 1, "< 100%",
+			        Pct > 1, "> 100%"
+			    )
+		lineageTag: 7037b666-37ec-41a3-8365-51b1ad70acec
+
+	measure 'Coste Personal Imputado Total 2026' = ```
+			
+			SUMX (
+			    'Fact_Asignacion_RRHH',
+			    
+			    VAR Pct =
+			        'Fact_Asignacion_RRHH'[PctDedicacion]
+			
+			    VAR CosteEmpleado =
+			        COALESCE (
+			            RELATED (
+			                'Dim_RRHH'[COSTE TOTAL 2026 _PRORRATEADO DE SUBIDAS_ ALTAS Y BAJAS DURANTE EL AÑO__]
+			            ),
+			            0
+			        )
+			
+			    RETURN
+			        Pct * CosteEmpleado * [Escala Seleccionado]
+			)
+			```
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: 9faf2925-ba43-46e7-b282-afcbd6534bf0
+
+	measure 'Contribution MMS 2026' =
+			
+			COALESCE (
+			    [Gross income MMS],
+			    0
+			)
+			-
+			[Coste Personal Imputado Cliente 2026]
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: 7c2bfb13-6b83-43e9-bd74-6ec0d07b0eee
+
+	measure 'Coste Personal Imputado Cliente 2026' =
+			
+			CALCULATE (
+			    [Coste Personal Imputado Total 2026],
+			    KEEPFILTERS (
+			        'Fact_Asignacion_RRHH'[TipoDedicacion] = "CLIENTE"
+			    )
+			)
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: 55e11b0c-7b43-425f-a084-55c4c14e8d57
+
+	measure '% Contribution MMS 2026' =
+			
+			DIVIDE (
+			    [Contribution MMS 2026],
+			    [Gross income MMS]
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: ba0ac160-ceb8-48e9-bc25-f5c953e930cc
+
+	measure 'Nº Personas Asignadas' =
+			
+			CALCULATE (
+			    DISTINCTCOUNT (
+			        'Fact_Asignacion_RRHH'[Empleado]
+			    ),
+			    KEEPFILTERS (
+			        'Fact_Asignacion_RRHH'[TipoDedicacion] = "CLIENTE"
+			    )
+			)
+		formatString: 0
+		lineageTag: ed2d13d8-cf81-4d53-8b28-32f96e1c4c79
+
+	measure 'Color Fondo Reporting' =
+			
+			VAR FilaOriginal =
+			    SELECTEDVALUE ( Dim_Report_Line[Etiqueta] )
+			
+			VAR Fila =
+			    TRIM (
+			        SUBSTITUTE (
+			            FilaOriginal,
+			            UNICHAR ( 160 ),
+			            " "
+			        )
+			    )
+			
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			
+			        // =====================================================
+			        // ASSETS
+			        // =====================================================
+			        Fila IN {
+			            "ST-A110 Authorised Capital - Uncalled up",
+			            "ST-A120B Intangible Fixed Assets",
+			            "ST-A120D A/P Intangible Assets",
+			            "ST-A140B Tangible Assets",
+			            "ST-A140D Tangible Assets Depreciation",
+			            "ST-A160B Financial Assets",
+			            "ST-A160D Prov. for depreciation of financial assets",
+			            "ST-A210B Inventories & Work in progress",
+			            "ST-A210D Provisions/Inventories & WIP",
+			            "ST-A220B Other receivables",
+			            "ST-A220D Prov. other receivables",
+			            "ST-A240B Marketable Securities",
+			            "ST-A240D Prov/Marketable Securities",
+			            "ST-A250 Cash",
+			            "ST-A250D Prov. for cash unavailable",
+			            "ST-A300 Accruals - Assets"
+			        },
+			        "#D9E1F2",
+			
+			        // =====================================================
+			        // LIABILITIES
+			        // =====================================================
+			        Fila IN {
+			            "ST-P110 Shareholders Equity",
+			            "ST-P200 Other Equity Capital",
+			            "ST-P410 Provisions for risks",
+			            "ST-P420 Provisions For Charges",
+			            "ST-P510 Financial Debts (except overdraft)",
+			            "ST-P520 Overdraft",
+			            "ST-P610 Accounts payable and other liabilities",
+			            "ST-P700 Accruals - Liabilities",
+			
+			            // Filas destacadas en azul en el checklist
+			            "P44200 - Tax consolidation payables",
+			            "P44400 - Income tax payable"
+			        },
+			        "#D9E1F2",
+			
+			        // =====================================================
+			        // P&L
+			        // =====================================================
+			        Fila IN {
+			            "ST-R111 Turnover",
+			
+			            "Clients costs and coordinatioin fees",
+			            "Revenue IFRS15",
+			            "Pass trough costs",
+			            "GROSS INCOME",
+			
+			            "ST-R124 Compensation",
+			            "ST-R122 External services",
+			            "ST-R123 Taxes",
+			            "ST-R125 Other Operating expenses",
+			            "ST-R112 Other Operating income",
+			
+			            "ST-R130D Operating allowances",
+			            "ST-R130R Operating write-backs",
+			            "Operating Expenses",
+			            "OPERATING PROFIT",
+			
+			            "ST-R210 Financial income",
+			            "ST-R220 Financial expenses",
+			            "ST-R230D Financial allowances",
+			            "ST-R230R Write-back on Financial allowances",
+			            "FINANCIAL INCOME",
+			
+			            "Exceptional revenues",
+			            "Exceptional expenses",
+			            "NON OPERATING ITEMS INCOME NET",
+			
+			            "R69500 - Corporate tax - At current rate",
+			            "R69800 - Tax income/expense tied to tax consolidation",
+			
+			            "ST-R520 Income tax"
+			        },
+			        "#D9E1F2",
+			
+			        // =====================================================
+			        // TOTALES
+			        // =====================================================
+			        Fila IN {
+			            "Total Assets",
+			            "Total Liabilities and equity",
+			            "Total Net Income"
+			        },
+			        "#FFF2CC",
+			
+			        BLANK ()
+			    )
+		lineageTag: 5bc836c5-0cfa-45dc-bcda-8a32594218e3
+
+	column Value
+		formatString: 0
+		lineageTag: 6a3e12be-10d0-44b4-959d-63986afb5738
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Medidas = calculated
+		mode: import
+		source = { BLANK() }
+
+	annotation PBI_Id = da57173633434001b0cd5d692074c43a
+

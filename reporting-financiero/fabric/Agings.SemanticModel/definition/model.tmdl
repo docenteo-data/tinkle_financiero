@@ -1,0 +1,32 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-ES
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["200 Aging_Clientes","200 Aging_Proveedores"]
+
+ref table '200 Aging_Clientes'
+ref table DateTableTemplate_c863fe7b-0ecc-45c7-ba9f-2748f22aa0ac
+ref table LocalDateTable_b31a4a8c-8a62-4ab5-addd-9d11046f07fa
+ref table LocalDateTable_f1426e26-29e9-4024-ad86-cb34f13b8a67
+ref table '200 Aging_Proveedores'
+ref table LocalDateTable_35ed86e0-4105-43f6-b2eb-3d00a9217c5c
+ref table LocalDateTable_95bb5015-cd8e-496c-acea-9ffebc6563ff
+ref table LocalDateTable_eff1fae8-2fcf-4827-ae27-0ddc7905188d
+ref table Fechas
+ref table LocalDateTable_916a20ef-4bf0-4cc2-bf77-a1ff4249fb8c
+ref table Aging_Clientes_Snapshot
+ref table Aging_Proveedores_Snapshot
+ref table LocalDateTable_62c50b67-e719-4771-8908-ce4e8f3235a0
+ref table LocalDateTable_3685a0f9-3590-43e0-90f3-7d79fda1488b
+ref table LocalDateTable_223869e1-5961-4605-aec9-982383b04d2b
+ref table LocalDateTable_9f5685e3-6fb2-4042-9e25-a3f335626f54
+
+ref cultureInfo es-ES
+

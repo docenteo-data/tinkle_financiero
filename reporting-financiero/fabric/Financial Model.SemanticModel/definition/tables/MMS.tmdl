@@ -1,0 +1,1792 @@
+table MMS
+	lineageTag: ef21204f-344b-4e9c-a542-768f63a27421
+	sourceLineageTag: [200].[MMS]
+
+	column País
+		dataType: string
+		lineageTag: f77ca160-e52f-41ff-889c-cc684887d2d1
+		sourceLineageTag: País
+		summarizeBy: none
+		sourceColumn: País
+
+		annotation SummarizationSetBy = Automatic
+
+	column Compañia
+		dataType: string
+		lineageTag: 4b692250-1de5-4972-9545-d09b1c40093a
+		sourceLineageTag: Compañia
+		summarizeBy: none
+		sourceColumn: Compañia
+
+		annotation SummarizationSetBy = Automatic
+
+	column Medio
+		dataType: string
+		lineageTag: 9276002d-6a43-432a-bfad-18d5c7845ddb
+		sourceLineageTag: Medio
+		summarizeBy: none
+		sourceColumn: Medio
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cod. Proveedor'
+		dataType: int64
+		formatString: 0
+		lineageTag: 15147095-4aa9-4398-be9a-3ecb6c064ebd
+		sourceLineageTag: Cod. Proveedor
+		summarizeBy: sum
+		sourceColumn: Cod. Proveedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Proveedor
+		dataType: string
+		lineageTag: f9374b49-5ad1-482d-a33e-14a1d3aed735
+		sourceLineageTag: Proveedor
+		summarizeBy: none
+		sourceColumn: Proveedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nif. Empresa/Proveedor'
+		dataType: string
+		lineageTag: eba014d1-a943-4c40-b721-895b98572b63
+		sourceLineageTag: Nif. Empresa/Proveedor
+		summarizeBy: none
+		sourceColumn: Nif. Empresa/Proveedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Pais Empresa Proveedor'
+		dataType: string
+		lineageTag: 4223c764-e8f6-48bf-ab09-1f15ed54714a
+		sourceLineageTag: Pais Empresa Proveedor
+		summarizeBy: none
+		sourceColumn: Pais Empresa Proveedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo HVM Proveedor'
+		dataType: string
+		lineageTag: 26bbe981-103a-40cc-a451-6bba3c021a87
+		sourceLineageTag: Grupo HVM Proveedor
+		summarizeBy: none
+		sourceColumn: Grupo HVM Proveedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Editorial Comercial'
+		dataType: string
+		lineageTag: a8a786ba-446d-4e55-976e-18d231fbaff5
+		sourceLineageTag: Editorial Comercial
+		summarizeBy: none
+		sourceColumn: Editorial Comercial
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Status Editorial Comercial'
+		dataType: string
+		lineageTag: 557c42e5-2d96-4e9d-a5c1-a42692e91e0d
+		sourceLineageTag: Status Editorial Comercial
+		summarizeBy: none
+		sourceColumn: Status Editorial Comercial
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Agrupación Comercial'
+		dataType: string
+		lineageTag: 54eca4e4-3040-4935-a714-dcb54ce7eaed
+		sourceLineageTag: Agrupación Comercial
+		summarizeBy: none
+		sourceColumn: Agrupación Comercial
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Editorial ON\OFF'
+		dataType: string
+		lineageTag: 7b011c43-25d1-402a-b55e-4a79c1180650
+		sourceLineageTag: Ind. Editorial ON\OFF
+		summarizeBy: none
+		sourceColumn: Ind. Editorial ON\OFF
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cod. Soporte'
+		dataType: int64
+		formatString: 0
+		lineageTag: bb434783-aac6-40cf-b81f-639628a3f1fe
+		sourceLineageTag: Cod. Soporte
+		summarizeBy: sum
+		sourceColumn: Cod. Soporte
+
+		annotation SummarizationSetBy = Automatic
+
+	column Soporte
+		dataType: string
+		lineageTag: 79b7b8ba-1169-4287-b7cf-0ee6891492aa
+		sourceLineageTag: Soporte
+		summarizeBy: none
+		sourceColumn: Soporte
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo Soporte'
+		dataType: string
+		lineageTag: e8d92f82-0439-4452-957f-612b23f34385
+		sourceLineageTag: Tipo Soporte
+		summarizeBy: none
+		sourceColumn: Tipo Soporte
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo Comunicación Soporte'
+		dataType: string
+		lineageTag: 8fa56986-5bb0-485e-a1b2-127b1a3e8c99
+		sourceLineageTag: Grupo Comunicación Soporte
+		summarizeBy: none
+		sourceColumn: Grupo Comunicación Soporte
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo Soporte'
+		dataType: string
+		lineageTag: 40b61ac9-8c15-4f9d-b0b4-52c2a00e07b9
+		sourceLineageTag: Grupo Soporte
+		summarizeBy: none
+		sourceColumn: Grupo Soporte
+
+		annotation SummarizationSetBy = Automatic
+
+	column Exclusivista
+		dataType: string
+		lineageTag: dc901c1d-e3ee-45a5-82ce-489eac626e05
+		sourceLineageTag: Exclusivista
+		summarizeBy: none
+		sourceColumn: Exclusivista
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo Negociación'
+		dataType: string
+		lineageTag: e8901328-6444-48bd-af59-1e61a270d396
+		sourceLineageTag: Grupo Negociación
+		summarizeBy: none
+		sourceColumn: Grupo Negociación
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo Negociación Táctica'
+		dataType: string
+		lineageTag: 2a650de8-32a4-40b2-b87e-f9fd218ceb9a
+		sourceLineageTag: Grupo Negociación Táctica
+		summarizeBy: none
+		sourceColumn: Grupo Negociación Táctica
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Auditado Grupo Negociación Táctica'
+		dataType: string
+		lineageTag: 0636a5b0-1239-4e71-b863-3275ac15d7c6
+		sourceLineageTag: Ind. Auditado Grupo Negociación Táctica
+		summarizeBy: none
+		sourceColumn: Ind. Auditado Grupo Negociación Táctica
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo Soporte Comercial'
+		dataType: string
+		lineageTag: dd7efe22-5a1b-454d-8bf7-6be7b7184e43
+		sourceLineageTag: Grupo Soporte Comercial
+		summarizeBy: none
+		sourceColumn: Grupo Soporte Comercial
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Baja Soporte'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: a39629dd-7d4c-4f8b-9348-b0e2fc19ec3e
+		sourceLineageTag: Fecha Baja Soporte
+		summarizeBy: none
+		sourceColumn: Fecha Baja Soporte
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Baja Proveedor-Soporte'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 4ea5361e-8b54-4d27-9383-98e2a7ad61bc
+		sourceLineageTag: Fecha Baja Proveedor-Soporte
+		summarizeBy: none
+		sourceColumn: Fecha Baja Proveedor-Soporte
+
+		annotation SummarizationSetBy = Automatic
+
+	column Delegación
+		dataType: string
+		lineageTag: b89ace82-9aa5-43bb-9fb0-60557c3bcadf
+		sourceLineageTag: Delegación
+		summarizeBy: none
+		sourceColumn: Delegación
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cod. Grupo'
+		dataType: int64
+		formatString: 0
+		lineageTag: f1b07520-f3a6-47c6-a5ac-df37089bad7e
+		sourceLineageTag: Cod. Grupo
+		summarizeBy: sum
+		sourceColumn: Cod. Grupo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Grupo
+		dataType: string
+		lineageTag: 370c44a8-6542-40df-aa4a-2c61b55e1e36
+		sourceLineageTag: Grupo
+		summarizeBy: none
+		sourceColumn: Grupo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo Principal'
+		dataType: string
+		lineageTag: 00d5a90f-cabc-46be-915a-a6adf24343e6
+		sourceLineageTag: Grupo Principal
+		summarizeBy: none
+		sourceColumn: Grupo Principal
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cliente
+		dataType: string
+		lineageTag: 408aca5a-9501-4489-af63-ef274551c012
+		sourceLineageTag: Cliente
+		summarizeBy: none
+		sourceColumn: Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Marca
+		dataType: string
+		lineageTag: 63d31c53-f846-45bd-bc0a-7d0bebf19fbf
+		sourceLineageTag: Marca
+		summarizeBy: none
+		sourceColumn: Marca
+
+		annotation SummarizationSetBy = Automatic
+
+	column Producto
+		dataType: string
+		lineageTag: ab55d1d2-30df-4c56-a872-3c0825d94fce
+		sourceLineageTag: Producto
+		summarizeBy: none
+		sourceColumn: Producto
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo Producto'
+		dataType: string
+		lineageTag: 52c84ce8-b9a3-4144-874e-54abf35c536e
+		sourceLineageTag: Grupo Producto
+		summarizeBy: none
+		sourceColumn: Grupo Producto
+
+		annotation SummarizationSetBy = Automatic
+
+	column Empresa
+		dataType: string
+		lineageTag: 8f2b3857-92a8-4aa4-a2f9-159b84246f3a
+		sourceLineageTag: Empresa
+		summarizeBy: none
+		sourceColumn: Empresa
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nif. Empresa/Cliente'
+		dataType: string
+		lineageTag: 4ad805e1-2f59-4113-8790-b4fdbb3959fd
+		sourceLineageTag: Nif. Empresa/Cliente
+		summarizeBy: none
+		sourceColumn: Nif. Empresa/Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Pais Empresa'
+		dataType: string
+		lineageTag: 0241ea12-f2d1-4b30-b578-e64a9d788731
+		sourceLineageTag: Pais Empresa
+		summarizeBy: none
+		sourceColumn: Pais Empresa
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo HVM'
+		dataType: string
+		lineageTag: 2b4b2bf9-b9be-4a72-9201-0886d1c18145
+		sourceLineageTag: Grupo HVM
+		summarizeBy: none
+		sourceColumn: Grupo HVM
+
+		annotation SummarizationSetBy = Automatic
+
+	column Agencia
+		dataType: string
+		lineageTag: d1082cb0-9c64-483f-9d78-639f49d5b3cf
+		sourceLineageTag: Agencia
+		summarizeBy: none
+		sourceColumn: Agencia
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo Negocio'
+		dataType: string
+		lineageTag: 065eb5a7-b93b-4450-9cd5-9329b10a9a4e
+		sourceLineageTag: Grupo Negocio
+		summarizeBy: none
+		sourceColumn: Grupo Negocio
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo Facturación'
+		dataType: string
+		lineageTag: a3f889da-d9a1-49a1-a4a9-e46cfaaf3659
+		sourceLineageTag: Grupo Facturación
+		summarizeBy: none
+		sourceColumn: Grupo Facturación
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Bloqueado'
+		dataType: string
+		lineageTag: 74c607a7-3ebc-44c8-ba98-8645e3aecfa9
+		sourceLineageTag: Ind. Bloqueado
+		summarizeBy: none
+		sourceColumn: Ind. Bloqueado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Autorizado'
+		dataType: string
+		lineageTag: 271178ea-f191-4f11-b58e-e1781ceacba1
+		sourceLineageTag: Ind. Autorizado
+		summarizeBy: none
+		sourceColumn: Ind. Autorizado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. SAG por Separado'
+		dataType: string
+		lineageTag: 5ebcaae2-9c53-4f0e-b77b-b1c1bd4802ca
+		sourceLineageTag: Ind. SAG por Separado
+		summarizeBy: none
+		sourceColumn: Ind. SAG por Separado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Fee por Separado'
+		dataType: string
+		lineageTag: 1e0f160c-4049-40bf-8888-aaa4233c824e
+		sourceLineageTag: Ind. Fee por Separado
+		summarizeBy: none
+		sourceColumn: Ind. Fee por Separado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Fact. por Partes'
+		dataType: string
+		lineageTag: 446fb3fe-01fa-43bd-9cca-998d884bdb55
+		sourceLineageTag: Ind. Fact. por Partes
+		summarizeBy: none
+		sourceColumn: Ind. Fact. por Partes
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Ver Subcampana'
+		dataType: string
+		lineageTag: 33d06ac6-7cbb-4d6c-9faf-e3673c5e6595
+		sourceLineageTag: Ind. Ver Subcampana
+		summarizeBy: none
+		sourceColumn: Ind. Ver Subcampana
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Nº Pedido'
+		dataType: string
+		lineageTag: 06f8775d-1114-464e-a5d6-4d094219e96d
+		sourceLineageTag: Ind. Nº Pedido
+		summarizeBy: none
+		sourceColumn: Ind. Nº Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Fact. Electrónica'
+		dataType: string
+		lineageTag: cb3ad7c2-5ea6-482d-b6e0-bc85d6f32a79
+		sourceLineageTag: Ind. Fact. Electrónica
+		summarizeBy: none
+		sourceColumn: Ind. Fact. Electrónica
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. PDI Cliente'
+		dataType: string
+		lineageTag: c42907fe-c384-444d-a702-7d5e2da55397
+		sourceLineageTag: Ind. PDI Cliente
+		summarizeBy: none
+		sourceColumn: Ind. PDI Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. PDI Producto'
+		dataType: string
+		lineageTag: f85564da-3e58-4c6b-be9c-ee295911715a
+		sourceLineageTag: Ind. PDI Producto
+		summarizeBy: none
+		sourceColumn: Ind. PDI Producto
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Auditoría Financiera'
+		dataType: string
+		lineageTag: 38ab0e0d-7e13-4163-bba5-6399c1a8afea
+		sourceLineageTag: Ind. Auditoría Financiera
+		summarizeBy: none
+		sourceColumn: Ind. Auditoría Financiera
+
+		annotation SummarizationSetBy = Automatic
+
+	column Campaña
+		dataType: string
+		lineageTag: 7f3bb354-9a86-4161-9ff5-319dcd25636a
+		sourceLineageTag: Campaña
+		summarizeBy: none
+		sourceColumn: Campaña
+
+		annotation SummarizationSetBy = Automatic
+
+	column SubCampaña
+		dataType: string
+		lineageTag: 135a0a76-ce5e-475c-9688-6bb0d2a65310
+		sourceLineageTag: SubCampaña
+		summarizeBy: none
+		sourceColumn: SubCampaña
+
+		annotation SummarizationSetBy = Automatic
+
+	column Alcance
+		dataType: string
+		lineageTag: e9f0ad83-6358-489c-98c3-aebff576b924
+		sourceLineageTag: Alcance
+		summarizeBy: none
+		sourceColumn: Alcance
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Centro de Coste'
+		dataType: string
+		lineageTag: d71102e2-2788-4dd1-bab0-79c8ff5aa249
+		sourceLineageTag: Centro de Coste
+		summarizeBy: none
+		sourceColumn: Centro de Coste
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Observaciones de Campaña'
+		dataType: string
+		lineageTag: 7a401996-f283-4a71-8acc-3ca9b91bf051
+		sourceLineageTag: Observaciones de Campaña
+		summarizeBy: none
+		sourceColumn: Observaciones de Campaña
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Campana Interna'
+		dataType: string
+		lineageTag: e48de29b-7d14-4233-85c1-cc460f314a4e
+		sourceLineageTag: Ind. Campana Interna
+		summarizeBy: none
+		sourceColumn: Ind. Campana Interna
+
+		annotation SummarizationSetBy = Automatic
+
+	column Presupuesto
+		dataType: int64
+		formatString: 0
+		lineageTag: 21c36b98-ac19-471b-933c-a850f04643b3
+		sourceLineageTag: Presupuesto
+		summarizeBy: sum
+		sourceColumn: Presupuesto
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº Pedido'
+		dataType: string
+		lineageTag: c117fba7-7392-4a54-b72d-8cc2b47f6bf5
+		sourceLineageTag: Nº Pedido
+		summarizeBy: none
+		sourceColumn: Nº Pedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'F. Presupuesto'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 6cdabb24-d57e-4bf8-96b8-b2f9b8ae18ce
+		sourceLineageTag: F. Presupuesto
+		summarizeBy: none
+		sourceColumn: F. Presupuesto
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'F. Envío Presupuesto'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: cb400334-d8e5-4739-b170-27a21f6f14b3
+		sourceLineageTag: F. Envío Presupuesto
+		summarizeBy: none
+		sourceColumn: F. Envío Presupuesto
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Presup. Autorizado'
+		dataType: string
+		lineageTag: e85b967d-63e6-422f-9eb3-0848187a832b
+		sourceLineageTag: Ind. Presup. Autorizado
+		summarizeBy: none
+		sourceColumn: Ind. Presup. Autorizado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Presup. con Factura'
+		dataType: string
+		lineageTag: a254f99b-bf34-46ce-aeb1-41837515edae
+		sourceLineageTag: Ind. Presup. con Factura
+		summarizeBy: none
+		sourceColumn: Ind. Presup. con Factura
+
+		annotation SummarizationSetBy = Automatic
+
+	column Acuerdo
+		dataType: string
+		lineageTag: f3f40a4b-49de-4353-aed7-112f439a87db
+		sourceLineageTag: Acuerdo
+		summarizeBy: none
+		sourceColumn: Acuerdo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Imp. Acuerdo'
+		dataType: double
+		lineageTag: 4a7fe19e-6501-4eba-9430-02c50a408a11
+		sourceLineageTag: Imp. Acuerdo
+		summarizeBy: sum
+		sourceColumn: Imp. Acuerdo
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'F. Inicio Acuerdo'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 9f8f4a22-3f11-478e-97aa-a0ec00dd0440
+		sourceLineageTag: F. Inicio Acuerdo
+		summarizeBy: none
+		sourceColumn: F. Inicio Acuerdo
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'F. Fin Acuerdo'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: dc3e2648-282b-4989-b774-e1ca3b45db48
+		sourceLineageTag: F. Fin Acuerdo
+		summarizeBy: none
+		sourceColumn: F. Fin Acuerdo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo Presupuesto'
+		dataType: string
+		lineageTag: 751a1c5f-e42b-4f63-b9c5-f842dd4ef5ad
+		sourceLineageTag: Tipo Presupuesto
+		summarizeBy: none
+		sourceColumn: Tipo Presupuesto
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SAG BC'
+		dataType: int64
+		formatString: 0
+		lineageTag: 0913ba4b-b1d2-47bf-82b0-9fa97bbf8f8c
+		sourceLineageTag: SAG BC
+		summarizeBy: sum
+		sourceColumn: SAG BC
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'MNP BC'
+		dataType: int64
+		formatString: 0
+		lineageTag: 6665c564-3040-4853-b0eb-368141ffb4a4
+		sourceLineageTag: MNP BC
+		summarizeBy: sum
+		sourceColumn: MNP BC
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Observaciones de Presupuesto'
+		dataType: string
+		lineageTag: e884ca80-bc4a-4d66-bdae-9276affb1223
+		sourceLineageTag: Observaciones de Presupuesto
+		summarizeBy: none
+		sourceColumn: Observaciones de Presupuesto
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Observaciones de Presupuesto Internas'
+		dataType: string
+		lineageTag: 31d26dc8-e304-4230-aa85-3cc71130d883
+		sourceLineageTag: Observaciones de Presupuesto Internas
+		summarizeBy: none
+		sourceColumn: Observaciones de Presupuesto Internas
+
+		annotation SummarizationSetBy = Automatic
+
+	column Oficina
+		dataType: string
+		lineageTag: 093c856c-e379-46ec-a04e-2df67f2d7be0
+		sourceLineageTag: Oficina
+		summarizeBy: none
+		sourceColumn: Oficina
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Clave Indicación Facturación'
+		dataType: string
+		lineageTag: f56b5ac1-c184-4550-ad0c-4cc0880fd263
+		sourceLineageTag: Clave Indicación Facturación
+		summarizeBy: none
+		sourceColumn: Clave Indicación Facturación
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº Pedido Servicio Agencia'
+		dataType: string
+		lineageTag: 541385f6-dd42-4224-b9db-b33f22b437c6
+		sourceLineageTag: Nº Pedido Servicio Agencia
+		summarizeBy: none
+		sourceColumn: Nº Pedido Servicio Agencia
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Observaciones Cabecera'
+		dataType: string
+		lineageTag: 0721ca2e-3472-44ee-9615-0bcbe1a26756
+		sourceLineageTag: Observaciones Cabecera
+		summarizeBy: none
+		sourceColumn: Observaciones Cabecera
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Observaciones Cabecera SAG'
+		dataType: string
+		lineageTag: c2ff0757-2ec0-4213-b827-3db6f9d9c9e7
+		sourceLineageTag: Observaciones Cabecera SAG
+		summarizeBy: none
+		sourceColumn: Observaciones Cabecera SAG
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Concepto Factura'
+		dataType: string
+		lineageTag: 619afd26-8406-42b1-b894-f6302f051622
+		sourceLineageTag: Concepto Factura
+		summarizeBy: none
+		sourceColumn: Concepto Factura
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Concepto Factura SAG'
+		dataType: string
+		lineageTag: 477c5ae9-7e19-4d2c-a81f-0e1943b6d13a
+		sourceLineageTag: Concepto Factura SAG
+		summarizeBy: none
+		sourceColumn: Concepto Factura SAG
+
+		annotation SummarizationSetBy = Automatic
+
+	column Orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 6e597d00-1944-4ec5-82ba-063b24da9b66
+		sourceLineageTag: Orden
+		summarizeBy: sum
+		sourceColumn: Orden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'F. Ejecución'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 58a3ab1e-a2f0-4576-b520-346255659c6d
+		sourceLineageTag: F. Ejecución
+		summarizeBy: none
+		sourceColumn: F. Ejecución
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'F. Grabación'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 001c54d5-110d-44c3-98d2-832fd99e3073
+		sourceLineageTag: F. Grabación
+		summarizeBy: none
+		sourceColumn: F. Grabación
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'F. Confirmación'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 10c5e964-4ac2-4ae5-a23f-26993a6e113f
+		sourceLineageTag: F. Confirmación
+		summarizeBy: none
+		sourceColumn: F. Confirmación
+
+		annotation SummarizationSetBy = Automatic
+
+	column Año
+		dataType: int64
+		formatString: 0
+		lineageTag: 5b66dbcb-af76-4555-af19-5be43a438d6a
+		sourceLineageTag: Año
+		summarizeBy: sum
+		sourceColumn: Año
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes
+		dataType: string
+		lineageTag: 2aa59ff7-5f68-4a79-bcc2-6690ed06a43a
+		sourceLineageTag: Mes
+		summarizeBy: none
+		sourceColumn: Mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column Día
+		dataType: int64
+		formatString: 0
+		lineageTag: 48247d26-0fec-481c-97c1-8d5402bbba3f
+		sourceLineageTag: Día
+		summarizeBy: sum
+		sourceColumn: Día
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Día Semana'
+		dataType: string
+		lineageTag: 7cd07803-b83d-4947-9908-04f65224ea7c
+		sourceLineageTag: Día Semana
+		summarizeBy: none
+		sourceColumn: Día Semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column Semana
+		dataType: int64
+		formatString: 0
+		lineageTag: 8287e7e4-bdbc-42dd-b8d7-19f05daa1d74
+		sourceLineageTag: Semana
+		summarizeBy: sum
+		sourceColumn: Semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quincena
+		dataType: int64
+		formatString: 0
+		lineageTag: c5265ec0-fbcc-4746-aec3-c7593be06010
+		sourceLineageTag: Quincena
+		summarizeBy: sum
+		sourceColumn: Quincena
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Estado Orden'
+		dataType: string
+		lineageTag: 650f874d-3d2d-4451-8162-f7b3aaaa1ae1
+		sourceLineageTag: Estado Orden
+		summarizeBy: none
+		sourceColumn: Estado Orden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Material
+		dataType: string
+		lineageTag: 6e795848-6dbe-4e71-82e0-f7adcb8a9b78
+		sourceLineageTag: Material
+		summarizeBy: none
+		sourceColumn: Material
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Descripción Material'
+		dataType: string
+		lineageTag: 1833dc0b-864a-4c43-9f6b-4269b62ee7f0
+		sourceLineageTag: Descripción Material
+		summarizeBy: none
+		sourceColumn: Descripción Material
+
+		annotation SummarizationSetBy = Automatic
+
+	column Contrato
+		dataType: int64
+		formatString: 0
+		lineageTag: 06d26fdd-82a2-47dd-8d0e-fcbfd0fb7e52
+		sourceLineageTag: Contrato
+		summarizeBy: sum
+		sourceColumn: Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'F. Contrato'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: e9eabd8d-526a-478d-a3e2-0e24b3a3bb2a
+		sourceLineageTag: F. Contrato
+		summarizeBy: none
+		sourceColumn: F. Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Observaciones Contrato'
+		dataType: string
+		lineageTag: 0da0b18d-25d3-4a21-b9d8-a49ec8977b9b
+		sourceLineageTag: Observaciones Contrato
+		summarizeBy: none
+		sourceColumn: Observaciones Contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Título anuncio'
+		dataType: string
+		lineageTag: 86fe83f8-c0e6-4101-a5b9-4d212890f444
+		sourceLineageTag: Título anuncio
+		summarizeBy: none
+		sourceColumn: Título anuncio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Observaciones
+		dataType: string
+		lineageTag: c379add9-7690-4e84-acc0-424283a6561c
+		sourceLineageTag: Observaciones
+		summarizeBy: none
+		sourceColumn: Observaciones
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Observaciones 2'
+		dataType: string
+		lineageTag: cc4390f8-d2a0-4fdc-b72a-b29aa11291af
+		sourceLineageTag: Observaciones 2
+		summarizeBy: none
+		sourceColumn: Observaciones 2
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Observaciones Factura'
+		dataType: string
+		lineageTag: c347bfe3-3cf9-4d3f-879f-c53d34f8fd34
+		sourceLineageTag: Observaciones Factura
+		summarizeBy: none
+		sourceColumn: Observaciones Factura
+
+		annotation SummarizationSetBy = Automatic
+
+	column MNP
+		dataType: int64
+		formatString: 0
+		lineageTag: c539e558-de0d-4aa0-a7d1-1846068647c0
+		sourceLineageTag: MNP
+		summarizeBy: sum
+		sourceColumn: MNP
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'MNP Calculado'
+		dataType: int64
+		formatString: 0
+		lineageTag: b7152613-25be-4159-a818-62a3eda2e2db
+		sourceLineageTag: MNP Calculado
+		summarizeBy: sum
+		sourceColumn: MNP Calculado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Base Calculo MNP'
+		dataType: string
+		lineageTag: 7fd53b7f-0734-45c3-9f89-9173e8aab0bf
+		sourceLineageTag: Base Calculo MNP
+		summarizeBy: none
+		sourceColumn: Base Calculo MNP
+
+		annotation SummarizationSetBy = Automatic
+
+	column SAG
+		dataType: int64
+		formatString: 0
+		lineageTag: dfe2d83f-5ea1-46d5-8186-004dbb4b673b
+		sourceLineageTag: SAG
+		summarizeBy: sum
+		sourceColumn: SAG
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Base Calculo SAG'
+		dataType: string
+		lineageTag: 5f632dcf-7d83-4d37-908f-aec196d2343e
+		sourceLineageTag: Base Calculo SAG
+		summarizeBy: none
+		sourceColumn: Base Calculo SAG
+
+		annotation SummarizationSetBy = Automatic
+
+	column Divisa
+		dataType: string
+		lineageTag: 4912bf46-c963-4606-bcbc-85244cfd09c4
+		sourceLineageTag: Divisa
+		summarizeBy: none
+		sourceColumn: Divisa
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Origen Orden'
+		dataType: string
+		lineageTag: c8f78a99-20b1-4ce0-8ec9-4941552eb211
+		sourceLineageTag: Origen Orden
+		summarizeBy: none
+		sourceColumn: Origen Orden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nombre Usuario Orden'
+		dataType: string
+		lineageTag: c8210446-6e3a-455a-92a8-697440920feb
+		sourceLineageTag: Nombre Usuario Orden
+		summarizeBy: none
+		sourceColumn: Nombre Usuario Orden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Objetivo
+		dataType: string
+		lineageTag: d503466c-a88a-4713-96c5-68f8897105b7
+		sourceLineageTag: Objetivo
+		summarizeBy: none
+		sourceColumn: Objetivo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Orden'
+		dataType: string
+		lineageTag: 907f8740-bbcb-493d-828c-af7dd8ef833b
+		sourceLineageTag: Tipo de Orden
+		summarizeBy: none
+		sourceColumn: Tipo de Orden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Compra'
+		dataType: string
+		lineageTag: e3592ab5-f2be-40ac-853a-c2e8bb5380d6
+		sourceLineageTag: Tipo de Compra
+		summarizeBy: none
+		sourceColumn: Tipo de Compra
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Disciplina'
+		dataType: string
+		lineageTag: c58a647e-8779-4f09-9162-55db8cee6b01
+		sourceLineageTag: Tipo de Disciplina
+		summarizeBy: none
+		sourceColumn: Tipo de Disciplina
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo Disciplina'
+		dataType: string
+		lineageTag: b9fafa16-cc58-409e-b7c5-6e18019b614f
+		sourceLineageTag: Grupo Disciplina
+		summarizeBy: none
+		sourceColumn: Grupo Disciplina
+
+		annotation SummarizationSetBy = Automatic
+
+	column Disciplina
+		dataType: string
+		lineageTag: ba16ae37-545f-4352-8670-62b4a005bc7d
+		sourceLineageTag: Disciplina
+		summarizeBy: none
+		sourceColumn: Disciplina
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Acuerdo'
+		dataType: string
+		lineageTag: 59a3e05a-3def-4e14-8b04-0949f4cbd765
+		sourceLineageTag: Ind. Acuerdo
+		summarizeBy: none
+		sourceColumn: Ind. Acuerdo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo Acuerdo'
+		dataType: string
+		lineageTag: 80bbb828-a151-49f4-a930-c1cddc76fe78
+		sourceLineageTag: Tipo Acuerdo
+		summarizeBy: none
+		sourceColumn: Tipo Acuerdo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Acuerdo Intercambio'
+		dataType: string
+		lineageTag: 656dae81-451a-42bd-817c-b54a8a758307
+		sourceLineageTag: Ind. Acuerdo Intercambio
+		summarizeBy: none
+		sourceColumn: Ind. Acuerdo Intercambio
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Rappel'
+		dataType: string
+		lineageTag: 73863213-58fd-485c-919d-727395d0f167
+		sourceLineageTag: Ind. Rappel
+		summarizeBy: none
+		sourceColumn: Ind. Rappel
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Ajuste'
+		dataType: string
+		lineageTag: 0a99a48b-9882-4c4c-87ea-1e4ef871aa08
+		sourceLineageTag: Ind. Ajuste
+		summarizeBy: none
+		sourceColumn: Ind. Ajuste
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Intercompany'
+		dataType: string
+		lineageTag: 4808649c-4669-4e0a-9fa5-af4ef683ab57
+		sourceLineageTag: Ind. Intercompany
+		summarizeBy: none
+		sourceColumn: Ind. Intercompany
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Orden F'
+		dataType: string
+		lineageTag: d40b03ca-fae0-4916-99fd-297c8596d27f
+		sourceLineageTag: Ind. Orden F
+		summarizeBy: none
+		sourceColumn: Ind. Orden F
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Orden Facturable'
+		dataType: string
+		lineageTag: 00484aec-e348-456a-ba72-1728a0980e3e
+		sourceLineageTag: Ind. Orden Facturable
+		summarizeBy: none
+		sourceColumn: Ind. Orden Facturable
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo Publicidad'
+		dataType: string
+		lineageTag: eddd0ca6-25c8-4396-af53-b67f2a9d30db
+		sourceLineageTag: Tipo Publicidad
+		summarizeBy: none
+		sourceColumn: Tipo Publicidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Tipo Publicidad'
+		dataType: string
+		lineageTag: 706f6c3a-fc8c-4122-ac8b-029eb07898a1
+		sourceLineageTag: Ind. Tipo Publicidad
+		summarizeBy: none
+		sourceColumn: Ind. Tipo Publicidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Auditoria Medio'
+		dataType: string
+		lineageTag: 846565d8-3a06-4ebf-99d6-625538219762
+		sourceLineageTag: Ind. Auditoria Medio
+		summarizeBy: none
+		sourceColumn: Ind. Auditoria Medio
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo Orden Económico'
+		dataType: string
+		lineageTag: 13f7792f-4ce6-4f53-8d79-fa178e54a146
+		sourceLineageTag: Tipo Orden Económico
+		summarizeBy: none
+		sourceColumn: Tipo Orden Económico
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo Orden Publicidad'
+		dataType: string
+		lineageTag: 9edd7ec0-982f-49e5-8ea0-cb8c3746823a
+		sourceLineageTag: Tipo Orden Publicidad
+		summarizeBy: none
+		sourceColumn: Tipo Orden Publicidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo Orden Financiera'
+		dataType: string
+		lineageTag: f40b3e25-8e6b-45db-9f89-9c7741fdc139
+		sourceLineageTag: Tipo Orden Financiera
+		summarizeBy: none
+		sourceColumn: Tipo Orden Financiera
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo Orden Acciones'
+		dataType: string
+		lineageTag: 23622fbd-8f08-4d48-a7e3-39379107dcbc
+		sourceLineageTag: Tipo Orden Acciones
+		summarizeBy: none
+		sourceColumn: Tipo Orden Acciones
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo Orden HVP'
+		dataType: string
+		lineageTag: 4a928190-4035-425f-9983-064a49141b91
+		sourceLineageTag: Tipo Orden HVP
+		summarizeBy: none
+		sourceColumn: Tipo Orden HVP
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo Orden Herramienta-Estudio'
+		dataType: string
+		lineageTag: e77fcc14-8fce-420b-85f6-4c5f9dd58c23
+		sourceLineageTag: Tipo Orden Herramienta-Estudio
+		summarizeBy: none
+		sourceColumn: Tipo Orden Herramienta-Estudio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tipologias
+		dataType: string
+		lineageTag: 5df2f085-3934-44be-9474-4c5499ea4786
+		sourceLineageTag: Tipologias
+		summarizeBy: none
+		sourceColumn: Tipologias
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Factura'
+		dataType: string
+		lineageTag: 5b5a58c5-9dc9-4fe2-bdab-586965f909c9
+		sourceLineageTag: Tipo de Factura
+		summarizeBy: none
+		sourceColumn: Tipo de Factura
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº Pedido Factura'
+		dataType: string
+		lineageTag: 6df75e19-09fa-4dc9-9716-f5aeab82b9ad
+		sourceLineageTag: Nº Pedido Factura
+		summarizeBy: none
+		sourceColumn: Nº Pedido Factura
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Clave Status Factura'
+		dataType: string
+		lineageTag: 02e25b5b-8aea-4299-93f3-c069b41e7bdf
+		sourceLineageTag: Clave Status Factura
+		summarizeBy: none
+		sourceColumn: Clave Status Factura
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Obs. Factura'
+		dataType: string
+		lineageTag: 55695615-c464-423a-a84d-e1063dbbbd08
+		sourceLineageTag: Obs. Factura
+		summarizeBy: none
+		sourceColumn: Obs. Factura
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Obs. Internas Factura'
+		dataType: string
+		lineageTag: 7cb7c5f6-4a30-430e-8328-dfb56b322d95
+		sourceLineageTag: Obs. Internas Factura
+		summarizeBy: none
+		sourceColumn: Obs. Internas Factura
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Obs. Cabecera Factura'
+		dataType: string
+		lineageTag: 3aeb7e08-11d8-4171-8ae8-365b6025b8f3
+		sourceLineageTag: Obs. Cabecera Factura
+		summarizeBy: none
+		sourceColumn: Obs. Cabecera Factura
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Fact. Anulada'
+		dataType: string
+		lineageTag: a3ed6980-86e3-41ff-9452-f5931028a0eb
+		sourceLineageTag: Ind. Fact. Anulada
+		summarizeBy: none
+		sourceColumn: Ind. Fact. Anulada
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ref. Factura'
+		dataType: string
+		lineageTag: 93c3f700-0f2f-413c-9206-96d196a31aaa
+		sourceLineageTag: Ref. Factura
+		summarizeBy: none
+		sourceColumn: Ref. Factura
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ref. Orden'
+		dataType: string
+		lineageTag: f8ebd91f-6e0f-4831-839c-84b59374eab5
+		sourceLineageTag: Ref. Orden
+		summarizeBy: none
+		sourceColumn: Ref. Orden
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº Factura SAG'
+		dataType: string
+		lineageTag: 0bbd54fd-5bfe-42e3-a003-e1a11eb757de
+		sourceLineageTag: Nº Factura SAG
+		summarizeBy: none
+		sourceColumn: Nº Factura SAG
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº Pedido Factura SAG'
+		dataType: string
+		lineageTag: 95242630-379d-4833-8fd0-7435d5a6e56c
+		sourceLineageTag: Nº Pedido Factura SAG
+		summarizeBy: none
+		sourceColumn: Nº Pedido Factura SAG
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Factura Proveedor'
+		dataType: string
+		lineageTag: 576da0f9-6f45-43c0-adae-138b2f908c31
+		sourceLineageTag: Factura Proveedor
+		summarizeBy: none
+		sourceColumn: Factura Proveedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Num. Factura del Proveedor'
+		dataType: string
+		lineageTag: 1e67082d-51e2-4a24-a411-5af81a14fe5c
+		sourceLineageTag: Num. Factura del Proveedor
+		summarizeBy: none
+		sourceColumn: Num. Factura del Proveedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Imp. Total Factura Proveedor'
+		dataType: double
+		lineageTag: 374afb2e-8a78-4500-b3cd-4617ce704e03
+		sourceLineageTag: Imp. Total Factura Proveedor
+		summarizeBy: sum
+		sourceColumn: Imp. Total Factura Proveedor
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Compañía Intercompany'
+		dataType: string
+		lineageTag: d4d97bcd-cef7-48dd-a2e0-45e516b082f5
+		sourceLineageTag: Compañía Intercompany
+		summarizeBy: none
+		sourceColumn: Compañía Intercompany
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cod. Campaña Intercompany'
+		dataType: string
+		lineageTag: 0d12d984-9b9a-49c3-ae6a-9a9c18ca80c8
+		sourceLineageTag: Cod. Campaña Intercompany
+		summarizeBy: none
+		sourceColumn: Cod. Campaña Intercompany
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Campaña Intercompany'
+		dataType: string
+		lineageTag: f4861a9d-a958-4f73-9f98-7e70944f549c
+		sourceLineageTag: Campaña Intercompany
+		summarizeBy: none
+		sourceColumn: Campaña Intercompany
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Presupuesto Intercompany'
+		dataType: string
+		lineageTag: 9a4b44ac-20cd-4b65-b6b7-74e8baecc6b8
+		sourceLineageTag: Ind. Presupuesto Intercompany
+		summarizeBy: none
+		sourceColumn: Ind. Presupuesto Intercompany
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Acuerdo Negocio'
+		dataType: string
+		lineageTag: 803e3472-6a49-4028-b68b-61e735f51664
+		sourceLineageTag: Acuerdo Negocio
+		summarizeBy: none
+		sourceColumn: Acuerdo Negocio
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Desc. Abrv. Acuerdo Negocio'
+		dataType: string
+		lineageTag: 377d35f3-1824-4f99-9efa-72ea51c7b028
+		sourceLineageTag: Desc. Abrv. Acuerdo Negocio
+		summarizeBy: none
+		sourceColumn: Desc. Abrv. Acuerdo Negocio
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo Acuerdo Negocio'
+		dataType: string
+		lineageTag: 624920b5-e42f-4e67-8c7a-999d363ddc61
+		sourceLineageTag: Grupo Acuerdo Negocio
+		summarizeBy: none
+		sourceColumn: Grupo Acuerdo Negocio
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo Acuerdo Cliente'
+		dataType: string
+		lineageTag: 4dcfc580-14b1-40d0-b436-305d6440b03f
+		sourceLineageTag: Tipo Acuerdo Cliente
+		summarizeBy: none
+		sourceColumn: Tipo Acuerdo Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Forma Consumo'
+		dataType: string
+		lineageTag: aa38edc2-33ab-4e74-bb11-743b1e5d4aa3
+		sourceLineageTag: Forma Consumo
+		summarizeBy: none
+		sourceColumn: Forma Consumo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Pago Consumo'
+		dataType: string
+		lineageTag: 1c873f2e-4398-47f3-8083-14ad25038057
+		sourceLineageTag: Ind. Pago Consumo
+		summarizeBy: none
+		sourceColumn: Ind. Pago Consumo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cod. Ajuste'
+		dataType: string
+		lineageTag: d01a71ba-0b9e-4f33-88b7-e7c9115b337b
+		sourceLineageTag: Cod. Ajuste
+		summarizeBy: none
+		sourceColumn: Cod. Ajuste
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de Ajuste'
+		dataType: string
+		lineageTag: 60af6763-c74d-4d78-8a3b-84410963d879
+		sourceLineageTag: Tipo de Ajuste
+		summarizeBy: none
+		sourceColumn: Tipo de Ajuste
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ind. Ajuste Aprobado'
+		dataType: string
+		lineageTag: 07318c6b-d291-485e-b5a7-c75e5155e6af
+		sourceLineageTag: Ind. Ajuste Aprobado
+		summarizeBy: none
+		sourceColumn: Ind. Ajuste Aprobado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Categoría de Ajuste'
+		dataType: string
+		lineageTag: f54ed609-0408-4c68-8e6b-8a36f0a2786f
+		sourceLineageTag: Categoría de Ajuste
+		summarizeBy: none
+		sourceColumn: Categoría de Ajuste
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Motivo de Ajuste'
+		dataType: string
+		lineageTag: 9923d02e-aff5-411f-8f9b-0acd7a2c27a7
+		sourceLineageTag: Motivo de Ajuste
+		summarizeBy: none
+		sourceColumn: Motivo de Ajuste
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Referencia de Ajuste'
+		dataType: string
+		lineageTag: 091aeb10-ce1a-4441-99b9-8fb22d0adfe7
+		sourceLineageTag: Referencia de Ajuste
+		summarizeBy: none
+		sourceColumn: Referencia de Ajuste
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Acción Ajuste'
+		dataType: string
+		lineageTag: 886b7f71-c9c6-499a-b87e-8c1682b4ee7f
+		sourceLineageTag: Acción Ajuste
+		summarizeBy: none
+		sourceColumn: Acción Ajuste
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Observaciones Ajuste'
+		dataType: string
+		lineageTag: c7ac785a-4d3c-4c9f-8673-f554e9b6c239
+		sourceLineageTag: Observaciones Ajuste
+		summarizeBy: none
+		sourceColumn: Observaciones Ajuste
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Solicitud Ajuste'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 2fc7c966-ef51-4fe2-8a1a-442920ca8f2c
+		sourceLineageTag: Fecha Solicitud Ajuste
+		summarizeBy: none
+		sourceColumn: Fecha Solicitud Ajuste
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Aprobación Ajuste'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: a7ff2ade-4e2d-49ad-990c-2af7703c665a
+		sourceLineageTag: Fecha Aprobación Ajuste
+		summarizeBy: none
+		sourceColumn: Fecha Aprobación Ajuste
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Neto Compra _Sum_'
+		dataType: double
+		lineageTag: d6eded83-6cdf-4d32-a046-61c776f7f0bc
+		sourceLineageTag: Neto Compra _Sum_
+		summarizeBy: sum
+		sourceColumn: Neto Compra _Sum_
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Neto Venta _Sum_'
+		dataType: int64
+		formatString: 0
+		lineageTag: d97d0d9e-e590-4481-96be-fe84a1e1b377
+		sourceLineageTag: Neto Venta _Sum_
+		summarizeBy: sum
+		sourceColumn: Neto Venta _Sum_
+
+		annotation SummarizationSetBy = Automatic
+
+	column IMPORTE
+		dataType: double
+		lineageTag: 240bfc92-1284-4301-ab5d-4784814b543d
+		sourceLineageTag: IMPORTE
+		summarizeBy: sum
+		sourceColumn: IMPORTE
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CATEGORIA
+		dataType: string
+		lineageTag: 01216695-86f0-40ec-95bb-9cd732801cd9
+		sourceLineageTag: CATEGORIA
+		summarizeBy: none
+		sourceColumn: CATEGORIA
+
+		annotation SummarizationSetBy = Automatic
+
+	column CUENTA
+		dataType: string
+		lineageTag: 06a91793-611e-45af-8413-5970dc15009c
+		sourceLineageTag: CUENTA
+		summarizeBy: none
+		sourceColumn: CUENTA
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ejercicio
+		dataType: int64
+		formatString: 0
+		lineageTag: 20539872-2dfe-453e-b4c2-5c3eb8bd78f8
+		sourceLineageTag: Ejercicio
+		summarizeBy: sum
+		sourceColumn: Ejercicio
+
+		annotation SummarizationSetBy = Automatic
+
+	column NUMMES
+		dataType: string
+		lineageTag: fe7fd2f8-1eac-4822-8e70-fcd0f6140413
+		sourceLineageTag: NUMMES
+		summarizeBy: none
+		sourceColumn: NUMMES
+
+		annotation SummarizationSetBy = Automatic
+
+	column PERIODO
+		dataType: int64
+		formatString: 0
+		lineageTag: 451843a0-f107-4366-ad38-fe30e3823c64
+		sourceLineageTag: PERIODO
+		summarizeBy: none
+		sourceColumn: PERIODO
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Cod. Cliente'
+		dataType: string
+		lineageTag: 6ba10d92-c5a8-4d47-b732-adc86f7f1244
+		sourceLineageTag: Cod. Cliente
+		summarizeBy: none
+		sourceColumn: Cod. Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'comprob.'
+		dataType: string
+		lineageTag: b394f83e-12ec-41b7-b0b8-5089d1f04662
+		sourceLineageTag: comprob.
+		summarizeBy: none
+		sourceColumn: comprob.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Estado Presup.'
+		dataType: string
+		lineageTag: 05d18496-524e-44c1-8fa8-89b94ed5cc8d
+		sourceLineageTag: Estado Presup.
+		summarizeBy: none
+		sourceColumn: Estado Presup.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Serv. Agen. Pre.'
+		dataType: string
+		lineageTag: e15cf45c-96df-46d0-80d9-2695d7d91799
+		sourceLineageTag: Serv. Agen. Pre.
+		summarizeBy: none
+		sourceColumn: Serv. Agen. Pre.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'MNP Pre.'
+		dataType: string
+		lineageTag: 591b33f1-2dc1-4a36-a5b4-83842444903c
+		sourceLineageTag: MNP Pre.
+		summarizeBy: none
+		sourceColumn: MNP Pre.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo Orden Serv. Prod.'
+		dataType: string
+		lineageTag: a1a1e9a5-b368-4456-b821-15afaac2f61b
+		sourceLineageTag: Tipo Orden Serv. Prod.
+		summarizeBy: none
+		sourceColumn: Tipo Orden Serv. Prod.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº Factura Cli.'
+		dataType: int64
+		formatString: 0
+		lineageTag: 732c66ef-337b-48ef-8983-ac983a17903f
+		sourceLineageTag: Nº Factura Cli.
+		summarizeBy: sum
+		sourceColumn: Nº Factura Cli.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Factura Cli.'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f8d078fb-b5ea-4fd4-8235-df3b8245062f
+		sourceLineageTag: Fecha Factura Cli.
+		summarizeBy: none
+		sourceColumn: Fecha Factura Cli.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Grabación Factura Cli.'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 68a880be-cf1b-4a4e-8f27-9b56a3a1c4c5
+		sourceLineageTag: Fecha Grabación Factura Cli.
+		summarizeBy: none
+		sourceColumn: Fecha Grabación Factura Cli.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Envio Factura Cli.'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 5b68a981-2c7a-420a-9726-4baab6504e0e
+		sourceLineageTag: Fecha Envio Factura Cli.
+		summarizeBy: none
+		sourceColumn: Fecha Envio Factura Cli.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Cobro Factura Cli.'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 9ef0c6f2-602f-47c2-88a4-e3a2b5efdde2
+		sourceLineageTag: Fecha Cobro Factura Cli.
+		summarizeBy: none
+		sourceColumn: Fecha Cobro Factura Cli.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Vto. Factura Cli.'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: d9be15b1-9b59-4cb0-891a-a12729abb521
+		sourceLineageTag: Fecha Vto. Factura Cli.
+		summarizeBy: none
+		sourceColumn: Fecha Vto. Factura Cli.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº Prefactura Cli.'
+		dataType: string
+		lineageTag: e4daa360-2777-44f0-8714-1bb968e2a39c
+		sourceLineageTag: Nº Prefactura Cli.
+		summarizeBy: none
+		sourceColumn: Nº Prefactura Cli.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Prefactura Cli.'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 8b420b29-5024-412a-880f-d1a43375d98a
+		sourceLineageTag: Fecha Prefactura Cli.
+		summarizeBy: none
+		sourceColumn: Fecha Prefactura Cli.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Factura Prov.'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 46694b7f-db31-4154-b7f6-559c1a67d2f8
+		sourceLineageTag: Fecha Factura Prov.
+		summarizeBy: none
+		sourceColumn: Fecha Factura Prov.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Vto. Factura Prov.'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 59034613-b621-4284-824d-3d449df8fc4a
+		sourceLineageTag: Fecha Vto. Factura Prov.
+		summarizeBy: none
+		sourceColumn: Fecha Vto. Factura Prov.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Aceptación Factura Prov.'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 440647d2-016d-4548-903d-1c3bac8ea6f6
+		sourceLineageTag: Fecha Aceptación Factura Prov.
+		summarizeBy: none
+		sourceColumn: Fecha Aceptación Factura Prov.
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha Pago Factura Prov.'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 70434dc1-dcd7-42e4-83de-7aa3b41fb8ef
+		sourceLineageTag: Fecha Pago Factura Prov.
+		summarizeBy: none
+		sourceColumn: Fecha Pago Factura Prov.
+
+		annotation SummarizationSetBy = Automatic
+
+	column CodigoSociedad
+		dataType: string
+		lineageTag: 64b64837-e63b-45ef-8822-22ddfe7d83dc
+		sourceLineageTag: CodigoSociedad
+		summarizeBy: none
+		sourceColumn: CodigoSociedad
+
+		annotation SummarizationSetBy = Automatic
+
+	column ClienteKey_MMS
+		dataType: string
+		lineageTag: 94fd7b81-6300-4959-8c99-51f54025daae
+		sourceLineageTag: ClienteKey_MMS
+		summarizeBy: none
+		sourceColumn: ClienteKey_MMS
+
+		annotation SummarizationSetBy = Automatic
+
+	partition MMS = entity
+		mode: directLake
+		source
+			entityName: MMS
+			schemaName: 200
+			expressionSource: 'DirectLake - lh_tinkle_financiero'
+

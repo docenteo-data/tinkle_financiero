@@ -1,0 +1,69 @@
+relationship 563e1e6d-a486-bf28-b545-8507b30d1439
+	fromColumn: Fact_Actuals.Fecha
+	toColumn: Dim_Calendar.Fecha
+
+relationship b088b689-c20b-a0ee-240f-2fe98a223ae5
+	fromColumn: Fact_Actuals.Sociedad
+	toColumn: Dim_Sociedades.Sociedad
+
+relationship 938b67bd-e3b1-8c99-69e7-617a0dc032fa
+	fromColumn: MMS.Compañia
+	toColumn: Dim_Sociedades.Sociedad_MMS
+
+relationship 9dfc9785-5eb0-9180-1ebe-07046d659608
+	fromColumn: Fact_Actuals.ID_Account
+	toColumn: Dim_Mapeo_Cuentas.ID_Account
+
+relationship 9dd84361-7798-14af-c155-6bce149fe92c
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: Dim_Cuentas.ID_Account
+	toColumn: Dim_Mapeo_Cuentas.ID_Account
+
+relationship 29898400-9728-f4f1-e369-5083d9dc00e8
+	fromColumn: Aux_CDC.'INICIALES CAPTIO'
+	toColumn: Dim_CDC.'INICIALES CAPTIO'
+
+relationship 5125ee97-258b-6392-ebfd-a46547548c97
+	fromColumn: Map_Report_Line_Account.Report_Line_Key
+	toColumn: Dim_Report_Line.Report_Line_Key
+
+relationship 1d8fa1f4-9210-3256-03d1-e04240b1e991
+	toCardinality: many
+	fromColumn: MMS.PERIODO
+	toColumn: Dim_Calendar.Orden_Mes
+
+relationship 77e77d04-d3f0-2ea7-86c0-7e105ce11eac
+	toCardinality: many
+	fromColumn: Dim_Mapeo_Cuentas.Cuenta_magnitude
+	toColumn: Presupuestos.Cuenta
+
+relationship 888756f5-6a96-24b0-35ad-7d069bf875b5
+	fromColumn: Presupuestos.CodigoSociedad
+	toColumn: Dim_Sociedades.CodigoSociedad
+
+relationship cc30bd87-27ee-2857-1277-1b77e7c7a580
+	fromColumn: MMS.ClienteKey_MMS
+	toColumn: Dim_Clientes.ClienteKey_MMS
+
+relationship 9df88c41-c425-e819-00b5-e7b261c8ad8c
+	fromColumn: Fact_Actuals.ClienteKey_Oracle
+	toColumn: Dim_Clientes.ClienteKey_Oracle
+
+relationship 723226ca-2d97-92a4-102b-1434c7785d4a
+	fromColumn: Fact_Asignacion_RRHH.Empleado
+	toColumn: Dim_RRHH.NOMBRE
+
+relationship a1c9a1bd-d8b2-fef2-2c1e-1d70eeb1870b
+	crossFilteringBehavior: bothDirections
+	fromColumn: Fact_Asignacion_RRHH.ClienteMMS
+	toColumn: Dim_Clientes.'Cliente MMS'
+
+relationship 83cd0177-8714-5509-bd5b-39727ba73203
+	fromColumn: Fact_Asignacion_RRHH.EquipoKey
+	toColumn: Dim_equipos.EquipoKey
+
+relationship f5d55c09-fbe5-220e-61d0-fb0833f6f999
+	fromColumn: Dim_Clientes.SECCION
+	toColumn: Dim_CDC.'INICIALES CAPTIO'
+

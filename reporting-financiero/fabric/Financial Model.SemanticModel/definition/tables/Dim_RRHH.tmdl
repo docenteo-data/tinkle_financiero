@@ -1,0 +1,256 @@
+table Dim_RRHH
+	lineageTag: 11776186-7f6a-4b47-8cba-74da50a3e35c
+	sourceLineageTag: [300].[Dim_RRHH]
+
+	column NOMBRE
+		dataType: string
+		lineageTag: e8be4439-a1f1-496e-bd86-6941f42bc48b
+		sourceLineageTag: NOMBRE
+		summarizeBy: none
+		sourceColumn: NOMBRE
+
+		annotation SummarizationSetBy = Automatic
+
+	column EMPRESA
+		dataType: string
+		lineageTag: 147db389-2799-4fbd-b638-ec28da03d545
+		sourceLineageTag: EMPRESA
+		summarizeBy: none
+		sourceColumn: EMPRESA
+
+		annotation SummarizationSetBy = Automatic
+
+	column PUESTO
+		dataType: string
+		lineageTag: dee0e512-096d-4fde-9c26-79ea25f49dca
+		sourceLineageTag: PUESTO
+		summarizeBy: none
+		sourceColumn: PUESTO
+
+		annotation SummarizationSetBy = Automatic
+
+	column MANAGER
+		dataType: string
+		lineageTag: 904e591c-e242-44cc-abc7-7ab82282ab79
+		sourceLineageTag: MANAGER
+		summarizeBy: none
+		sourceColumn: MANAGER
+
+		annotation SummarizationSetBy = Automatic
+
+	column EQUIPO
+		dataType: string
+		lineageTag: f198c725-414e-4995-9c7e-63a1de09e7ad
+		sourceLineageTag: EQUIPO
+		summarizeBy: none
+		sourceColumn: EQUIPO
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CENTRO DE COSTE'
+		dataType: string
+		lineageTag: da942388-00d0-4a94-aebf-47b1e4036107
+		sourceLineageTag: CENTRO DE COSTE
+		summarizeBy: none
+		sourceColumn: CENTRO DE COSTE
+
+		annotation SummarizationSetBy = Automatic
+
+	column OFICINA
+		dataType: string
+		lineageTag: 7cdeaaf9-1c6d-4af3-8d5c-46122166d468
+		sourceLineageTag: OFICINA
+		summarizeBy: none
+		sourceColumn: OFICINA
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fecha inicio_'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: f50152d2-1b65-4257-902d-24b45a10dae1
+		sourceLineageTag: Fecha inicio_
+		summarizeBy: none
+		sourceColumn: Fecha inicio_
+
+		changedProperty = DataType
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Fecha fin_'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: ce0e5c46-1241-4bf2-bc72-5b2c34619bec
+		sourceLineageTag: Fecha fin_
+		summarizeBy: none
+		sourceColumn: Fecha fin_
+
+		changedProperty = DataType
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Jornada
+		dataType: int64
+		lineageTag: 825ee324-bbdf-463a-ae3f-9723dd0f56a0
+		sourceLineageTag: Jornada
+		summarizeBy: none
+		sourceColumn: Jornada
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'SALARIO 2025'
+		dataType: double
+		lineageTag: 511e2954-16a8-45dd-9a9d-04be9a351cc1
+		sourceLineageTag: SALARIO 2025
+		summarizeBy: none
+		sourceColumn: SALARIO 2025
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'SUBIDA SALARIAL 2026'
+		dataType: double
+		lineageTag: 905a5a06-2e48-49f9-915a-f4e850053b5a
+		sourceLineageTag: SUBIDA SALARIAL 2026
+		summarizeBy: none
+		sourceColumn: SUBIDA SALARIAL 2026
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Fecha subida'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 3ff384d2-55d3-48f8-839a-e87332dbb39b
+		sourceLineageTag: Fecha subida
+		summarizeBy: none
+		sourceColumn: Fecha subida
+
+		changedProperty = DataType
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'SALARIO ANUAL 2026'
+		dataType: double
+		lineageTag: ab86dc4e-26eb-4cc8-be93-6a1f7e49b619
+		sourceLineageTag: SALARIO ANUAL 2026
+		summarizeBy: none
+		sourceColumn: SALARIO ANUAL 2026
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'GRATIFICACION 2026'
+		dataType: double
+		lineageTag: 434ae4be-cc0f-4667-bc27-53cc8c53024e
+		sourceLineageTag: GRATIFICACION 2026
+		summarizeBy: none
+		sourceColumn: GRATIFICACION 2026
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Bonus 2025'
+		dataType: double
+		lineageTag: b1200ca9-df57-447e-b6c9-c36c2d5646ee
+		sourceLineageTag: Bonus 2025
+		summarizeBy: none
+		sourceColumn: Bonus 2025
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'IPC 2026 _INCLUIDO MEDIANA DE 2025 HASTA CONFIRMACION_'
+		dataType: double
+		lineageTag: 881685c7-d62a-4a0b-9456-d4367a8cdce9
+		sourceLineageTag: IPC 2026 _INCLUIDO MEDIANA DE 2025 HASTA CONFIRMACION_
+		summarizeBy: none
+		sourceColumn: IPC 2026 _INCLUIDO MEDIANA DE 2025 HASTA CONFIRMACION_
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'RETRIBUCION ANUAL 2026 _PRORRATEADO DE SUBIDAS_ ALTAS Y BAJAS DURANTE EL AÑO_'
+		dataType: double
+		lineageTag: 47ec26ce-3703-46c9-8db2-1b52c137027d
+		sourceLineageTag: RETRIBUCION ANUAL 2026 _PRORRATEADO DE SUBIDAS_ ALTAS Y BAJAS DURANTE EL AÑO_
+		summarizeBy: none
+		sourceColumn: RETRIBUCION ANUAL 2026 _PRORRATEADO DE SUBIDAS_ ALTAS Y BAJAS DURANTE EL AÑO_
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'COSTE SEGURIDAD SOCIAL 2026'
+		dataType: double
+		lineageTag: 40628b06-7973-4df9-901e-5dac0df1c382
+		sourceLineageTag: COSTE SEGURIDAD SOCIAL 2026
+		summarizeBy: none
+		sourceColumn: COSTE SEGURIDAD SOCIAL 2026
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'COSTE TOTAL 2026 _PRORRATEADO DE SUBIDAS_ ALTAS Y BAJAS DURANTE EL AÑO__'
+		dataType: double
+		lineageTag: 1ca6b0f1-3f85-4dec-9bb1-e438e1a5d890
+		sourceLineageTag: COSTE TOTAL 2026 _PRORRATEADO DE SUBIDAS_ ALTAS Y BAJAS DURANTE EL AÑO__
+		summarizeBy: none
+		sourceColumn: COSTE TOTAL 2026 _PRORRATEADO DE SUBIDAS_ ALTAS Y BAJAS DURANTE EL AÑO__
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'COSTE SS ANUAL TOTAL'
+		dataType: double
+		lineageTag: 1a22106e-8c0b-4bc5-9194-3c2bb25f2236
+		sourceLineageTag: COSTE SS ANUAL TOTAL
+		summarizeBy: none
+		sourceColumn: COSTE SS ANUAL TOTAL
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'COSTE TOTAL ANUAL _PROYECCION 2027_'
+		dataType: double
+		lineageTag: e8671cb7-73fc-4ffd-a007-f8c51c616c45
+		sourceLineageTag: COSTE TOTAL ANUAL _PROYECCION 2027_
+		summarizeBy: none
+		sourceColumn: COSTE TOTAL ANUAL _PROYECCION 2027_
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Dim_RRHH = entity
+		mode: directLake
+		source
+			entityName: Dim_RRHH
+			schemaName: 300
+			expressionSource: 'DirectLake - lh_tinkle_financiero'
+

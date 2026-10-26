@@ -1,0 +1,56 @@
+table Dim_Mapeo_Cuentas
+	lineageTag: 9770968e-8ca6-4397-a575-8803e3838abe
+	sourceLineageTag: [300].[Dim_Mapeo_Cuentas]
+
+	column Cuenta_magnitude
+		dataType: string
+		lineageTag: 5479fa35-d55b-430f-a813-f390bb1605bf
+		sourceLineageTag: Cuenta_magnitude
+		summarizeBy: none
+		sourceColumn: Cuenta_magnitude
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cuenta_origen
+		dataType: string
+		lineageTag: 7ee4bacc-1cc4-4661-9275-47d3a0e3929f
+		sourceLineageTag: Cuenta_origen
+		summarizeBy: none
+		sourceColumn: Cuenta_origen
+
+		annotation SummarizationSetBy = Automatic
+
+	column Descripcion
+		dataType: string
+		lineageTag: 6b7312e1-f15b-43d0-b3c2-965a35952cb3
+		sourceLineageTag: Descripcion
+		summarizeBy: none
+		sourceColumn: Descripcion
+
+		annotation SummarizationSetBy = Automatic
+
+	column Origen_map
+		dataType: string
+		lineageTag: f90bd035-8e55-4962-84ef-106970726299
+		sourceLineageTag: Origen_map
+		summarizeBy: none
+		sourceColumn: Origen_map
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Account
+		dataType: string
+		lineageTag: 9ed7151f-ee18-4062-820c-9b7bc599a81c
+		sourceLineageTag: ID_Account
+		summarizeBy: none
+		sourceColumn: ID_Account
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Mapeo_Cuentas = entity
+		mode: directLake
+		source
+			entityName: Dim_Mapeo_Cuentas
+			schemaName: 300
+			expressionSource: 'DirectLake - lh_tinkle_financiero'
+

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "72e3076da3c645e6d9c1",
+  "displayName": "RENTABILIDAD CLIENTE (CDC)",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280
+}

@@ -1,0 +1,205 @@
+table Fact_Actuals
+	lineageTag: 06cdfb9b-4826-4838-8c41-37c0cb69a632
+	sourceLineageTag: [300].[Fact_Actuals]
+
+	column Sociedad
+		dataType: string
+		lineageTag: 8cca7267-bcc8-47be-8fb1-1b4bf7f480cc
+		sourceLineageTag: Sociedad
+		summarizeBy: none
+		sourceColumn: Sociedad
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cuenta_origen
+		dataType: string
+		lineageTag: a4046323-a6ed-42c2-9ba1-58a797b143f1
+		sourceLineageTag: Cuenta_origen
+		summarizeBy: none
+		sourceColumn: Cuenta_origen
+
+		annotation SummarizationSetBy = Automatic
+
+	column Descripcion
+		dataType: string
+		lineageTag: 52c1e85f-6798-4ddd-8f6e-a5190af99d76
+		sourceLineageTag: Descripcion
+		summarizeBy: none
+		sourceColumn: Descripcion
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fecha
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 7317bf97-558b-49e5-8f0b-4248c43a1c54
+		sourceLineageTag: Fecha
+		summarizeBy: none
+		sourceColumn: Fecha
+
+		changedProperty = DataType
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Debe
+		dataType: double
+		lineageTag: a4d2827d-8772-41b6-9c69-8b9d9eaad1b2
+		sourceLineageTag: Debe
+		summarizeBy: sum
+		sourceColumn: Debe
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Haber
+		dataType: double
+		lineageTag: c96e08f7-bf35-4618-bee9-ab3b7fab71e6
+		sourceLineageTag: Haber
+		summarizeBy: sum
+		sourceColumn: Haber
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Saldo
+		dataType: double
+		lineageTag: 2a4c9433-94b2-4a8e-8204-3c7c7c9a21cb
+		sourceLineageTag: Saldo
+		summarizeBy: sum
+		sourceColumn: Saldo
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Origen_actuals
+		dataType: string
+		lineageTag: 36a88c33-843a-4bd6-9eac-3d2230ec303b
+		sourceLineageTag: Origen_actuals
+		summarizeBy: none
+		sourceColumn: Origen_actuals
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fecha_Original
+		dataType: string
+		lineageTag: 8745c5e9-89e1-444e-b976-ecb212c23567
+		sourceLineageTag: Fecha_Original
+		summarizeBy: none
+		sourceColumn: Fecha_Original
+
+		annotation SummarizationSetBy = Automatic
+
+	column Periodo_Original
+		dataType: string
+		lineageTag: 99e264fe-fc7f-4f2c-97a6-95e846cbdec1
+		sourceLineageTag: Periodo_Original
+		summarizeBy: none
+		sourceColumn: Periodo_Original
+
+		annotation SummarizationSetBy = Automatic
+
+	column Periodo
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 72b8aff0-9685-41ee-9306-ba2d358e2015
+		sourceLineageTag: Periodo
+		summarizeBy: none
+		sourceColumn: Periodo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cliente
+		dataType: string
+		lineageTag: 2136e50a-938b-4724-90a5-ac50c9a6b443
+		sourceLineageTag: Cliente
+		summarizeBy: none
+		sourceColumn: Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Account
+		dataType: string
+		lineageTag: 82214df2-1f9b-44dd-bc88-5b1914476e9a
+		sourceLineageTag: ID_Account
+		summarizeBy: none
+		sourceColumn: ID_Account
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Num. Tercero'
+		dataType: string
+		lineageTag: 926b308c-c7a8-41d4-a896-4567439578fc
+		sourceLineageTag: Num. Tercero
+		summarizeBy: none
+		sourceColumn: Num. Tercero
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nom. Tercero'
+		dataType: string
+		lineageTag: 17bb9788-fb0e-4cbe-a44d-40281a68febd
+		sourceLineageTag: Nom. Tercero
+		summarizeBy: none
+		sourceColumn: Nom. Tercero
+
+		annotation SummarizationSetBy = Automatic
+
+	column Categoria
+		dataType: string
+		lineageTag: 207872b4-19e4-4256-afcc-e5edf4bc1990
+		sourceLineageTag: Categoria
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Num & Nom Tercero_'
+		dataType: string
+		lineageTag: 2aadeed1-e900-439a-875a-5c543b819443
+		sourceLineageTag: Num & Nom Tercero_
+		summarizeBy: none
+		sourceColumn: Num & Nom Tercero_
+
+		annotation SummarizationSetBy = Automatic
+
+	column Intercía
+		dataType: string
+		lineageTag: de7fb33c-c403-4635-aaad-479c3edb8483
+		sourceLineageTag: Intercía
+		summarizeBy: none
+		sourceColumn: Intercía
+
+		annotation SummarizationSetBy = Automatic
+
+	column CodigoSociedad
+		dataType: string
+		lineageTag: 70c81783-3558-4654-85a5-6f034f919dc2
+		sourceLineageTag: CodigoSociedad
+		summarizeBy: none
+		sourceColumn: CodigoSociedad
+
+		annotation SummarizationSetBy = Automatic
+
+	column ClienteKey_Oracle
+		dataType: string
+		lineageTag: 5512ad8d-9561-4b96-8c84-faaf4a71afa6
+		sourceLineageTag: ClienteKey_Oracle
+		summarizeBy: none
+		sourceColumn: ClienteKey_Oracle
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Fact_Actuals = entity
+		mode: directLake
+		source
+			entityName: Fact_Actuals
+			schemaName: 300
+			expressionSource: 'DirectLake - lh_tinkle_financiero'
+

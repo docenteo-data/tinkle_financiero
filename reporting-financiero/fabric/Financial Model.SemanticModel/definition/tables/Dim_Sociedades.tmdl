@@ -1,0 +1,56 @@
+table Dim_Sociedades
+	lineageTag: e3e134c3-0baf-43a6-ac72-bad109d908b1
+	sourceLineageTag: [300].[Dim_Sociedades]
+
+	column Pais
+		dataType: string
+		lineageTag: 891140cc-e0d2-412a-9d57-30c2a28dc827
+		sourceLineageTag: Pais
+		summarizeBy: none
+		sourceColumn: Pais
+
+		annotation SummarizationSetBy = Automatic
+
+	column CodigoSociedad
+		dataType: string
+		lineageTag: 7ff2ab2a-7c39-414b-a72f-946042b674aa
+		sourceLineageTag: CodigoSociedad
+		summarizeBy: none
+		sourceColumn: CodigoSociedad
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sociedad
+		dataType: string
+		lineageTag: 24e59d70-ffcc-476c-92bf-48b790187e98
+		sourceLineageTag: Sociedad
+		summarizeBy: none
+		sourceColumn: Sociedad
+
+		annotation SummarizationSetBy = Automatic
+
+	column CountryCode
+		dataType: string
+		lineageTag: 1368cb17-2392-4c8f-bd0e-73225e7d5c73
+		sourceLineageTag: CountryCode
+		summarizeBy: none
+		sourceColumn: CountryCode
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sociedad_MMS
+		dataType: string
+		lineageTag: afdd5f56-dbb0-4395-875f-6f7f129b8e4d
+		sourceLineageTag: Sociedad_MMS
+		summarizeBy: none
+		sourceColumn: Sociedad_MMS
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Sociedades = entity
+		mode: directLake
+		source
+			entityName: Dim_Sociedades
+			schemaName: 300
+			expressionSource: 'DirectLake - lh_tinkle_financiero'
+

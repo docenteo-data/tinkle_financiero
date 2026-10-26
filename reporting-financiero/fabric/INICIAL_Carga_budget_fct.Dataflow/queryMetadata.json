@@ -1,0 +1,50 @@
+{
+  "formatVersion": "202502",
+  "computeEngineSettings": {
+    "allowModernEvaluationEngine": true
+  },
+  "name": "INICIAL_Carga_budget_fct",
+  "queryGroups": [],
+  "documentLocale": "en-US",
+  "queriesMetadata": {
+    "B01 JAZZ": {
+      "queryId": "f95a8cf5-5474-4cc1-b844-5dd2959223a6",
+      "queryName": "B01 JAZZ"
+    },
+    "B01 ONION": {
+      "queryId": "4e97755f-2061-4710-a21d-eef7d6b97e98",
+      "queryName": "B01 ONION"
+    },
+    "B01 PORT": {
+      "queryId": "fa2219b4-f6d0-46c7-a542-fb1130de7296",
+      "queryName": "B01 PORT"
+    },
+    "B01 CONS": {
+      "queryId": "76e0331c-2560-4d13-a35e-570ad341b43e",
+      "queryName": "B01 CONS"
+    },
+    "B01 TOTAL (Checklist)": {
+      "queryId": "cf38c27c-d9a6-43c2-b02a-cf5d969650e2",
+      "queryName": "B01 TOTAL (Checklist)",
+      "loadEnabled": false
+    },
+    "FORECASTS y BUDGET": {
+      "queryId": "eb26950c-572b-4bd4-9898-302c4f003501",
+      "queryName": "FORECASTS y BUDGET",
+      "loadEnabled": false
+    },
+    "FORECASTS y BUDGET_DataDestination": {
+      "queryId": "a1dc4c08-7e6d-4bd3-b7ed-cc86a59eb1a5",
+      "queryName": "FORECASTS y BUDGET_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    }
+  },
+  "connections": [
+    {
+      "path": "Lakehouse",
+      "kind": "Lakehouse",
+      "connectionId": "{\"ClusterId\":\"1caeaa44-8edc-458c-a1b4-c546849cf97d\",\"DatasourceId\":\"ebd2d2e1-1cee-4cb0-8333-e6349b6c8528\"}"
+    }
+  ]
+}

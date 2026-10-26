@@ -1,0 +1,35 @@
+{
+  "formatVersion": "202502",
+  "computeEngineSettings": {
+    "allowModernEvaluationEngine": true
+  },
+  "name": "INICIAL_Carga_Oracle_Checklist",
+  "queryGroups": [],
+  "documentLocale": "en-US",
+  "queriesMetadata": {
+    "Carga Oracle historico desde Checklist": {
+      "queryId": "375f809f-7cfa-4dfa-8dff-1e8306b14cc7",
+      "queryName": "Carga Oracle historico desde Checklist",
+      "loadEnabled": false
+    },
+    "DefaultDestination": {
+      "queryId": "6c6277d6-ecd8-432c-9973-8b60a82f8624",
+      "queryName": "DefaultDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    },
+    "Carga Oracle historico desde Checklist_DataDestination": {
+      "queryId": "86718bf7-1c81-41f3-81af-85c8d79b8c22",
+      "queryName": "Carga Oracle historico desde Checklist_DataDestination",
+      "isHidden": true,
+      "loadEnabled": false
+    }
+  },
+  "connections": [
+    {
+      "path": "Lakehouse",
+      "kind": "Lakehouse",
+      "connectionId": "{\"ClusterId\":\"1caeaa44-8edc-458c-a1b4-c546849cf97d\",\"DatasourceId\":\"ebd2d2e1-1cee-4cb0-8333-e6349b6c8528\"}"
+    }
+  ]
+}
