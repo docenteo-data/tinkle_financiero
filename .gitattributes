@@ -1,0 +1,3 @@
+# Definiciones exportadas de Fabric: bytes exactos, sin conversión de finales de línea,
+# para que la comparación con Fabric y la publicación (rollback) sean fieles.
+reporting-financiero/fabric/*.*/** -text

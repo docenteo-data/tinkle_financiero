@@ -1,112 +1,85 @@
-"""Exporta las definiciones de los items del workspace de Fabric a reporting-financiero/fabric/.
+"""Exporta las definiciones del workspace de Fabric a reporting-financiero/fabric/ o comprueba la sincronía.
 
-Solo lectura: lista los items y llama a getDefinition. No ejecuta ni modifica nada en Fabric.
-Requisito: Azure CLI con la cuenta de Tinkle por defecto
-(az account set --subscription 74ab7d37-cd81-40fd-82e4-cd9c35f4345a).
+Solo lectura sobre Fabric: lista los items y llama a getDefinition.
+Requisito: Azure CLI con la cuenta de Tinkle por defecto (el script lo comprueba).
 
 Uso, desde la raíz del repositorio:
     python reporting-financiero/scripts/exportar_fabric.py
+        Escribe fabric/<Nombre>.<Tipo>/ para cada item. Las carpetas de los tipos
+        exportados se regeneran enteras; sql/, temas/ y el esquema no se tocan.
+    python reporting-financiero/scripts/exportar_fabric.py --comprobar [REF]
+        No escribe nada. Compara Fabric con fabric/ en el commit REF (por defecto main).
 
-Cada item se escribe en fabric/<Nombre>.<Tipo>/ con las mismas rutas que da la API
-(el formato de la integración con git de Fabric). Las carpetas de los tipos exportados
-se regeneran enteras en cada ejecución.
+Códigos de salida: 0 sincronizado o exportado, 1 hay diferencias, 2 cuenta incorrecta o error.
 """
 
-import base64
-import json
-import pathlib
+import argparse
 import shutil
-import subprocess
 import sys
-import time
 import urllib.error
-import urllib.request
 
-WORKSPACE_ID = "b31820dc-4b4f-4696-9a96-bbee438e9306"
-TENANT_ID = "74ab7d37-cd81-40fd-82e4-cd9c35f4345a"
-API = "https://api.fabric.microsoft.com/v1"
-
-# Tipo de item y formato pedido a getDefinition (None = formato por defecto).
-TIPOS = {
-    "SemanticModel": "TMDL",
-    "Report": "PBIR",
-    "Dataflow": None,
-    "DataPipeline": None,
-    "Notebook": "ipynb",
-}
-# Las UDF no se exportan: su código lleva un secreto incrustado (ver CLAUDE.md, reglas del cliente).
-EXCLUIDOS = {"UserDataFunction"}
-
-DESTINO = pathlib.Path(__file__).resolve().parents[1] / "fabric"
+import fabric_comun as fc
 
 
-def token():
-    cuenta = subprocess.run(
-        "az account show --query tenantId -o tsv",
-        capture_output=True, text=True, shell=True, check=True,
-    ).stdout.strip()
-    if cuenta != TENANT_ID:
-        sys.exit("Azure CLI no apunta al tenant de Tinkle. Ejecuta: az account set --subscription " + TENANT_ID)
-    return subprocess.run(
-        "az account get-access-token --resource https://api.fabric.microsoft.com --query accessToken -o tsv",
-        capture_output=True, text=True, shell=True, check=True,
-    ).stdout.strip()
+def descargar_todo(tok):
+    ficheros, errores = {}, []
+    for item in sorted(fc.items(tok), key=lambda i: (i["type"], i["displayName"])):
+        if item["type"] not in fc.FORMATOS:
+            continue
+        carpeta = fc.nombre_carpeta(item)
+        try:
+            for ruta, contenido in fc.descargar_definicion(item, tok).items():
+                ficheros[carpeta + "/" + ruta] = contenido
+            print("OK", fc.ascii(carpeta))
+        except (urllib.error.HTTPError, RuntimeError, TimeoutError) as error:
+            errores.append(carpeta)
+            print("ERROR", fc.ascii(carpeta), fc.ascii(error))
+    return ficheros, errores
 
 
-def peticion(metodo, url, tok, cuerpo=None):
-    datos = json.dumps(cuerpo).encode() if cuerpo is not None else None
-    req = urllib.request.Request(url, data=datos, method=metodo)
-    req.add_header("Authorization", "Bearer " + tok)
-    if datos is not None:
-        req.add_header("Content-Type", "application/json")
-    with urllib.request.urlopen(req) as resp:
-        texto = resp.read().decode("utf-8")
-        return resp.status, resp.headers, (json.loads(texto) if texto else None)
+def exportar(ficheros):
+    destino = fc.RAIZ_REPO / fc.CARPETA_FABRIC
+    for tipo in fc.FORMATOS:
+        for carpeta in destino.glob(f"*.{tipo}"):
+            shutil.rmtree(carpeta)
+    for ruta, contenido in ficheros.items():
+        fichero = destino / ruta
+        fichero.parent.mkdir(parents=True, exist_ok=True)
+        fichero.write_bytes(contenido)
+    print("Ficheros exportados:", len(ficheros))
 
 
-def definicion(item, tok):
-    url = f"{API}/workspaces/{WORKSPACE_ID}/items/{item['id']}/getDefinition"
-    formato = TIPOS[item["type"]]
-    if formato:
-        url += "?format=" + formato
-    estado, cabeceras, cuerpo = peticion("POST", url, tok)
-    if estado == 200:
-        return cuerpo["definition"]
-    operacion = cabeceras["x-ms-operation-id"]
-    for _ in range(60):
-        time.sleep(int(cabeceras.get("Retry-After", 3)))
-        _, cabeceras_op, estado_op = peticion("GET", f"{API}/operations/{operacion}", tok)
-        if estado_op["status"] == "Succeeded":
-            return peticion("GET", f"{API}/operations/{operacion}/result", tok)[2]["definition"]
-        if estado_op["status"] == "Failed":
-            raise RuntimeError(json.dumps(estado_op.get("error")))
-    raise TimeoutError(operacion)
+def comprobar(ficheros, ref):
+    repo = fc.solo_items(fc.ficheros_en_git(ref))
+    nuevos, cambiados, borrados = fc.comparar(ficheros, repo)
+    for etiqueta, lista in (("SOLO EN FABRIC", nuevos), ("DISTINTO", cambiados), ("SOLO EN EL REPO", borrados)):
+        for ruta in lista:
+            print(etiqueta + ":", fc.ascii(ruta))
+    if nuevos or cambiados or borrados:
+        print(f"Fabric NO coincide con {fc.ascii(ref)}: {len(nuevos)} solo en Fabric, "
+              f"{len(cambiados)} distintos, {len(borrados)} solo en el repo.")
+        return 1
+    print(f"Fabric coincide con {fc.ascii(ref)}.")
+    return 0
 
 
 def main():
-    tok = token()
-    items = peticion("GET", f"{API}/workspaces/{WORKSPACE_ID}/items", tok)[2]["value"]
-    for tipo in TIPOS:
-        for carpeta in DESTINO.glob(f"*.{tipo}"):
-            shutil.rmtree(carpeta)
-    exportados = 0
-    for item in sorted(items, key=lambda i: (i["type"], i["displayName"])):
-        if item["type"] in EXCLUIDOS or item["type"] not in TIPOS:
-            continue
-        nombre = f"{item['displayName']}.{item['type']}"
-        try:
-            partes = definicion(item, tok)["parts"]
-        except (urllib.error.HTTPError, RuntimeError, TimeoutError) as error:
-            print("ERROR", nombre.encode("ascii", "replace").decode(), error)
-            continue
-        for parte in partes:
-            ruta = DESTINO / nombre / parte["path"]
-            ruta.parent.mkdir(parents=True, exist_ok=True)
-            ruta.write_bytes(base64.b64decode(parte["payload"]))
-        exportados += 1
-        print("OK", nombre.encode("ascii", "replace").decode(), len(partes), "ficheros")
-    print("Items exportados:", exportados)
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--comprobar", nargs="?", const="main", metavar="REF",
+                        help="compara Fabric con fabric/ en el commit REF (por defecto main) sin escribir")
+    args = parser.parse_args()
+
+    fc.comprobar_cuenta()
+    tok = fc.token()
+    ficheros, errores = descargar_todo(tok)
+    if errores:
+        print("No se han podido leer", len(errores), "items; no se escribe ni se compara nada.")
+        return 2
+    if args.comprobar:
+        return comprobar(ficheros, args.comprobar)
+    exportar(ficheros)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
