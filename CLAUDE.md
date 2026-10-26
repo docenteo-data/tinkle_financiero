@@ -95,8 +95,10 @@ la nota de cómo regenerarlos).
 
 ## Reglas del cliente
 
-- Microsoft Fabric (capacidad F4, lakehouse `lh_tinkle_financiero`) y Power BI
-  del cliente: solo lectura por API. Ejecutar pipelines, refrescar o publicar
+- Microsoft Fabric (workspace "Tinkle - Financiero", lakehouse
+  `lh_tinkle_financiero`) y Power BI del cliente: solo lectura por API, con el
+  MCP `fabric-local` o `az rest`. Ambos usan la cuenta por defecto de Azure CLI,
+  que debe ser la de Tinkle (ver `reporting-financiero/README.md`). Ejecutar pipelines, refrescar o publicar
   modelos e informes lo hace una persona del equipo.
 - Oracle, SAGE y Magnitude: no hay acceso directo; los datos llegan como
   extractos en OneDrive (ver `reporting-financiero/README.md`).

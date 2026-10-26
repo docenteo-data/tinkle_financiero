@@ -64,8 +64,10 @@ CLAUDE.md para la sesión principal.
 - (Contratos del proyecto: idioma de los informes, scripts que no se
   ejecutan, checks que deben salir a cero. La paleta y el estilo no son del
   proyecto: los fija el design system de Docenteo.)
-- Los informes y el modelo semántico viven en `reporting-financiero/powerbi/`
-  en formato PBIP. Se editan los `.tmdl` y `.json`, nunca los `.pbix`.
+- `reporting-financiero/fabric/` es una copia exportada del workspace de
+  Fabric: no se edita a mano. Se regenera con
+  `reporting-financiero/scripts/exportar_fabric.py` y se compara con `git diff`.
+- Nunca se lee ni se exporta el código de las User Data Functions.
 - Las cifras de control (P&L, balance, saldos 4 y 7) se cuadran contra los
   extractos de Magnitude del mes; si no cuadran, se para y se reporta.
 
