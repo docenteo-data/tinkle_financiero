@@ -95,11 +95,24 @@ la nota de cómo regenerarlos).
 
 ## Reglas del cliente
 
-- Microsoft Fabric (workspace "Tinkle - Financiero", lakehouse
-  `lh_tinkle_financiero`) y Power BI del cliente: solo lectura por API, con el
-  MCP `fabric-local` o `az rest`. Ambos usan la cuenta por defecto de Azure CLI,
-  que debe ser la de Tinkle (ver `reporting-financiero/README.md`). Ejecutar pipelines, refrescar o publicar
-  modelos e informes lo hace una persona del equipo.
+- Microsoft Fabric (workspace "Tinkle - Financiero", único entorno del
+  cliente, sin pruebas separadas): el flujo completo está en
+  `reporting-financiero/docs/flujo-fabric.md`. Léelo antes de tocar Fabric. Lo
+  esencial:
+  - `main` refleja lo publicado en Fabric; cada commit de `main` es un punto de
+    rollback.
+  - Cuenta: Fabric, el MCP `fabric-local` y los scripts usan la cuenta por
+    defecto de Azure CLI, que debe ser `reporting@likuit.com`. Compruébala con
+    `az account show` antes de usar el MCP; si es otra, para y avisa, no la
+    cambies.
+  - Vías: el MCP `fabric-local` para inventario, esquemas y shortcuts; los
+    ficheros de `reporting-financiero/fabric/` para la lógica (M, DAX,
+    pipelines, informes); `consultar_sql.py` para datos (solo lectura);
+    `exportar_fabric.py` para traer Fabric al repo.
+  - Escribir en Fabric solo con `publicar_fabric.py`, y `--confirmar` solo con
+    la confirmación explícita de la persona en ese momento. Las herramientas
+    del MCP que escriben están bloqueadas. Ejecutar pipelines y refrescar
+    modelos lo hace una persona del equipo.
 - Oracle, SAGE y Magnitude: no hay acceso directo; los datos llegan como
   extractos en OneDrive (ver `reporting-financiero/README.md`).
 - Las UDF de Fabric tienen un secreto incrustado pendiente de rotar (ver
