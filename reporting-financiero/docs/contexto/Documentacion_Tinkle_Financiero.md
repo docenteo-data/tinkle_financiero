@@ -5,10 +5,10 @@ Workspace: `Tinkle - Financiero` (id `b31820dc-4b4f-4696-9a96-bbee438e9306`)
 | Campo | Valor |
 |---|---|
 | Entorno | Único workspace conocido (no consta separación en desarrollo, pruebas y producción) |
-| Capacidad | Trial `FTL64`, West Europe (ver §11.2) |
-| Última revisión | 2026-09-24 |
-| Fuentes | Definiciones de items leídas en modo solo lectura con los conectores de Fabric. Respuestas de la segunda iteración en `prompts copilot/2a iteracion/res1.txt` a `res8.txt`. |
-| Limitaciones | El conector no pudo recuperar las definiciones TMDL de los modelos semánticos, las definiciones de informes, app, UDF y Planning, ni ejecutar SQL. Lo que depende de esos datos se marca como "pendiente de verificar". |
+| Capacidad | `c410e399-2954-4304-a90c-95f0444a7f46`, West Europe. Ya no es la de prueba `FTL64` del 2026-09-24 (ver §11.2) |
+| Última revisión | 2026-10-26: contraste con las definiciones exportadas en `reporting-financiero/fabric/` y con el SQL endpoint (ver §13.7) |
+| Fuentes | Hasta el 2026-09-24, conectores de Fabric (respuestas en `docs/prompts/copilot/2a iteracion/res1.txt` a `res8.txt`). Desde el 2026-10-26, las definiciones exportadas por API en `reporting-financiero/fabric/` (modelos en TMDL, informes, dataflows, pipelines, notebook, vistas SQL y esquema del lakehouse). Cómo se regeneran: `docs/flujo-fabric.md`. |
+| Limitaciones | Siguen sin revisar: el código de las UDF (no se lee por el secreto incrustado), la definición de Planning y la app, las programaciones y el historial de ejecuciones. Lo que depende de ellos sigue como "pendiente de verificar". |
 | Auditoría | §13 |
 
 ---
@@ -61,7 +61,7 @@ El lakehouse organiza las tablas en 3 esquemas (namespaces) que representan capa
 - **`200`** — capa silver / histórico y staging intermedio
 - **`300`** — capa gold, modelo en estrella listo para reporting
 
-El esquema de columnas completo de todas las tablas (nombre, posición, tipo, nulabilidad, longitud, precisión, escala) está en [esquema_lh_tinkle_financiero_100_200.tsv](esquema_lh_tinkle_financiero_100_200.tsv) para los esquemas 100/200, y detallado más abajo para el esquema 300.
+El esquema de columnas completo de las tablas de los tres esquemas (nombre, posición, tipo, nulabilidad, longitud, precisión, escala) está en [fabric/lakehouse/esquema.tsv](../../fabric/lakehouse/esquema.tsv), que se regenera con cada exportación.
 
 ### 2.1 Esquema `100` (raw)
 
@@ -86,7 +86,10 @@ El esquema de columnas completo de todas las tablas (nombre, posición, tipo, nu
 | HAPA | 24 | | Portugal | 26 |
 | Presupuestos | 10 | | Revenues | 13 |
 
-Además del namespace `200` de tablas Delta, el SQL endpoint del lakehouse expone dos **vistas** usadas por el notebook de exportación (ver §7): `vw_Export_Grupo` (27 columnas) y `vw_Export_Saldos_4_7` (9 columnas).
+Además de las tablas Delta, el SQL endpoint del lakehouse expone tres **vistas**, con su definición en [fabric/sql/](../../fabric/sql/):
+
+- `200.vw_Export_Grupo` (27 columnas) y `200.vw_Export_Saldos_4_7` (9 columnas), que usa el notebook de exportación (§7).
+- `300.vw_Reporting_Actuals`: aplica a `Fact_Actuals` el mapeo de cuentas y de líneas de reporte con su signo (`Importe_Reporting`). Ningún modelo, informe, pipeline ni notebook del workspace la lee (2026-10-26).
 
 `MMS` es la tabla más ancha del lakehouse (192 columnas): datos operativos de medios/campañas (proveedor, soporte, campaña, presupuesto, importes...), con las claves `PERIODO`, `ClienteKey_MMS`, `Compañia` e `IMPORTE` usadas por el modelo semántico (§6).
 
@@ -261,8 +264,9 @@ Consecuencias:
 
 - Item `Financial Model` (`847ce270-06ab-408b-85c9-cb8f390fad1c`), origen lakehouse `lh_tinkle_financiero`.
 - Modo **Direct Lake**: la expresión de origen apunta al endpoint OneLake del lakehouse, esquemas `200` y `300`.
-- 17 tablas (incluida `_Medidas`, según la lista de §6.1) y 40 medidas en `_Medidas`, según la extracción TMDL anterior.
-- Recuento de relaciones pendiente de verificar: la extracción anterior indicaba 17, pero solo se documentaron las 16 de §6.2. En la revisión del 2026-09-24 el conector no pudo recuperar el TMDL (operación asíncrona sin resultado), por lo que tampoco se han podido confirmar cardinalidades, dirección de filtro, relaciones inactivas, roles RLS/OLS ni la definición de `Unidades`.
+- 17 tablas (incluida `_Medidas`) y 40 medidas en `_Medidas`. 15 tablas en Direct Lake; `Unidades` y `_Medidas` son tablas calculadas en modo import.
+- 16 relaciones, todas activas (las de §6.2). No hay roles de seguridad (RLS ni OLS).
+- Definición completa: `fabric/Financial Model.SemanticModel/` (verificado el 2026-10-26).
 
 ### 6.1 Tablas cargadas
 
@@ -277,6 +281,8 @@ Consecuencias:
 
 ### 6.2 Relaciones
 
+Salvo indicación, las relaciones son de muchos a uno y filtran en un solo sentido.
+
 | Desde | Hacia | Observaciones |
 |---|---|---|
 | `Fact_Actuals.Fecha` | `Dim_Calendar.Fecha` | Fecha de los movimientos. |
@@ -286,8 +292,8 @@ Consecuencias:
 | `MMS.Compañia` | `Dim_Sociedades.Sociedad_MMS` | Sociedad de MMS. |
 | `MMS.PERIODO` | `Dim_Calendar.Orden_Mes` | Periodo mensual; cardinalidad de destino muchos. |
 | `MMS.ClienteKey_MMS` | `Dim_Clientes.ClienteKey_MMS` | Cliente MMS. |
-| `Dim_Cuentas.ID_Account` | `Dim_Mapeo_Cuentas.ID_Account` | Relación en ambos sentidos (bidireccional). |
-| `Dim_Mapeo_Cuentas.Cuenta_magnitude` | `Presupuestos.Cuenta` | Cuenta presupuestaria. |
+| `Dim_Cuentas.ID_Account` | `Dim_Mapeo_Cuentas.ID_Account` | Uno a uno, en ambos sentidos (bidireccional). |
+| `Dim_Mapeo_Cuentas.Cuenta_magnitude` | `Presupuestos.Cuenta` | Cuenta presupuestaria; cardinalidad muchos a muchos. |
 | `Presupuestos.CodigoSociedad` | `Dim_Sociedades.CodigoSociedad` | Sociedad del presupuesto. |
 | `Map_Report_Line_Account.Report_Line_Key` | `Dim_Report_Line.Report_Line_Key` | Línea de informe. |
 | `Aux_CDC.INICIALES CAPTIO` | `Dim_CDC.INICIALES CAPTIO` | Mapeo auxiliar de CDC. |
@@ -322,12 +328,14 @@ Ningún informe tiene descripción. No se han podido obtener páginas, visuales 
 
 ### 6.5 Modelo semántico `Agings`
 
-Pendiente de documentar: el conector no pudo recuperar su definición TMDL. Lo que se sabe:
+Definición completa en `fabric/Agings.SemanticModel/` (verificado el 2026-10-26).
 
-- Id `e19def87-fdf3-4b44-bd60-d22e5d79ce88`. Único consumidor: el informe `Agings`.
-- Se refresca en el paso 7 del pipeline `Generar Reporting` (§8.1).
-- Orígenes previsibles, no confirmados: `200.Aging_Clientes` y `200.Aging_Proveedores`.
-- Modo de almacenamiento, tablas, relaciones, medidas y roles: pendientes de verificar.
+- Id `e19def87-fdf3-4b44-bd60-d22e5d79ce88`. Único consumidor: el informe `Agings`. Se refresca en el paso 7 del pipeline `Generar Reporting` (§8.1).
+- Modo **import** (no Direct Lake). Lee `200.Aging_Clientes` y `200.Aging_Proveedores` por el SQL endpoint del lakehouse (tablas `200 Aging_Clientes` y `200 Aging_Proveedores`).
+- `Aging_Clientes_Snapshot` y `Aging_Proveedores_Snapshot` son tablas calculadas: cruzan cada factura pendiente con cada fecha de corte de un calendario fijo del 2026-01-01 al 2027-12-31 y calculan los días vencidos (`DaysDue`) y el tramo (`AgingBucket`) a esa fecha. `Fechas` es el mismo calendario.
+- 5 medidas: `Saldo pendiente` y `Facturas clientes`, `Importe pendiente` y `Facturas proveedores`, y `fechaseleccionada`.
+- Relaciones: cada snapshot con su tabla de origen por `ID_aging` y con `Fechas` por fecha, más las tablas automáticas de fecha de Power BI (`LocalDateTable_*`).
+- Sin roles de seguridad.
 
 ---
 
@@ -351,7 +359,7 @@ Pendiente de documentar: el conector no pudo recuperar su definición TMDL. Lo q
 
 Flujo lineal y secuencial, sin ramas de fallo explícitas (condiciones observadas: `Succeeded`/`Completed`) y sin trigger/schedule embebido en la definición (se dispara manualmente o desde la UDF `Ejecución Reporting`, §9.1):
 
-1. **Carga** — `RefreshDataflow` del dataflow `INGESTA_Carga_Datos` (`c8d12168-9a15-4df6-8632-eb647c58a861`). Timeout 12 min, sin reintentos.
+1. **Carga** — `RefreshDataflow` del dataflow `INGESTA_Carga_Datos` (`c8d12168-9a15-4df6-8632-eb647c58a861`). Timeout 12 h, sin reintentos.
 2. **RefreshSqlEndpoint1_copy1** — `RefreshSqlEndpoint` sobre el SQL endpoint de `lh_tinkle_financiero` (`485f1bd4-2372-44a3-b279-e00a63a80137`). Depende de 1 (Succeeded).
 3. **Transformaciones SILVER** — `RefreshDataflow` del dataflow `TRANS_Silver` (`e34a567e-3986-467e-ac59-9c89b8014b87`). Depende de 2 (Succeeded).
 4. **RefreshSqlEndpoint1** — `RefreshSqlEndpoint` sobre el mismo SQL endpoint. Depende de 3 (Succeeded).
@@ -436,17 +444,15 @@ Todos los permisos se asignan a personas o entidades de servicio individuales; n
 
 | Campo | Valor |
 |---|---|
-| Nombre | `Trial-20260817T105409Z-...` |
-| Id | `a9930e38-9c96-4e90-bde2-70677c5fb90a` |
-| SKU | `FTL64` (capacidad de prueba de Fabric) |
+| Id | `c410e399-2954-4304-a90c-95f0444a7f46` (2026-10-26) |
 | Región | West Europe |
-| Estado | Active |
+| Nombre y SKU | No visibles con la cuenta `reporting@likuit.com`: no la tiene entre sus capacidades. |
 
-Es una capacidad **de prueba**, creada el 2026-08-17 según su nombre. Las capacidades de prueba de Fabric caducan y, al caducar, los items dejan de estar operativos si no se asignan a una capacidad de pago. Pendiente de verificar la fecha de caducidad en el portal de administración.
+El 2026-09-24 el workspace estaba en una capacidad **de prueba** (`Trial-20260817T105409Z-...`, id `a9930e38-9c96-4e90-bde2-70677c5fb90a`, SKU `FTL64`). El 2026-10-26 está en otra capacidad. Pendiente de confirmar con el cliente que es de pago y quién la administra.
 
 ### 11.3 Seguridad de datos
 
-- Roles RLS/OLS de `Financial Model` y `Agings`: pendientes de verificar (TMDL no disponible).
+- `Financial Model` y `Agings` no tienen roles RLS ni OLS (verificado en el TMDL el 2026-10-26): cualquier usuario con acceso a un informe ve todos los datos, incluidos los salariales.
 - La tabla `100.RLS` no se actualiza (§5.5) y no está entre las tablas de `Financial Model` (§6.1).
 - `Dim_RRHH` contiene datos salariales y se carga en `Financial Model`.
 - Audiencias de la app: consta `test_app`; número de miembros y otras audiencias pendientes de verificar.
@@ -562,7 +568,7 @@ Orden actualizado tras la verificación de §13.6:
 7. Proteger el histórico: bloquear o archivar los `INICIAL_*` ya ejecutados y fijar un único productor de `Dim_CDC` (O3, N4).
 8. Reducir privilegios de las entidades de servicio y usar grupos de Entra ID (N5).
 9. Migrar el origen de ficheros desde el OneDrive personal a un sitio de equipo (S6).
-10. Completar lo pendiente de verificar (§13.6) por una vía que permita leer TMDL y ejecutar SQL.
+10. Completar lo que sigue pendiente (§13.7): programaciones, historial, Planning y capacidad.
 
 ### 13.6 Verificación del 2026-09-24 y hallazgos nuevos
 
@@ -607,11 +613,27 @@ Orden actualizado tras la verificación de §13.6:
 | N7 | Baja | Ningún informe tiene descripción (§6.4). | Añadir una descripción breve a cada informe y modelo. |
 | N8 | Baja | `Revenues` (`200`) se carga pero nadie la lee (§5.5). | Confirmar si se necesita (quizá para Planning) o retirarla junto con `INICIAL_Carga_Revenues`. |
 
-**Límites del conector y alternativa**
+### 13.7 Verificación del 2026-10-26 con las definiciones exportadas
 
-El conector usado no pudo recuperar definiciones asíncronas (TMDL de modelos, informes, app, UDF, Planning, base de datos CPM), ni ejecutar SQL, ni leer programaciones o historial. Para cerrar lo pendiente se puede usar, siempre en modo lectura:
+Contraste con `reporting-financiero/fabric/` (exportado por API) y con el SQL endpoint. Los items de §1 siguen existiendo y los destinos de los dataflows de §5.5 no han cambiado.
 
-- Modelos semánticos (D3, D4, D6, S3, S4, M12): abrir el modelo en el portal (vista de modelo y roles de seguridad), o conectar Tabular Editor o DAX Studio al endpoint XMLA del workspace.
-- Vistas SQL, esquema `300` y CPM (D8, D12, M9): consultas `SELECT` desde el editor SQL del portal sobre el SQL endpoint del lakehouse y sobre `CPM`.
-- Programaciones e historial (O8, D15): Monitor de Fabric y la configuración de programación de cada item.
-- Capacidad (N1): portal de administración, apartado de capacidades.
+| # | Estado | Resultado |
+|---|---|---|
+| S3, S4 | Confirmado | Ni `Financial Model` ni `Agings` tienen roles RLS u OLS. Los datos salariales de `Dim_RRHH` son visibles para cualquiera con acceso a los informes de `Financial Model`. |
+| O6 | Corregido | El timeout de las actividades de los pipelines es de 12 h, no de 12 min. Ninguna tiene reintentos. |
+| M12 | Resuelto | `Unidades` y `_Medidas` son tablas calculadas en modo import dentro del modelo Direct Lake. |
+| D3, D4 | Resuelto | 16 relaciones, todas activas; 17 tablas con `_Medidas`. Cardinalidad y dirección en §6.2. |
+| D6 | Resuelto | Modelo `Agings` documentado en §6.5. |
+| D8 | Resuelto | Definiciones de las vistas en `fabric/sql/`. |
+| D12 | Resuelto | Esquema de columnas de `100`, `200` y `300` en `fabric/lakehouse/esquema.tsv`. |
+| N1 | Cambiado | El workspace ya no está en la capacidad de prueba (§11.2); falta confirmar el tipo de la nueva. |
+| O8, D15, D11 | Pendiente | Programaciones, historial y medidas de Planning no se han revisado. |
+
+**Hallazgos nuevos**
+
+| # | Prioridad | Problema | Mejora propuesta |
+|---|---|---|---|
+| N9 | Baja | `300.vw_Reporting_Actuals` no estaba documentada y nada del workspace la lee. | Confirmar si es un trabajo en curso (por ejemplo, para sustituir medidas de reporting) o retirarla. |
+| N10 | Media | Las tablas snapshot del modelo `Agings` usan un calendario fijo del 2026-01-01 al 2027-12-31. A partir de 2028 el informe no tendrá fechas de corte. | Generar el calendario a partir de las fechas de los datos o de la fecha actual. |
+
+Cómo se obtiene y se mantiene al día esta información: `docs/flujo-fabric.md`.

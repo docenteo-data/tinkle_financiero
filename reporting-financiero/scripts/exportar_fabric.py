@@ -5,8 +5,9 @@ Requisito: Azure CLI con la cuenta de Tinkle por defecto (el script lo comprueba
 
 Uso, desde la raíz del repositorio:
     python reporting-financiero/scripts/exportar_fabric.py
-        Escribe fabric/<Nombre>.<Tipo>/ para cada item. Las carpetas de los tipos
-        exportados se regeneran enteras; sql/, temas/ y el esquema no se tocan.
+        Escribe fabric/<Nombre>.<Tipo>/ para cada item, fabric/sql/<esquema>.<vista>.sql con las
+        vistas del SQL endpoint y fabric/lakehouse/esquema.tsv con las columnas de las capas
+        100, 200 y 300. Todo eso se regenera entero; temas/ no se toca.
     python reporting-financiero/scripts/exportar_fabric.py --comprobar [REF]
         No escribe nada. Compara Fabric con fabric/ en el commit REF (por defecto main).
 
@@ -34,6 +35,12 @@ def descargar_todo(tok):
         except (urllib.error.HTTPError, RuntimeError, TimeoutError) as error:
             errores.append(carpeta)
             print("ERROR", fc.ascii(carpeta), fc.ascii(error))
+    try:
+        ficheros.update(fc.descargar_sql())
+        print("OK vistas y esquema del lakehouse")
+    except Exception as error:  # noqa: BLE001 - cualquier fallo del driver SQL impide comparar
+        errores.append("lakehouse")
+        print("ERROR vistas y esquema del lakehouse", fc.ascii(error))
     return ficheros, errores
 
 
@@ -42,6 +49,8 @@ def exportar(ficheros):
     for tipo in fc.FORMATOS:
         for carpeta in destino.glob(f"*.{tipo}"):
             shutil.rmtree(carpeta)
+    for carpeta in fc.CARPETAS_LAKEHOUSE:
+        shutil.rmtree(destino / carpeta, ignore_errors=True)
     for ruta, contenido in ficheros.items():
         fichero = destino / ruta
         fichero.parent.mkdir(parents=True, exist_ok=True)

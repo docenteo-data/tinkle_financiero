@@ -16,7 +16,6 @@ Códigos de salida: 0 correcto, 1 error de la consulta, 2 sentencia no permitida
 
 import argparse
 import csv
-import struct
 import sys
 from pathlib import Path
 
@@ -24,14 +23,7 @@ import mssql_python
 
 import fabric_comun as fc
 
-SQL_COPT_SS_ACCESS_TOKEN = 1256
 CARPETA_DATOS = fc.RAIZ_REPO / "reporting-financiero" / "data"
-
-
-def conectar():
-    tok = fc.token("https://database.windows.net/").encode("utf-16-le")
-    cadena = f"Server={fc.SQL_SERVIDOR};Database={fc.SQL_BASE_DATOS};Encrypt=yes"
-    return mssql_python.connect(cadena, attrs_before={SQL_COPT_SS_ACCESS_TOKEN: struct.pack("<i", len(tok)) + tok})
 
 
 def main():
@@ -52,7 +44,7 @@ def main():
     fc.comprobar_cuenta()
 
     try:
-        con = conectar()
+        con = fc.conectar_sql()
         cursor = con.cursor()
         cursor.execute(sql)
         columnas = [c[0] for c in cursor.description]

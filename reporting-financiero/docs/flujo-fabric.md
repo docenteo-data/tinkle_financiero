@@ -15,7 +15,7 @@ El workspace es el único entorno del cliente: no hay desarrollo ni pruebas sepa
 | Necesidad | Vía | Escribe en Fabric |
 |---|---|---|
 | Inventario de items, esquema de tablas del lakehouse, shortcuts, ficheros de OneLake, documentación de la API | MCP `fabric-local` | No |
-| Lógica: consultas M de los dataflows, medidas DAX y relaciones, pipelines, notebook, páginas de informes | Ficheros de `reporting-financiero/fabric/` en el repositorio | No |
+| Lógica: consultas M de los dataflows, medidas DAX y relaciones, pipelines, notebook, páginas de informes, vistas SQL y columnas de las tablas | Ficheros de `reporting-financiero/fabric/` en el repositorio (`fabric/sql/` y `fabric/lakehouse/esquema.tsv` para el lakehouse) | No |
 | Saber si el repositorio está al día con Fabric | `exportar_fabric.py --comprobar` | No |
 | Datos: filas, recuentos, cuadres de cifras | `consultar_sql.py` (solo SELECT y WITH) | No |
 | Traer al repositorio lo publicado en Fabric | `exportar_fabric.py` | No |
@@ -75,7 +75,7 @@ Para volver un item a como estaba en un commit anterior de `main`:
 3. Con confirmación de la persona: `publicar_fabric.py "<Item>" --ref <commit> --confirmar`.
 4. Validar en Fabric, exportar y commit (`revert(fabric): <Item> a <commit> porque ...`). Merge en `main`.
 
-`publicar_fabric.py` solo actualiza items que ya existen: no crea ni borra items. Un item nuevo se crea en el portal (flujo A) y desde ese momento se versiona como los demás. Publicar la definición no restaura datos: si el cambio afectó a tablas del lakehouse, hay que volver a ejecutar las cargas.
+`publicar_fabric.py` solo actualiza items que ya existen: no crea ni borra items. Tampoco publica las vistas SQL de `fabric/sql/` ni cambia tablas: eso se hace en el portal (flujo A) y la exportación lo trae al repositorio. Un item nuevo se crea en el portal (flujo A) y desde ese momento se versiona como los demás. Publicar la definición no restaura datos: si el cambio afectó a tablas del lakehouse, hay que volver a ejecutar las cargas.
 
 ## 7. Consultas SQL
 
