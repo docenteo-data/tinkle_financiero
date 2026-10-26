@@ -19,9 +19,9 @@
       "source_kind": "path",
       "kind": "subdir",
       "stack": "generic",
-      "phase": "pending",
-      "last_sync_commit": null,
-      "last_reconcile_commit": null
+      "phase": "done",
+      "last_sync_commit": "fb5c2b5",
+      "last_reconcile_commit": "fb5c2b5"
     },
     {
       "name": "rf-scripts",
