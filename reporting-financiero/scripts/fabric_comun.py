@@ -54,7 +54,8 @@ def ascii(texto):
 def _az(comando):
     r = subprocess.run("az " + comando, capture_output=True, text=True, shell=True)
     if r.returncode != 0:
-        sys.exit("ERROR: fallo en Azure CLI (az " + comando.split()[0] + "). Ejecuta az login.")
+        print("ERROR: fallo en Azure CLI (az " + comando.split()[0] + "). Ejecuta az login.")
+        sys.exit(2)
     return r.stdout.strip()
 
 
@@ -153,7 +154,8 @@ def ficheros_en_git(ref, carpeta=CARPETA_FABRIC):
         cwd=RAIZ_REPO, capture_output=True,
     )
     if r.returncode != 0:
-        sys.exit("ERROR: no se puede leer " + carpeta + " en " + ascii(ref) + ": " + ascii(r.stderr.decode(errors="replace")))
+        print("ERROR: no se puede leer " + carpeta + " en " + ascii(ref) + ": " + ascii(r.stderr.decode(errors="replace")))
+        sys.exit(2)
     resultado = {}
     with tarfile.open(fileobj=io.BytesIO(r.stdout)) as tar:
         for miembro in tar.getmembers():

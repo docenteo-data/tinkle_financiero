@@ -11,6 +11,8 @@ El test E2E contra Fabric está en test_fabric_e2e.py.
 
 import base64
 import sys
+
+import pytest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
@@ -76,6 +78,31 @@ def test_ficheros_sql_de_vistas_y_esquema():
     tsv = ficheros["lakehouse/esquema.tsv"].decode("utf-8").splitlines()
     assert tsv[0].split("\t")[:3] == ["esquema", "tabla", "columna"]
     assert tsv[1] == "300\tDim_CDC\tNombre\t1\tvarchar\tYES\t8000\t\t"
+
+
+def test_fallo_de_azure_cli_sale_con_codigo_2(monkeypatch):
+    # El código 1 significa "hay diferencias con Fabric"; un error de herramienta no puede confundirse con eso.
+    class Fallo:
+        returncode = 1
+        stdout = ""
+        stderr = "error"
+
+    monkeypatch.setattr(fc.subprocess, "run", lambda *a, **k: Fallo())
+    with pytest.raises(SystemExit) as salida:
+        fc.token()
+    assert salida.value.code == 2
+
+
+def test_fallo_de_git_sale_con_codigo_2(monkeypatch):
+    class Fallo:
+        returncode = 128
+        stdout = b""
+        stderr = b"fatal: not a valid object name"
+
+    monkeypatch.setattr(fc.subprocess, "run", lambda *a, **k: Fallo())
+    with pytest.raises(SystemExit) as salida:
+        fc.ficheros_en_git("no-existe")
+    assert salida.value.code == 2
 
 
 def test_separar_item():
