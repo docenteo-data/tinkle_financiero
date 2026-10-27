@@ -12,3 +12,7 @@ tags: [meta]
 ## 2026-10-26T23:00:22Z · rf-fabric
 
 - initial bootstrap · baseline `fb5c2b5`
+
+## 2026-10-27T07:59:07Z · rf-scripts
+
+- initial bootstrap · baseline `7d6aa2b`

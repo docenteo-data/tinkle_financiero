@@ -29,9 +29,9 @@
       "source_kind": "path",
       "kind": "subdir",
       "stack": "python",
-      "phase": "pending",
-      "last_sync_commit": null,
-      "last_reconcile_commit": null
+      "phase": "done",
+      "last_sync_commit": "7d6aa2b",
+      "last_reconcile_commit": "7d6aa2b"
     }
   ]
 }
