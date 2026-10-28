@@ -27,6 +27,7 @@ Sustituir el reporting financiero de Tinkle basado en Excel (Oracle, Portugal, H
     docs/prompts/             prompts de análisis por fichero de Grupo y de Copilot
     docs/diagramas/           flujo de datos, arquitectura y orquestación
     docs/reuniones/           actas revisadas de las reuniones y correos con Tinkle, y registro de pendientes (README)
+    docs/auditoria/           auditorías generales del proyecto (AAAAMMDD-auditoria-general.md)
     docs/planes/              planes de trabajo (AAAAMMDD-nombre.md)
 
 ## Fabric
