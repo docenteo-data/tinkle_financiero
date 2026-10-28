@@ -23,6 +23,12 @@ _Avoid_: corporativo, matriz
 **HAPA**:
 Sociedad comprada por el Grupo (Acento) que se reporta aparte con su propio plan de cuentas.
 _Avoid_: Acento
+**Medido el 2026-10-27**: en `Dim_Sociedades` es H Advisors Asuntos Públicos España, S.L.; en Magnitude, Acento Public Affairs, S.L. (unidad ESP073). Lleva la contabilidad en Sage (correo del 21/04).
+
+**Unidad de informe**:
+Código con el que cada sociedad se reporta en Magnitude: ESP066 Communications, ESP067 European, ESP068 Jazz, ESP069 Onion, ESP070 Consultants, ESP073 HAPA y PTE019 Portugal.
+_Avoid_: código de empresa
+Fuente: captura de Magnitude del correo del 22/04 (`docs/reuniones/20260421-correos-checklist-desgloses-y-codigos.md`).
 
 **Portugal**:
 Sociedad portuguesa de Tinkle, que llega en un extracto contable propio con su propio plan de cuentas.
@@ -81,6 +87,12 @@ Cuenta del plan contable propio de cada fuente (Oracle, HAPA o Portugal).
 **Cuenta Magnitude**:
 Cuenta del plan común de Magnitude (por ejemplo `X705000`) a la que se traduce cada cuenta origen.
 _Avoid_: cuenta común, cuenta normalizada, cuenta mapeada
+**CORRECCIÓN 2026-10-27**: el ejemplo `X705000` es erróneo. Según el correo de la cliente del 21/04 (`docs/reuniones/20260421-correos-checklist-desgloses-y-codigos.md`), las cuentas de Magnitude empiezan por A (activo), P (pasivo) o R (P&L). En `300.Dim_Mapeo_Cuentas[Cuenta_magnitude]` hay 1.100 cuentas A, P o R y 14 códigos X (consulta del 2026-10-27): estos agrupan las **Cuentas X**, no son cuentas de Magnitude. Ejemplo correcto: `R60550`.
+
+**Cuenta X**:
+Cuenta analítica extracontable de Oracle (por ejemplo `X705000`, `X700000`, `X600000`) que reparte honorarios, producción y coste por cliente a partir de MMS y no cuadra con las cuentas contables.
+_Avoid_: cuenta Magnitude (para las X)
+**Medido el 2026-10-27**: en el modelo se agrupan en 14 códigos X dentro de `Cuenta_magnitude` (`X705000` y `X700000` en `X70000`; `X600000` en `X60000`). Detalle en el acta del 22/04 (`docs/reuniones/20260422-requerimientos-2-cuentas-y-hapa.md`).
 
 **Mapeo de cuentas**:
 Equivalencia entre una cuenta origen y su cuenta Magnitude.
@@ -115,7 +127,7 @@ _Avoid_: FCT, previsión
 **FT3 / FT8**:
 Ediciones del forecast del ejercicio, que se diferencian en qué meses están ya cerrados.
 _Avoid_: FC3, FC8
-Pendiente de confirmar: FT3 se haría en el cuarto mes, tras el primer trimestre, y FT8 en el noveno. Falta saber si FT8 es acumulado.
+**Confirmado el 2026-10-27** (correo de la cliente del 21/04): el FT3 se prepara en abril con enero a marzo reales; el FT8 se publica en septiembre con enero a agosto reales y septiembre a diciembre proyectados. Algunos años hay un FT5. El presupuesto del año siguiente se hace en septiembre (pestaña B01 del Checklist).
 
 **Planning**:
 Hojas de captura en Fabric donde las directoras revisan el forecast de revenue y las dedicaciones.
@@ -127,14 +139,14 @@ Ingreso de un cliente en un periodo.
 _Avoid_: ingresos, facturación
 
 **Honorarios**:
-Parte del revenue que corresponde a los fees de Tinkle por el servicio (cuenta Magnitude `X705000`).
+Parte del revenue que corresponde a los fees de Tinkle por el servicio (cuenta X `X705000`).
 _Avoid_: fees
 
 **Producción**:
-Parte del revenue que corresponde a trabajos o compras de terceros repercutidos al cliente (cuenta Magnitude `X700000`).
+Parte del revenue que corresponde a trabajos o compras de terceros repercutidos al cliente (cuenta X `X700000`).
 
 **Coste de producción**:
-Coste de terceros asociado a la producción de un cliente (cuenta Magnitude `X600000`).
+Coste de terceros asociado a la producción de un cliente (cuenta X `X600000`).
 
 **Gross Income**:
 Honorarios más producción menos coste de producción de un cliente.
@@ -205,4 +217,5 @@ Fichero de Grupo con los saldos de las cuentas de los grupos 4 y 7 por sociedad.
 - "FT3/FT8" y "FC3/FC8" aparecen mezclados. Resuelto: **FT3 / FT8** es la edición del forecast; FC3/FC8 son nombres de medidas de Planning.
 - "Sección", "CDC", "CeCo" e "iniciales Captio" se usan para el **Centro de coste**. Pendiente de confirmar que la sección de un cliente es siempre su centro de coste.
 - "Aging" (informes) y "Ageing" (fichero de Grupo) son el mismo concepto. Resuelto: **Aging**.
+- Las actas de las reuniones de abril y mayo usan varios términos de forma distinta a este glosario ("Real" en la hoja de las directoras, "producción", "previsión", "coste fee", centro de coste como directora). Están listados en `docs/reuniones/README.md`, sección de contradicciones; pendientes de resolver en la auditoría.
 - El significado de los códigos de tramo del fichero de Grupo (`GR0` a `GR9C`, `GRICFLAG`) está pendiente de confirmar con el cliente (ver `docs/contexto/PREGUNTAS_PARA_TINKLE.md`).
