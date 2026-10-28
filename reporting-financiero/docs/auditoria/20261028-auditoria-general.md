@@ -19,64 +19,72 @@ Los 226 puntos del registro de reuniones y los riesgos de la auditoría técnica
 ### Cómo leer la tabla
 
 - **Prioridad:** 1 es imprescindible para finales de enero; 2 puede ir después sin bloquear lo demás.
-- **Estimación:** jornadas de trabajo (8 horas) de un consultor de Docenteo con experiencia en Fabric y Power BI. Es orientativa y está pendiente de calibrar con el equipo antes de comprometer fechas. El desglose por tareas está en la sección 9.
+- **Estimación:** jornadas de trabajo (8 horas) de un consultor de Docenteo con experiencia en Fabric y Power BI. Es orientativa y está pendiente de calibrar con el equipo antes de comprometer fechas. El desglose por tareas está en la sección 9. Hay dos columnas:
+  - **Tradicional:** el trabajo hecho a mano, sin asistentes de IA.
+  - **Con IA:** la forma de trabajar del departamento (Claude Code con el repositorio, los scripts de Fabric y el vault). Cada tarea se multiplica por un factor según su tipo:
+    - 0,4 en construcción técnica (DAX, Power Query M, SQL, notebooks, informes en PBIR, seguridad) y en análisis y documentación;
+    - 0,8 en validación con datos y cierres reales;
+    - 1 en sesiones, decisiones, formación y seguimiento con Tinkle.
+  - La IA no reduce el tiempo de Tinkle ni el calendario de cierres y decisiones.
+  - **Uso interno:** la estimación con IA no se presenta todavía a Tinkle.
 - **Tinkle:** jornadas de cada persona de Tinkle. J es Josep Zoppetti, F Fátima Sánchez de Pazos, D David Marin, Dir cada directora e IT el administrador de Entra ID.
 
-| Nº | Concepto | Qué falta | Prior. | Docenteo | Tinkle | Pendientes |
-|---|---|---|---|---|---|---|
-| | **Carga y datos** | | | | | |
-| 1 | Flujo de carga de ficheros | Lista cerrada de ficheros por cierre, en bruto, con responsable y carpeta de equipo | 1 | 3 | J 1 | P-016, P-017, P-067 a P-069, P-213 a P-217; S6 |
-| 2 | Puesta al día de los datos | Cargar los cierres de abril a octubre, el FT8 de 2026, HAPA y Portugal del periodo | 1 | 4 | J 2 | Estado medido (sección 3) |
-| 3 | Automatización de las extracciones | Exportación programada de Databox u Oracle y lectura de MMS; depende de IT del Grupo | 2 | 5 | J 1 | P-013, P-202 |
-| | **Cierre y checklist** | | | | | |
-| 4 | Consolidados y vistas del cierre | Tres consolidados, vista mensual y acumulada, edición de presupuesto de referencia, foto fija del cierre | 1 | 4 | F 1 | P-001 a P-004, P-014, P-018 a P-020 |
-| 5 | Desgloses del checklist | Páginas de provisiones, personal, impuestos, periodificaciones, fianzas, gastos y alquileres | 1 | 6 | J 1,5 | P-006 a P-011, P-015 |
-| 6 | Trazabilidad hasta el asiento | Navegar de cualquier saldo a sus movimientos | 2 | 3 | J 0,5 | P-005 |
-| 7 | Controles de veracidad | Cuadres del cierre (sumas y saldos, resultado, intercompany, 4000 y 430 contra agings, redondeos, cuentas sin mapear) y bloqueo de los TXT si fallan | 1 | 5 | J 1 | P-012; controles de BSS OF y PL OF |
-| 8 | Mapeos de cuentas | Histórico con fecha de vigencia y alta mensual de cuentas nuevas | 1 | 5 | J 1 | P-050 a P-054 |
-| 9 | Cuentas X | Exclusiones y relación con el detalle por cliente en Magnitude | 2 | 3 | J 1, F 0,5 | P-040 a P-049 |
-| 10 | HAPA | Balancete con mapeo y checklist propio, impuesto de sociedades, TXT de ESP073 y diario cuando exista | 1 | 5 | J 2 | P-021 a P-030; N2 |
-| 11 | Portugal | Detalle con su plan de cuentas, impuesto de sociedades al 21 %, facturación por cliente y TXT de PTE019 | 1 | 4 | F 1 | P-031 a P-039 |
-| | **Reporting de Grupo** | | | | | |
-| 12 | TXT de Balance y Saldos 4_7 completos | Las siete unidades, comparación con lo subido a Magnitude en tres cierres, sin copiar el histórico entero | 1 | 6 | J 1,5 | P-055 a P-057, P-059 a P-062; O7 |
-| 13 | TXT de Ageing, Revenue, Pendiente_Facturar y Working_Capital | Definir con Tinkle y construir los cuatro ficheros | 1 | 12 | J 1,5, F 1,5 | Preguntas 1 a 12 de `PREGUNTAS_PARA_TINKLE.md` |
-| 14 | TXT de CashFlow | Que Tinkle explique el proceso; construir y validar | 1 | 5 | J 1, F 0,5 | P-064; preguntas 13 a 15 |
-| 15 | Intercompany para Magnitude (LPR) | Fichero de mayo, octubre y a veces julio | 2 | 2 | J 0,5 | P-063 |
-| 16 | Sustitución de Magnitude | Fecha y formato nuevos (probablemente Tagetik) | 2 | sin estimar | sin estimar | P-058 |
-| | **MMS y clientes** | | | | | |
-| 17 | MMS | Foto de cierre mensual, cuadre con el checklist, pendientes de facturar y de recibir | 1 | 5 | J 1, F 0,5 | P-066, P-070 a P-082 |
-| 18 | Maestro de clientes | Tabla única Oracle, MMS, sección y límite de crédito; correspondencia de centros de coste | 1 | 4 | J 1,5 | P-128 a P-133 |
-| | **Presupuesto** | | | | | |
-| 19 | Modelo de atribución de gastos | Decidir cuentas, centros de coste, gastos comunes y compartidos, porcentajes, reparto mensual y objetivo | 1 | 4 | F 2, D 1,5 | P-091, P-092, P-099, P-101, P-102, P-135, P-136 |
-| 20 | Draft de presupuesto y forecast | Reglas configurables por partida, mensualización, meses cerrados y abiertos, nuevo negocio | 1 | 15 | F 3, D 1 | P-083 a P-090, P-093 a P-098, P-100, P-107 a P-114 |
-| 21 | Captura por directora | Formulario o Planning con sus clientes y MMS precargado, clientes nuevos y vuelta al lakehouse | 2 | 8 | F 2, Dir 0,5 c/u | P-103 a P-106, P-116 a P-119; M9 |
-| 22 | Presupuesto a Magnitude | Salida en el formato de carga | 1 | 3 | F 0,5 | P-065 |
-| | **Personal y rentabilidad** | | | | | |
-| 23 | Organigrama y dedicación | Equipos y subcentros, matriz de dedicación que sume 100 %, Compensation | 1 | 6 | F 3, D 0,5 | P-115, P-150 a P-164, P-168 a P-171 |
-| 24 | Rentabilidad | Coste imputado, rentabilidad por directora, equipo y cliente sin doble cómputo, overheads, criterio de reparto entre secciones | 1 | 8 | F 1,5, D 0,5 | P-120 a P-127, P-134, P-137 a P-149, P-165 a P-167 |
-| | **Agings** | | | | | |
-| 25 | Agings y riesgo de crédito | Fecha de vencimiento, consolidado, límites de crédito, calendario no fijo | 1 | 7 | F 1,5 | P-172 a P-187; N10 |
-| | **Seguridad** | | | | | |
-| 26 | Accesos por usuario y datos salariales | Roles, directoras solo con lo suyo, salarios solo para finanzas, tratamiento de nóminas | 1 | 5 | F 0,5, D 0,5 | P-188 a P-201; S3, S4, N3 |
-| 27 | Seguridad técnica | Sacar el secreto de las funciones de usuario y revisar las entidades de servicio | 1 | 1,5 | IT 0,5 | S1, S2, S8, N5 |
-| | **Plataforma y proyecto** | | | | | |
-| 28 | Orquestación y operación | Pipeline padre, condiciones de éxito, alertas, un productor por tabla, maestros orquestados, capacidad | 1 | 5 | ninguno | O1 a O6, O8, O9, N1, N4 |
-| 29 | Gobierno y adopción | Decisiones con responsable y fecha, seguimiento semanal, sesiones con Josep, formación | 1 | 10 | J 2, F 2, D 1 | P-203 a P-212, P-218 a P-226 |
+| Nº | Concepto | Qué falta | Prior. | Docenteo tradicional | Docenteo con IA | Tinkle | Pendientes |
+|---|---|---|---|---|---|---|---|
+| | **Carga y datos** | | | | | | |
+| 1 | Flujo de carga de ficheros | Lista cerrada de ficheros por cierre, en bruto, con responsable y carpeta de equipo | 1 | 3 | 1,5 | J 1 | P-016, P-017, P-067 a P-069, P-213 a P-217; S6 |
+| 2 | Puesta al día de los datos | Cargar los cierres de abril a octubre, el FT8 de 2026, HAPA y Portugal del periodo | 1 | 4 | 3,2 | J 2 | Estado medido (sección 3) |
+| 3 | Automatización de las extracciones | Exportación programada de Databox u Oracle y lectura de MMS; depende de IT del Grupo | 2 | 5 | 2,6 | J 1 | P-013, P-202 |
+| | **Cierre y checklist** | | | | | | |
+| 4 | Consolidados y vistas del cierre | Tres consolidados, vista mensual y acumulada, edición de presupuesto de referencia, foto fija del cierre | 1 | 4 | 1,6 | F 1 | P-001 a P-004, P-014, P-018 a P-020 |
+| 5 | Desgloses del checklist | Páginas de provisiones, personal, impuestos, periodificaciones, fianzas, gastos y alquileres | 1 | 6 | 2,4 | J 1,5 | P-006 a P-011, P-015 |
+| 6 | Trazabilidad hasta el asiento | Navegar de cualquier saldo a sus movimientos | 2 | 3 | 1,2 | J 0,5 | P-005 |
+| 7 | Controles de veracidad | Cuadres del cierre (sumas y saldos, resultado, intercompany, 4000 y 430 contra agings, redondeos, cuentas sin mapear) y bloqueo de los TXT si fallan | 1 | 5 | 2 | J 1 | P-012; controles de BSS OF y PL OF |
+| 8 | Mapeos de cuentas | Histórico con fecha de vigencia y alta mensual de cuentas nuevas | 1 | 5 | 2 | J 1 | P-050 a P-054 |
+| 9 | Cuentas X | Exclusiones y relación con el detalle por cliente en Magnitude | 2 | 3 | 1,2 | J 1, F 0,5 | P-040 a P-049 |
+| 10 | HAPA | Balancete con mapeo y checklist propio, impuesto de sociedades, TXT de ESP073 y diario cuando exista | 1 | 5 | 2 | J 2 | P-021 a P-030; N2 |
+| 11 | Portugal | Detalle con su plan de cuentas, impuesto de sociedades al 21 %, facturación por cliente y TXT de PTE019 | 1 | 4 | 1,6 | F 1 | P-031 a P-039 |
+| | **Reporting de Grupo** | | | | | | |
+| 12 | TXT de Balance y Saldos 4_7 completos | Las siete unidades, comparación con lo subido a Magnitude en tres cierres, sin copiar el histórico entero | 1 | 6 | 3,4 | J 1,5 | P-055 a P-057, P-059 a P-062; O7 |
+| 13 | TXT de Ageing, Revenue, Pendiente_Facturar y Working_Capital | Definir con Tinkle y construir los cuatro ficheros | 1 | 12 | 6 | J 1,5, F 1,5 | Preguntas 1 a 12 de `PREGUNTAS_PARA_TINKLE.md` |
+| 14 | TXT de CashFlow | Que Tinkle explique el proceso; construir y validar | 1 | 5 | 2,7 | J 1, F 0,5 | P-064; preguntas 13 a 15 |
+| 15 | Intercompany para Magnitude (LPR) | Fichero de mayo, octubre y a veces julio | 2 | 2 | 1,2 | J 0,5 | P-063 |
+| 16 | Sustitución de Magnitude | Fecha y formato nuevos (probablemente Tagetik) | 2 | sin estimar | sin estimar | sin estimar | P-058 |
+| | **MMS y clientes** | | | | | | |
+| 17 | MMS | Foto de cierre mensual, cuadre con el checklist, pendientes de facturar y de recibir | 1 | 5 | 2,6 | J 1, F 0,5 | P-066, P-070 a P-082 |
+| 18 | Maestro de clientes | Tabla única Oracle, MMS, sección y límite de crédito; correspondencia de centros de coste | 1 | 4 | 1,6 | J 1,5 | P-128 a P-133 |
+| | **Presupuesto** | | | | | | |
+| 19 | Modelo de atribución de gastos | Decidir cuentas, centros de coste, gastos comunes y compartidos, porcentajes, reparto mensual y objetivo | 1 | 4 | 2,5 | F 2, D 1,5 | P-091, P-092, P-099, P-101, P-102, P-135, P-136 |
+| 20 | Draft de presupuesto y forecast | Reglas configurables por partida, mensualización, meses cerrados y abiertos, nuevo negocio | 1 | 15 | 6,6 | F 3, D 1 | P-083 a P-090, P-093 a P-098, P-100, P-107 a P-114 |
+| 21 | Captura por directora | Formulario o Planning con sus clientes y MMS precargado, clientes nuevos y vuelta al lakehouse | 2 | 8 | 4,1 | F 2, Dir 0,5 c/u | P-103 a P-106, P-116 a P-119; M9 |
+| 22 | Presupuesto a Magnitude | Salida en el formato de carga | 1 | 3 | 1,6 | F 0,5 | P-065 |
+| | **Personal y rentabilidad** | | | | | | |
+| 23 | Organigrama y dedicación | Equipos y subcentros, matriz de dedicación que sume 100 %, Compensation | 1 | 6 | 2,4 | F 3, D 0,5 | P-115, P-150 a P-164, P-168 a P-171 |
+| 24 | Rentabilidad | Coste imputado, rentabilidad por directora, equipo y cliente sin doble cómputo, overheads, criterio de reparto entre secciones | 1 | 8 | 3,2 | F 1,5, D 0,5 | P-120 a P-127, P-134, P-137 a P-149, P-165 a P-167 |
+| | **Agings** | | | | | | |
+| 25 | Agings y riesgo de crédito | Fecha de vencimiento, consolidado, límites de crédito, calendario no fijo | 1 | 7 | 3,2 | F 1,5 | P-172 a P-187; N10 |
+| | **Seguridad** | | | | | | |
+| 26 | Accesos por usuario y datos salariales | Roles, directoras solo con lo suyo, salarios solo para finanzas, tratamiento de nóminas | 1 | 5 | 3 | F 0,5, D 0,5 | P-188 a P-201; S3, S4, N3 |
+| 27 | Seguridad técnica | Sacar el secreto de las funciones de usuario y revisar las entidades de servicio | 1 | 1,5 | 0,6 | IT 0,5 | S1, S2, S8, N5 |
+| | **Plataforma y proyecto** | | | | | | |
+| 28 | Orquestación y operación | Pipeline padre, condiciones de éxito, alertas, un productor por tabla, maestros orquestados, capacidad | 1 | 5 | 2,3 | ninguno | O1 a O6, O8, O9, N1, N4 |
+| 29 | Gobierno y adopción | Decisiones con responsable y fecha, seguimiento semanal, sesiones con Josep, formación | 1 | 10 | 9,1 | J 2, F 2, D 1 | P-203 a P-212, P-218 a P-226 |
 
 ### Totales
 
-| | Docenteo | Josep | Fátima | David | Directoras | IT |
-|---|---|---|---|---|---|---|
-| Prioridad 1 | 132,5 | 17 | 18,5 | 5 | 0 | 0,5 |
-| Prioridad 2 | 21 | 3 | 2,5 | 0 | 0,5 cada una | 0 |
-| Total | 153,5 | 20 | 21 | 5 | 0,5 cada una | 0,5 |
+| | Docenteo tradicional | Docenteo con IA | Josep | Fátima | David | Directoras | IT |
+|---|---|---|---|---|---|---|---|
+| Prioridad 1 | 132,5 | 67,1 | 17 | 18,5 | 5 | 0 | 0,5 |
+| Prioridad 2 | 21 | 10,3 | 3 | 2,5 | 0 | 0,5 cada una | 0 |
+| Total | 153,5 | 77,4 | 20 | 21 | 5 | 0,5 cada una | 0,5 |
 
 - **Sin incluir:** el concepto 16 (sin formato nuevo no se puede estimar) y la operación recurrente de Tinkle, que es subir los ficheros de cada cierre (unas 0,5 jornadas de Josep por cierre).
-- **Contingencia:** conviene sumar un 15 %. Con ella, la prioridad 1 queda en unas 152 jornadas de Docenteo.
-- **Capacidad hasta finales de enero:** quedan unas 13 semanas, unas 11 descontando Navidad, que son unas 55 jornadas por persona. La prioridad 1 con contingencia necesita unas 2,8 personas de Docenteo a tiempo completo; con 2 personas no se llega a enero.
-  - Opción A: 3 personas.
-  - Opción B: 2 personas y mover a febrero los conceptos 20 y 21 (presupuesto), que siguen llegando al FT3 de 2027 en abril.
+- **Contingencia:** conviene sumar un 15 %. Con ella, la prioridad 1 queda en unas 152 jornadas de Docenteo de forma tradicional y en unas 77 con IA.
+- **Capacidad hasta finales de enero:** quedan unas 13 semanas, unas 11 descontando Navidad, que son unas 55 jornadas por persona.
+  - Tradicional: la prioridad 1 con contingencia necesita unas 2,8 personas a tiempo completo. Con 2 personas no se llega a enero salvo que el presupuesto (conceptos 20 y 21) pase a febrero.
+  - Con IA: unas 1,4 personas, es decir, una persona a tiempo completo y apoyo puntual de otra. Con dos personas cabe todo, incluida la prioridad 2 (unas 1,6 personas con contingencia).
 - **Lado de Tinkle:** unas 20 jornadas de Josep y 21 de Fátima en 13 semanas, es decir, algo más de 1,5 días por semana cada uno. Es el compromiso que hay que pedir de forma explícita, junto con las decisiones de David.
+- **Camino crítico:** con IA ya no lo marcan las horas de Docenteo, sino la disponibilidad de Josep y Fátima, las decisiones de David (sección 6) y el calendario de los cierres de octubre, noviembre y diciembre.
 
 ## 2. Resumen de hallazgos
 
@@ -245,59 +253,57 @@ Valoración de Docenteo, a partir de las actas, las notas internas de septiembre
 
 ## 8. Plan hasta finales de enero
 
-Orden pensado para recuperar la confianza primero con lo que ya existe y después construir lo que falta. Jornadas de Docenteo por fase, sumando sus conceptos (sin contingencia).
+Orden pensado para recuperar la confianza primero con lo que ya existe y después construir lo que falta. Jornadas de Docenteo por fase, sumando sus conceptos, de forma tradicional y con IA (sin contingencia).
 
-| Fase | Conceptos | Docenteo | Tinkle | Cuándo |
-|---|---|---|---|---|
-| 0. Recuperar el uso: flujo de carga, datos de abril a octubre, cierre y controles; sesión con Josep con datos actuales | 1, 2, 4, 5, 7 | 22 | J 5,5, F 1 | Noviembre, semanas 1 y 2 |
-| 1. Reporting de Grupo: siete unidades, cinco tipos que faltan, mapeos, HAPA y Portugal; comparación con Magnitude en los cierres de octubre, noviembre y diciembre | 8, 10 a 15 | 39 | J 7,5, F 3 | Noviembre a enero, en paralelo con cada cierre |
-| 2. Seguridad y operación: accesos, salarios, secreto, carpeta de equipo, orquestación y alertas | 26, 27, 28 | 11,5 | F 0,5, D 0,5, IT 0,5 | Noviembre |
-| 3. Atribución, personal y rentabilidad: decisiones, organigrama, dedicación, maestro de clientes, MMS y rentabilidad | 17, 18, 19, 23, 24 | 27 | J 2,5, F 7, D 2,5 | Noviembre (decisiones) y diciembre (construcción) |
-| 4. Presupuesto y forecast: draft por reglas, captura por directora, exportación a Magnitude; listo para el FT3 de 2027 | 20, 21, 22 | 26 | F 5,5, D 1, Dir 0,5 c/u | Diciembre y enero (con 2 personas, febrero) |
-| 5. Agings y riesgo de crédito | 25 | 7 | F 1,5 | Enero |
-| Transversal: gobierno, seguimiento y formación | 29 | 10 | J 2, F 2, D 1 | Todo el periodo |
-| Posterior: automatización, trazabilidad, cuentas X y cambio de Magnitude | 3, 6, 9, 16 | 11 | J 2,5, F 0,5 | Desde febrero |
-| **Total** | | **153,5** | J 20, F 21, D 5, Dir 0,5 c/u, IT 0,5 | |
+| Fase | Conceptos | Docenteo tradicional | Docenteo con IA | Tinkle | Cuándo |
+|---|---|---|---|---|---|
+| 0. Recuperar el uso: flujo de carga, datos de abril a octubre, cierre y controles; sesión con Josep con datos actuales | 1, 2, 4, 5, 7 | 22 | 10,7 | J 5,5, F 1 | Noviembre, semanas 1 y 2 |
+| 1. Reporting de Grupo: siete unidades, cinco tipos que faltan, mapeos, HAPA y Portugal; comparación con Magnitude en los cierres de octubre, noviembre y diciembre | 8, 10 a 15 | 39 | 18,9 | J 7,5, F 3 | Noviembre a enero, en paralelo con cada cierre |
+| 2. Seguridad y operación: accesos, salarios, secreto, carpeta de equipo, orquestación y alertas | 26, 27, 28 | 11,5 | 5,9 | F 0,5, D 0,5, IT 0,5 | Noviembre |
+| 3. Atribución, personal y rentabilidad: decisiones, organigrama, dedicación, maestro de clientes, MMS y rentabilidad | 17, 18, 19, 23, 24 | 27 | 12,3 | J 2,5, F 7, D 2,5 | Noviembre (decisiones) y diciembre (construcción) |
+| 4. Presupuesto y forecast: draft por reglas, captura por directora, exportación a Magnitude; listo para el FT3 de 2027 | 20, 21, 22 | 26 | 12,3 | F 5,5, D 1, Dir 0,5 c/u | Diciembre y enero (de forma tradicional con 2 personas, febrero) |
+| 5. Agings y riesgo de crédito | 25 | 7 | 3,2 | F 1,5 | Enero |
+| Transversal: gobierno, seguimiento y formación | 29 | 10 | 9,1 | J 2, F 2, D 1 | Todo el periodo |
+| Posterior: automatización, trazabilidad, cuentas X y cambio de Magnitude | 3, 6, 9, 16 | 11 | 5 | J 2,5, F 0,5 | Desde febrero |
+| **Total** | | **153,5** | **77,4** | J 20, F 21, D 5, Dir 0,5 c/u, IT 0,5 | |
 
 La columna "Tinkle" es la base de la estimación por persona que ha pedido Tinkle. Conviene presentarla junto con las decisiones de la sección 6, porque sin ellas las fases 3 y 4 no se pueden cumplir en plazo.
-
 ## 9. Estimación detallada por tareas
 
 Jornadas de Docenteo por tarea; la suma de cada concepto es la de la sección 1. Entre paréntesis, la aportación de Tinkle.
 
-| Nº | Concepto | Tareas (jornadas de Docenteo) | Total | Tinkle |
-|---|---|---|---|---|
-| 1 | Flujo de carga | Inventario y procedimiento escrito por cierre 1; ajustar los dataflows a ficheros en bruto 1,5; carpeta de equipo y cambio del shortcut 0,5 | 3 | J 1 (validar el procedimiento y mover la carpeta) |
-| 2 | Puesta al día | Carga y revisión de los cierres de abril a octubre 2,5; FT8 de 2026 y maestros 0,5; HAPA y Portugal del periodo 1 | 4 | J 2 (extraer siete meses) |
-| 3 | Automatización | Análisis de opciones con IT del Grupo 1; prototipo de exportación programada 3; lectura de MMS 1 | 5 | J 1 |
-| 4 | Consolidados y vistas | Tres consolidados más HAPA opcional 1,5; vista mensual y acumulada con edición de referencia 2; foto fija del cierre 0,5 | 4 | F 1 (validar) |
-| 5 | Desgloses | Páginas de provisiones, personal, impuestos, periodificaciones, fianzas, gastos y alquileres 5; documentar las pestañas 1 | 6 | J 1,5 (explicar y validar) |
-| 6 | Trazabilidad | Navegación de saldo a asiento en Oracle 2; Portugal y HAPA según su detalle 1 | 3 | J 0,5 |
-| 7 | Controles | Sumas y saldos y resultado por sociedad 1,5; intercompany y 4000 y 430 contra agings 1,5; redondeos y cuentas sin mapear 1; página de semáforo y bloqueo de TXT 1 | 5 | J 1 (validar en un cierre) |
-| 8 | Mapeos | Tabla de mapeos con vigencia 2,5; recálculo y vuelta a una versión anterior 1,5; alta mensual asistida 1 | 5 | J 1 |
-| 9 | Cuentas X | Exclusiones (X 999, duplicadas y estadística) 1,5; detalle por cliente frente a Magnitude 1,5 | 3 | J 1, F 0,5 |
-| 10 | HAPA | Balancete, mapeo y checklist propio 2,5; impuesto de sociedades 0,5; TXT de ESP073 1; diario cuando exista 1 | 5 | J 2 (diario con la contabilidad de HAPA) |
-| 11 | Portugal | Detalle con su plan de cuentas 1; impuesto de sociedades al 21 % 1; facturación por cliente 1; TXT de PTE019 1 | 4 | F 1 |
-| 12 | TXT de Balance y Saldos | Sociedades desde el maestro en lugar de fijas 1; parametrizar las siete unidades 1,5; comparación con Magnitude en tres cierres 2,5; copia solo del periodo 1 | 6 | J 1,5 (TXT reales de cada cierre) |
-| 13 | TXT de cuatro tipos | Ageing 3; Revenue 3; Pendiente_Facturar 3; Working_Capital 3 (cada uno: definición, vista, generación y validación) | 12 | J 1,5, F 1,5 (responder las preguntas y validar) |
-| 14 | TXT de CashFlow | Sesión y análisis del proceso 1,5; construcción 2,5; validación 1 | 5 | J 1, F 0,5 |
-| 15 | Intercompany LPR | Construcción y validación 2 | 2 | J 0,5 |
-| 16 | Sustitución de Magnitude | Sin estimar hasta conocer el formato nuevo | 0 | sin estimar |
-| 17 | MMS | Foto de cierre mensual 1,5; cuadre de MMS con el checklist 1,5; pendientes de facturar y de recibir 2 | 5 | J 1, F 0,5 |
-| 18 | Maestro de clientes | Tabla única Oracle, MMS, sección y límite 2,5; control de clientes sin sección 0,5; correspondencia de centros de coste 1 | 4 | J 1,5 |
-| 19 | Modelo de atribución | Propuesta de Docenteo 1,5; tres sesiones de trabajo 1,5; documentar las reglas 1 | 4 | F 2, D 1,5 |
-| 20 | Draft de presupuesto y forecast | Estructura de P&L con FT8, FT3 y B01 2; motor de reglas por partida 5; mensualización de revenue y gastos 3; real de meses cerrados y ajuste de abiertos 2; nuevo negocio y escenarios 1,5; validación con un caso real 1,5 | 15 | F 3, D 1 |
-| 21 | Captura por directora | Diseño del formulario o de Planning 2; precarga de MMS y solo sus clientes 2; clientes nuevos y vuelta al lakehouse 2,5; formación 1,5 | 8 | F 2, Dir 0,5 c/u |
-| 22 | Presupuesto a Magnitude | Formato de carga 2; validación 1 | 3 | F 0,5 |
-| 23 | Organigrama y dedicación | Organigrama con subcentros 2; matriz con control del 100 % 2,5; carga desde los ficheros de las directoras 1,5 | 6 | F 3, D 0,5 |
-| 24 | Rentabilidad | Coste imputado desde la matriz 2; rentabilidad por directora, equipo y cliente sin doble cómputo 3; overheads y reparto de gastos 2; resumen por directora 1 | 8 | F 1,5, D 0,5 |
-| 25 | Agings | Vencimiento desde cuentas a pagar y a cobrar 2; consolidado y filtro por sociedad 1; riesgo de crédito 2; calendario no fijo 1; validación 1 | 7 | F 1,5 |
-| 26 | Accesos | Matriz de roles 1; seguridad por fila para directoras 2; seguridad por columna para salarios 1; pruebas por usuario 1 | 5 | F 0,5, D 0,5 |
-| 27 | Seguridad técnica | Sacar el secreto a una conexión gestionada o Key Vault 1; revisar las entidades de servicio 0,5 | 1,5 | IT 0,5 (rotar el secreto) |
-| 28 | Orquestación y operación | Pipeline padre y condiciones de éxito 1,5; alertas 1; un productor por tabla 1; maestros en la orquestación 1; capacidad 0,5 | 5 | ninguno |
-| 29 | Gobierno y adopción | Seguimiento semanal (0,5 por semana durante 13 semanas) 6,5; sesiones con Josep y formación 2; mantener el registro y las decisiones 1,5 | 10 | J 2, F 2, D 1 |
-| | **Total** | | **153,5** | J 20, F 21, D 5, Dir 0,5 c/u, IT 0,5 |
-
+| Nº | Concepto | Tareas (jornadas de Docenteo, estimación tradicional) | Total tradicional | Total con IA | Tinkle |
+|---|---|---|---|---|---|
+| 1 | Flujo de carga | Inventario y procedimiento escrito por cierre 1; ajustar los dataflows a ficheros en bruto 1,5; carpeta de equipo y cambio del shortcut 0,5 | 3 | 1,5 | J 1 (validar el procedimiento y mover la carpeta) |
+| 2 | Puesta al día | Carga y revisión de los cierres de abril a octubre 2,5; FT8 de 2026 y maestros 0,5; HAPA y Portugal del periodo 1 | 4 | 3,2 | J 2 (extraer siete meses) |
+| 3 | Automatización | Análisis de opciones con IT del Grupo 1; prototipo de exportación programada 3; lectura de MMS 1 | 5 | 2,6 | J 1 |
+| 4 | Consolidados y vistas | Tres consolidados más HAPA opcional 1,5; vista mensual y acumulada con edición de referencia 2; foto fija del cierre 0,5 | 4 | 1,6 | F 1 (validar) |
+| 5 | Desgloses | Páginas de provisiones, personal, impuestos, periodificaciones, fianzas, gastos y alquileres 5; documentar las pestañas 1 | 6 | 2,4 | J 1,5 (explicar y validar) |
+| 6 | Trazabilidad | Navegación de saldo a asiento en Oracle 2; Portugal y HAPA según su detalle 1 | 3 | 1,2 | J 0,5 |
+| 7 | Controles | Sumas y saldos y resultado por sociedad 1,5; intercompany y 4000 y 430 contra agings 1,5; redondeos y cuentas sin mapear 1; página de semáforo y bloqueo de TXT 1 | 5 | 2 | J 1 (validar en un cierre) |
+| 8 | Mapeos | Tabla de mapeos con vigencia 2,5; recálculo y vuelta a una versión anterior 1,5; alta mensual asistida 1 | 5 | 2 | J 1 |
+| 9 | Cuentas X | Exclusiones (X 999, duplicadas y estadística) 1,5; detalle por cliente frente a Magnitude 1,5 | 3 | 1,2 | J 1, F 0,5 |
+| 10 | HAPA | Balancete, mapeo y checklist propio 2,5; impuesto de sociedades 0,5; TXT de ESP073 1; diario cuando exista 1 | 5 | 2 | J 2 (diario con la contabilidad de HAPA) |
+| 11 | Portugal | Detalle con su plan de cuentas 1; impuesto de sociedades al 21 % 1; facturación por cliente 1; TXT de PTE019 1 | 4 | 1,6 | F 1 |
+| 12 | TXT de Balance y Saldos | Sociedades desde el maestro en lugar de fijas 1; parametrizar las siete unidades 1,5; comparación con Magnitude en tres cierres 2,5; copia solo del periodo 1 | 6 | 3,4 | J 1,5 (TXT reales de cada cierre) |
+| 13 | TXT de cuatro tipos | Ageing 3; Revenue 3; Pendiente_Facturar 3; Working_Capital 3 (cada uno: definición, vista, generación y validación) | 12 | 6 | J 1,5, F 1,5 (responder las preguntas y validar) |
+| 14 | TXT de CashFlow | Sesión y análisis del proceso 1,5; construcción 2,5; validación 1 | 5 | 2,7 | J 1, F 0,5 |
+| 15 | Intercompany LPR | Construcción y validación 2 | 2 | 1,2 | J 0,5 |
+| 16 | Sustitución de Magnitude | Sin estimar hasta conocer el formato nuevo | 0 | 0 | sin estimar |
+| 17 | MMS | Foto de cierre mensual 1,5; cuadre de MMS con el checklist 1,5; pendientes de facturar y de recibir 2 | 5 | 2,6 | J 1, F 0,5 |
+| 18 | Maestro de clientes | Tabla única Oracle, MMS, sección y límite 2,5; control de clientes sin sección 0,5; correspondencia de centros de coste 1 | 4 | 1,6 | J 1,5 |
+| 19 | Modelo de atribución | Propuesta de Docenteo 1,5; tres sesiones de trabajo 1,5; documentar las reglas 1 | 4 | 2,5 | F 2, D 1,5 |
+| 20 | Draft de presupuesto y forecast | Estructura de P&L con FT8, FT3 y B01 2; motor de reglas por partida 5; mensualización de revenue y gastos 3; real de meses cerrados y ajuste de abiertos 2; nuevo negocio y escenarios 1,5; validación con un caso real 1,5 | 15 | 6,6 | F 3, D 1 |
+| 21 | Captura por directora | Diseño del formulario o de Planning 2; precarga de MMS y solo sus clientes 2; clientes nuevos y vuelta al lakehouse 2,5; formación 1,5 | 8 | 4,1 | F 2, Dir 0,5 c/u |
+| 22 | Presupuesto a Magnitude | Formato de carga 2; validación 1 | 3 | 1,6 | F 0,5 |
+| 23 | Organigrama y dedicación | Organigrama con subcentros 2; matriz con control del 100 % 2,5; carga desde los ficheros de las directoras 1,5 | 6 | 2,4 | F 3, D 0,5 |
+| 24 | Rentabilidad | Coste imputado desde la matriz 2; rentabilidad por directora, equipo y cliente sin doble cómputo 3; overheads y reparto de gastos 2; resumen por directora 1 | 8 | 3,2 | F 1,5, D 0,5 |
+| 25 | Agings | Vencimiento desde cuentas a pagar y a cobrar 2; consolidado y filtro por sociedad 1; riesgo de crédito 2; calendario no fijo 1; validación 1 | 7 | 3,2 | F 1,5 |
+| 26 | Accesos | Matriz de roles 1; seguridad por fila para directoras 2; seguridad por columna para salarios 1; pruebas por usuario 1 | 5 | 3 | F 0,5, D 0,5 |
+| 27 | Seguridad técnica | Sacar el secreto a una conexión gestionada o Key Vault 1; revisar las entidades de servicio 0,5 | 1,5 | 0,6 | IT 0,5 (rotar el secreto) |
+| 28 | Orquestación y operación | Pipeline padre y condiciones de éxito 1,5; alertas 1; un productor por tabla 1; maestros en la orquestación 1; capacidad 0,5 | 5 | 2,3 | ninguno |
+| 29 | Gobierno y adopción | Seguimiento semanal (0,5 por semana durante 13 semanas) 6,5; sesiones con Josep y formación 2; mantener el registro y las decisiones 1,5 | 10 | 9,1 | J 2, F 2, D 1 |
+| | **Total** | | **153,5** | **77,4** | J 20, F 21, D 5, Dir 0,5 c/u, IT 0,5 |
 ## 10. Próximos pasos inmediatos
 
 1. Antes de la sesión con Josep:
@@ -305,6 +311,6 @@ Jornadas de Docenteo por tarea; la suma de cada concepto es la de la sección 1.
    - cargarlos y comprobar que los controles cuadran;
    - no enseñar la app con datos salariales a nadie fuera de finanzas hasta tener la fase 2.
 2. Enviar a David el correo de roles y accesos (P-188) y, en el mismo envío, la lista de decisiones de la sección 6 con una fecha propuesta para cada una.
-3. Calibrar la estimación de la sección 1 con el equipo de Docenteo y decidir entre la opción A (3 personas, todo en enero) y la opción B (2 personas, presupuesto en febrero) antes de dar fechas a Tinkle.
+3. Calibrar la estimación de la sección 1 con el equipo de Docenteo y decidir con qué equipo se trabaja (con IA, una o dos personas) antes de dar fechas a Tinkle. Mientras tanto, a Tinkle solo se le traslada su parte: la dedicación de Josep, Fátima y David y las decisiones de la sección 6.
 4. Confirmar con Tinkle el calendario del Grupo y las fechas de cierre de octubre, noviembre y diciembre (P-018, P-019) para planificar la validación en paralelo.
 5. Volver a exportar Fabric después de cada cambio publicado y mantener este documento y el registro de pendientes al día.
