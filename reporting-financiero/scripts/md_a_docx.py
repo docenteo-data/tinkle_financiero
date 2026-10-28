@@ -12,7 +12,9 @@ Uso, desde la raíz del repositorio:
 Convenciones del Markdown que entiende:
 - La primera línea "# ..." no se pinta (el título va en la portada); lo que haya hasta el primer
   "## " se pinta como "Ficha del documento".
-- "## n. Título" es capítulo y "### n.m Título" o "### Título" es apartado (numeración automática).
+- "## n. Título" es capítulo, "### n.m Título" o "### Título" es apartado (numeración automática)
+  y "#### Título" es subapartado sin número. Una línea que solo tiene "**texto**" es una etiqueta
+  (estilo Antetítulo). Las líneas de comentario "<!-- ... -->" se ignoran.
 - Listas con "- " y "1. ", anidadas de dos en dos espacios; "**texto**" es Énfasis Docenteo.
 - Tablas Markdown. Una tabla de 8 columnas cuya cabecera empieza por "Nº" se parte en una tabla
   por bloque (filas con la primera celda vacía) y su última columna pasa a una nota.
@@ -231,10 +233,14 @@ def convertir(bloque_lineas):
     j = 0
     while j < len(bloque_lineas):
         l = bloque_lineas[j]
-        if not l.strip():
+        if not l.strip() or l.startswith("<!--"):
             j += 1
             continue
-        if l.startswith("## "):
+        if re.match(r"^\*\*[^*]+\*\*$", l.strip()):
+            xml.append(parrafo(l.strip().strip("*"), "Antettulo", "<w:keepNext/>"))  # la etiqueta va con su tabla
+        elif l.startswith("#### "):
+            xml.append(parrafo(l[5:].strip(), "Heading3"))
+        elif l.startswith("## "):
             global seccion
             seccion = re.sub(r"^\d+\.\s*", "", l[3:].strip())
             xml.append(parrafo(seccion, "Heading1"))
@@ -245,6 +251,8 @@ def convertir(bloque_lineas):
             else:
                 xml.append(parrafo(t, "Heading2"))
         elif l.startswith("|"):
+            if xml and xml[-1].endswith("</w:tbl>"):
+                xml.append("<w:p/>")  # Word une dos tablas seguidas si no hay un párrafo entre ellas
             filas = []
             while j < len(bloque_lineas) and bloque_lineas[j].startswith("|"):
                 if not re.match(r"^\|[-| ]+\|$", bloque_lineas[j]):
@@ -255,11 +263,17 @@ def convertir(bloque_lineas):
             filas[0] = [cortas.get(c.strip(), c) for c in filas[0]]
             if filas[0][0].strip() == "Nº" and len(filas[0]) == 8:
                 xml.append(tablas_de_conceptos(filas))
-            elif filas[0][0].strip() == "Nº" and filas[0][2].strip().startswith("Tareas"):
+            elif filas[0][0].strip() == "Nº" and len(filas[0]) >= 3 and filas[0][2].strip().startswith("Tareas"):
                 filas[0][2] = "Tareas (jornadas, estimación tradicional)"
                 xml.append(tabla(filas, anchos=[450, 1650, 3600, 1350, 850, 1512]))
             elif filas[0][0].strip() == "Fase":
                 xml.append(tabla(filas, anchos=[2850, 1200, 1350, 850, 1450, 1712]))
+            elif [c.strip() for c in filas[0]] == ["Id", "Tipo", "Descripción", "Responsable", "Estado"]:
+                xml.append(tabla(filas, anchos=[750, 950, 3900, 1500, 2312]))
+            elif [c.strip() for c in filas[0]] == ["Id", "Prioridad", "Problema", "Situación"]:
+                xml.append(tabla(filas, anchos=[600, 1200, 3950, 3662]))
+            elif len(filas[0]) == 2 and filas[0][0].strip() == "Nº":
+                xml.append(tabla(filas, anchos=[500, 8912]))
             else:
                 xml.append(tabla(filas))
             continue
