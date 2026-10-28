@@ -39,6 +39,7 @@ Sustituir el reporting financiero de Tinkle basado en Excel (Oracle, Portugal, H
 | `scripts/exportar_fabric.py` | Traer las definiciones de Fabric a `fabric/`; con `--comprobar main`, ver si coinciden | No |
 | `scripts/consultar_sql.py` | Consultas SELECT al SQL endpoint del lakehouse | No |
 | `scripts/publicar_fabric.py` | Publicar items desde un commit (flujo B y rollback); simulación salvo `--confirmar` | Sí |
+| `scripts/md_a_docx.py` | Pasar un documento Markdown de `docs/` a Word con la plantilla de Docenteo (portada, estilos y tablas) | No |
 
 Requisitos: Azure CLI con la cuenta de Tinkle por defecto y el entorno del proyecto (`pip install -r requirements.txt` en `.venv`). Las User Data Functions no se exportan ni se publican porque llevan un secreto incrustado.
 
