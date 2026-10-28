@@ -25,7 +25,7 @@ import fabric_comun as fc
 def descargar_todo(tok):
     ficheros, errores = {}, []
     for item in sorted(fc.items(tok), key=lambda i: (i["type"], i["displayName"])):
-        if item["type"] not in fc.FORMATOS:
+        if not fc.es_exportable(item):
             continue
         carpeta = fc.nombre_carpeta(item)
         try:

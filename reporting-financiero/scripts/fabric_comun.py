@@ -36,6 +36,15 @@ FORMATOS = {
     "Notebook": "ipynb",
 }
 
+# Items que Power BI crea solo al abrir las métricas de uso de un informe: no son parte de la
+# solución y la API no permite exportarlos.
+ITEMS_DE_SISTEMA = {"Report Usage Metrics Report", "Report Usage Metrics Model", "Usage Metrics Report"}
+
+
+def es_exportable(item):
+    return item["type"] in FORMATOS and item["displayName"] not in ITEMS_DE_SISTEMA
+
+
 # Ficheros que la API devuelve pero que no forman parte de la definición que se publica.
 NO_PUBLICABLES = {".platform"}
 

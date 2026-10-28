@@ -105,6 +105,16 @@ def test_fallo_de_git_sale_con_codigo_2(monkeypatch):
     assert salida.value.code == 2
 
 
+def test_items_de_metricas_de_uso_no_se_exportan():
+    # Power BI los crea solo al abrir las métricas de uso; la API no los exporta y no son parte de la solución.
+    assert not fc.es_exportable({"displayName": "Report Usage Metrics Report", "type": "Report"})
+    assert not fc.es_exportable({"displayName": "Report Usage Metrics Model", "type": "SemanticModel"})
+    assert not fc.es_exportable({"displayName": "Generar_txt", "type": "UserDataFunction"})
+    assert not fc.es_exportable({"displayName": "lh_tinkle_financiero", "type": "Lakehouse"})
+    assert fc.es_exportable({"displayName": "Financial Model", "type": "SemanticModel"})
+    assert fc.es_exportable({"displayName": "HAPA", "type": "Report"})
+
+
 def test_separar_item():
     assert fc.separar_item("Financial Model.SemanticModel") == ("Financial Model", "SemanticModel")
     assert fc.separar_item("Checklist (Oracle).Report") == ("Checklist (Oracle)", "Report")
