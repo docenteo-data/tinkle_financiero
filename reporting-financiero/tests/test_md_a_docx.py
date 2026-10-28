@@ -6,6 +6,8 @@ Modos de fallo cubiertos:
 - Se usan formatos a mano en lugar de los estilos de la plantilla.
 - La segunda lista numerada continúa la numeración de la primera.
 - La tabla de conceptos no se parte por bloques o pierde la columna de pendientes.
+- Dos tablas seguidas se funden en una (Word las une si no hay un párrafo entre ellas).
+- Una etiqueta de bloque se queda sola al pie de página, separada de su tabla.
 
 Necesita la plantilla de la skill docenteo-design instalada; si no está, se salta.
 """
@@ -40,6 +42,10 @@ Texto con **énfasis** y `código`.
 
 ### 1.1 Apartado
 
+<!-- marca que no se pinta -->
+
+#### Subapartado sin número
+
 1. Otro paso uno.
 
 | Nº | Concepto | Qué falta | Prior. | Docenteo tradicional | Docenteo con IA | Tinkle | Pendientes |
@@ -48,6 +54,25 @@ Texto con **énfasis** y `código`.
 | 1 | Uno | Algo | 1 | 3 | 1,5 | J 1 | P-001 |
 | | **Bloque B** | | | | | | |
 | 2 | Dos | Otra cosa | 2 | 4 | 2 | F 1 | P-002 a P-004 |
+
+| Nº | Pregunta pendiente para Tinkle |
+|---|---|
+| 1 | ¿Pregunta de prueba? |
+"""
+
+MD_DOS_TABLAS = """# Dos tablas
+
+## 1. Capítulo
+
+**Etiqueta de bloque**
+
+| A | B |
+|---|---|
+| 1 | 2 |
+
+| C | D |
+|---|---|
+| 3 | 4 |
 """
 
 
@@ -79,8 +104,9 @@ def test_titulo_en_portada_y_propiedades(docx):
 
 def test_solo_estilos_de_la_plantilla(docx):
     doc = docx.read("word/document.xml").decode()
-    for estilo in ["Heading1", "Heading2", "ListBullet", "ListNumber", "nfasis", "TablaDocenteo", "Nota"]:
+    for estilo in ["Heading1", "Heading2", "Heading3", "ListBullet", "ListNumber", "nfasis", "TablaDocenteo", "Nota"]:
         assert f'w:val="{estilo}"' in doc, estilo
+    assert "<!--" not in doc and "marca que no se pinta" not in doc
     assert "<w:color " not in doc and "<w:sz " not in doc and "<w:rFonts " not in doc
 
 
@@ -95,7 +121,20 @@ def test_cada_lista_numerada_reinicia(docx):
 
 def test_tabla_de_conceptos_por_bloques_con_pendientes_en_nota(docx):
     doc = docx.read("word/document.xml").decode()
-    assert doc.count('<w:tblStyle w:val="TablaDocenteo"/>') == 2
+    assert doc.count('<w:tblStyle w:val="TablaDocenteo"/>') == 3  # dos bloques y la tabla de preguntas
     assert "Bloque A" in doc and "Bloque B" in doc
     assert "Pendientes del registro: 1: P-001." in doc
     assert "Pendientes del registro: 2: P-002 a P-004." in doc
+
+
+def test_tablas_seguidas_no_se_unen_y_etiqueta(tmp_path):
+    entrada = tmp_path / "dos.md"
+    entrada.write_text(MD_DOS_TABLAS, encoding="utf-8")
+    salida = tmp_path / "dos.docx"
+    r = subprocess.run([sys.executable, str(SCRIPT), str(entrada), str(salida), "--titulo", "Dos"],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
+    doc = zipfile.ZipFile(salida).read("word/document.xml").decode()
+    assert "</w:tbl><w:tbl>" not in doc
+    assert doc.count("<w:tbl>") == 2
+    assert re.search(r'<w:pStyle w:val="Antettulo"/><w:keepNext/></w:pPr><w:r><w:t xml:space="preserve">Etiqueta de bloque', doc)
