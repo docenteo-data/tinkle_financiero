@@ -4,8 +4,8 @@ load_tier: 2
 schema_version: 1
 repo: rf-scripts
 source: reporting-financiero/scripts
-commit: 7d6aa2b
-last_sync: 2026-10-27T00:10:00Z
+commit: 0ad7fdb
+last_sync: 2026-11-03T15:00:00Z
 stack: python
 source_globs: ["*.py"]
 tags: [rf-scripts, quality]
@@ -13,9 +13,9 @@ tags: [rf-scripts, quality]
 
 # rf-scripts - Quality
 
-> Cuándo cargar: necesitas saber qué prueban los tests de los scripts de Fabric, cómo ejecutarlos o qué protecciones tienen antes de tocar el workspace de Tinkle.
+> Cuándo cargar: necesitas saber qué prueban los tests de los scripts de Fabric y de los generadores de documentos, cómo ejecutarlos o qué protecciones tienen antes de tocar el workspace de Tinkle o los ficheros de Grupo. Contexto de los ficheros de Grupo: [[domains/ficheros-de-grupo]].
 
-## Tests unitarios
+## Tests unitarios de Fabric
 
 `reporting-financiero/tests/test_fabric_comun.py` no necesita conexión. Según su docstring y sus nombres, cubre:
 
@@ -23,12 +23,30 @@ tags: [rf-scripts, quality]
 - Metadatos: `partes_para_publicar` excluye `.platform` y codifica las partes en base64 (`InlineBase64`).
 - Formatos: `FORMATOS` fija TMDL para SemanticModel, PBIR para Report e ipynb para Notebook. Dataflow y DataPipeline no tienen formato y UserDataFunction no figura.
 - Alcance: `solo_items` conserva las carpetas de items y las del lakehouse (`sql`, `lakehouse`) y excluye `temas/` y las UDF.
+- Items de uso: `es_exportable` descarta los informes y modelos "Report Usage Metrics" que Power BI crea al abrir las métricas de uso, las UDF y el lakehouse, y mantiene los modelos e informes de negocio.
 - SQL generado: `ficheros_sql` produce `sql/<esquema>.<vista>.sql` y `lakehouse/esquema.tsv` con la cabecera esperada.
 - Nombres: `separar_item` separa tipo y nombre, también cuando el nombre tiene paréntesis.
 - Solo lectura: `es_consulta_de_lectura` acepta SELECT y WITH y rechaza DELETE, UPDATE, INSERT, EXEC, SELECT INTO, MERGE, CREATE y las sentencias encadenadas con `;`. No se deja engañar por palabras dentro de textos o nombres entre corchetes.
-- Errores de herramienta: un fallo de Azure CLI (`token`) o de git (`ficheros_en_git`) sale con código 2 y no con 1.
+- Errores de herramienta: un fallo de Azure CLI (`token`) o de git (`ficheros_en_git`) sale con código 2 y no con 1, para que no se confunda con "hay diferencias con Fabric".
 
-## Test E2E
+## Tests de generadores de documentos
+
+Estos tests no tocan Fabric.
+
+- `reporting-financiero/tests/test_anexo_pendientes.py` prueba `scripts/anexo_pendientes.py` sobre una copia de `docs/auditoria/20261028-auditoria-general.md`, nunca sobre el original. Modos de fallo que cubre:
+  - Un punto del registro (P-001 a P-226) falta o aparece dos veces en el anexo.
+  - Una referencia técnica (S, O, M, D, N) o una de las 15 preguntas de la tabla de conceptos queda sin explicar.
+  - El anexo contiene rayas largas o flechas.
+  - Volver a ejecutarlo duplica el anexo en lugar de reemplazarlo.
+- `reporting-financiero/tests/test_md_a_docx.py` prueba `scripts/md_a_docx.py` generando un .docx de prueba con portada. Necesita la plantilla `docenteo-documento.dotx` de la skill docenteo-design; si no está instalada, los tests se saltan. Modos de fallo que cubre:
+  - El resultado sale como plantilla (.dotx) y Word no lo abre como documento.
+  - El título no llega a la portada ni a las propiedades del documento.
+  - Se usan formatos directos en lugar de los estilos de la plantilla, o quedan comentarios Markdown en el resultado.
+  - Una segunda lista numerada continúa la numeración de la primera.
+  - La tabla de conceptos no sale por bloques o pierde la nota de pendientes.
+  - Dos tablas seguidas se funden en una, o una etiqueta de bloque se separa de su tabla.
+
+## Test E2E de Fabric
 
 `reporting-financiero/tests/test_fabric_e2e.py` se omite salvo que `FABRIC_E2E=1` y haya sesión de Azure CLI en la cuenta de Tinkle. Solo lee de Fabric:
 
@@ -36,12 +54,23 @@ tags: [rf-scripts, quality]
 - `consultar_sql.py` con un SELECT sobre INFORMATION_SCHEMA del esquema 300: debe terminar con 0 y mencionar "300". La comprobación es débil, solo busca el texto en la salida.
 - `consultar_sql.py` con un DELETE: debe terminar con 2.
 
+## E2E de ficheros de Grupo
+
+`reporting-financiero/tests/test_validar_ficheros_grupo_e2e.py` prueba `scripts/validar_ficheros_grupo.py` contra los ficheros de marzo de 2026 de la carpeta `3.Fuentes` de OneDrive (TXT de Magnitude, aging de clientes y Revenue FT3). Se omite salvo que `FABRIC_E2E=1` y la carpeta esté sincronizada; el docstring pide además la sesión de Azure CLI de Tinkle. Comprueba:
+
+- Ageing: la diferencia máxima entre los importes de cada sociedad y tramo es menor de 0,001. Modo de fallo: los tramos de días, el corte a 31-03-2026 o los importes en miles dejan de reproducir el TXT.
+- Ageing: el informe da la cobertura de clientes (líneas del TXT reproducidas).
+- Revenue: el total por sociedad de ESP067, ESP068, ESP069 y ESP070 cuadra con tolerancia de 0,05, porque cada línea del TXT viene redondeada a dos decimales. Modo de fallo: la medida REAL (Fees & other), el acumulado del año, el signo o los importes en miles dejan de reproducir el TXT.
+- Revenue ESP066 (COMM): xfail estricto por una diferencia conocida de 6,82 (0,24%) sin explicar. Si se corrige, el test pasa a fallar y hay que quitar la marca.
+- Revenue: el informe da la cobertura de clientes.
+
 ## Ejecución
 
 Desde la raíz del repositorio, con el Python del entorno virtual de `reporting-financiero`:
 
-- Unitarios: `reporting-financiero/.venv/Scripts/python.exe -m pytest reporting-financiero/tests/test_fabric_comun.py`
-- Con E2E: `FABRIC_E2E=1 reporting-financiero/.venv/Scripts/python.exe -m pytest reporting-financiero/tests` (en PowerShell, `$env:FABRIC_E2E = "1"` antes).
+- Unitarios de Fabric: `reporting-financiero/.venv/Scripts/python.exe -m pytest reporting-financiero/tests/test_fabric_comun.py`
+- Batería completa sin E2E: `reporting-financiero/.venv/Scripts/python.exe -m pytest reporting-financiero/tests`
+- Batería completa con E2E: en PowerShell, `$env:FABRIC_E2E = "1"` y después el mismo comando de la batería completa. Incluye el E2E de Fabric y el de ficheros de Grupo, que además necesita la carpeta `3.Fuentes` sincronizada.
 - `pytest==9.1.1` está fijado en `reporting-financiero/requirements.txt` e instalado en el `.venv`.
 
 ## Protecciones
@@ -52,21 +81,28 @@ Desde la raíz del repositorio, con el Python del entorno virtual de `reporting-
 - Simulación por defecto: `publicar_fabric.py#main` solo publica con `--confirmar`. Sin él muestra el resumen y no escribe nada.
 - Solo items existentes: no crea ni borra items. Sale con 2 si un item no existe en Fabric o no está en `--ref`.
 - Comprobación de sincronía: antes de publicar, descarga el item de Fabric y lo compara con `--base` (por defecto main). Si hay diferencias sale con 1 y no publica. `--forzar` lo omite y avisa de que se pierden los cambios de Fabric.
-- UDF excluidas: `FORMATOS` no incluye UserDataFunction, `solo_items` las descarta y `publicar_fabric` rechaza ese tipo con 2.
+- UDF excluidas: `FORMATOS` no incluye UserDataFunction, `solo_items` las descarta, `es_exportable` las filtra y `publicar_fabric` rechaza ese tipo con 2.
 
 ## No cubierto
 
 - La publicación real no se prueba: escribiría en el workspace del cliente, que no tiene entorno de pruebas. Los tests cubren funciones puras y la salida con código 2 ante fallos de Azure CLI o git; la simulación de `publicar_fabric.py` no tiene test.
 - Sin test: `publicar_fabric.main` (simulación, código 1, `--forzar`), `comprobar_cuenta`, las llamadas REST (`items`, `descargar_definicion`, `publicar_definicion`), `conectar_sql` y `exportar_fabric.main`, salvo el `--comprobar` del E2E.
 - El E2E de SQL no verifica resultados concretos.
+- `validar_ficheros_grupo.py` no tiene tests unitarios: sus cálculos solo se comprueban con el E2E, que requiere la carpeta de OneDrive y FABRIC_E2E=1.
+- Los tests de `md_a_docx.py` dependen de la plantilla externa de docenteo-design: sin ella se saltan y no fallan.
+- La diferencia de 6,82 en COMM no está explicada.
 - No hay workspace de pruebas: es el único entorno del cliente. Una publicación se valida así: una persona refresca o ejecuta en Fabric y comprueba las cifras de control; después se exporta, se revisa `git diff` y `exportar_fabric.py --comprobar main` debe dar 0.
 
 ## Evidence
 
-- `reporting-financiero/tests/test_fabric_comun.py` - tests unitarios y modos de fallo.
+- `reporting-financiero/tests/test_fabric_comun.py` - tests unitarios y modos de fallo de Fabric.
 - `reporting-financiero/tests/test_fabric_e2e.py` - E2E de solo lectura, activado con FABRIC_E2E=1.
-- `reporting-financiero/scripts/fabric_comun.py#comprobar_cuenta`, `#comparar`, `#solo_items`, `#partes_para_publicar`, `#es_consulta_de_lectura`, `#ficheros_sql`, `FORMATOS`.
+- `reporting-financiero/tests/test_anexo_pendientes.py` - sobre `scripts/anexo_pendientes.py` y `docs/auditoria/20261028-auditoria-general.md`.
+- `reporting-financiero/tests/test_md_a_docx.py` - sobre `scripts/md_a_docx.py`, con la plantilla de docenteo-design.
+- `reporting-financiero/tests/test_validar_ficheros_grupo_e2e.py` - E2E de ficheros de Grupo sobre `scripts/validar_ficheros_grupo.py`.
+- `reporting-financiero/scripts/fabric_comun.py#comprobar_cuenta`, `#comparar`, `#solo_items`, `#es_exportable`, `#partes_para_publicar`, `#es_consulta_de_lectura`, `#ficheros_sql`, `FORMATOS`.
 - `reporting-financiero/scripts/publicar_fabric.py#main` - simulación, sincronía, `--forzar` y códigos de salida.
 - `reporting-financiero/scripts/consultar_sql.py#main` - filtro de lectura y CSV en `data/`.
 - `reporting-financiero/scripts/exportar_fabric.py#main` - códigos de salida.
 - `test_fabric_comun.py#test_fallo_de_azure_cli_sale_con_codigo_2`, `test_fabric_comun.py#test_fallo_de_git_sale_con_codigo_2` - errores de herramienta con código 2.
+- `test_fabric_comun.py#test_items_de_metricas_de_uso_no_se_exportan` - exclusión de items de uso.

@@ -4,8 +4,8 @@ load_tier: 2
 schema_version: 1
 repo: rf-scripts
 source: reporting-financiero/scripts
-commit: 7d6aa2b
-last_sync: 2026-10-27T00:10:00Z
+commit: 0ad7fdb
+last_sync: 2026-11-03T15:00:00Z
 stack: python
 source_globs: ["*.py"]
 tags: [rf-scripts, apis]
@@ -13,17 +13,17 @@ tags: [rf-scripts, apis]
 
 # rf-scripts - APIs
 
-> Cuándo cargar: necesitas ejecutar los scripts de Fabric de Tinkle, conocer sus argumentos y códigos de salida, o reutilizar una función de `fabric_comun.py`.
+> Cuándo cargar: necesitas ejecutar los scripts de Fabric de Tinkle o de reporting financiero, conocer sus argumentos y códigos de salida, o reutilizar una función de `fabric_comun.py`.
 
 ## Interfaz de línea de comandos
 
-Todos se ejecutan desde la raíz del repositorio con `python reporting-financiero/scripts/<script>.py`. Requieren Azure CLI con la cuenta de Tinkle por defecto. Ningún script guarda tokens.
+Todos se ejecutan desde la raíz del repositorio con `python reporting-financiero/scripts/<script>.py`. Los que leen o escriben en Fabric (`exportar_fabric.py`, `publicar_fabric.py`, `consultar_sql.py` y `validar_ficheros_grupo.py`) requieren Azure CLI con la cuenta de Tinkle por defecto. Ningún script guarda tokens.
 
-Si Azure CLI o git fallan, el script imprime el error y sale con código 2, para no confundirlo con el 1 (hay diferencias).
+Si Azure CLI o git fallan, los scripts de Fabric imprimen el error y salen con código 2, para no confundirlo con el 1 (hay diferencias).
 
 ### exportar_fabric.py
 
-Solo lectura sobre Fabric. Sin argumentos regenera `reporting-financiero/fabric/` entera (salvo `temas/`).
+Solo lectura sobre Fabric. Sin argumentos regenera `reporting-financiero/fabric/` entera (salvo `temas/`). Omite los items de sistema que Power BI crea al abrir las métricas de uso de un informe, porque la API no permite exportarlos (`fabric_comun.py#es_exportable`).
 
 | Argumento | Por defecto | Significado |
 |---|---|---|
@@ -71,9 +71,37 @@ Consulta de solo lectura al SQL endpoint del lakehouse. Acepta solo sentencias q
 | 1 | Error de la consulta en el servidor (`mssql_python.Error`). |
 | 2 | Sin sentencia, sentencia no permitida, CSV fuera de `reporting-financiero/data/`, cuenta incorrecta, o fallo de Azure CLI. |
 
+### validar_ficheros_grupo.py
+
+Reproduce desde las fuentes los ficheros de Grupo de Ageing y Revenue y los compara con los TXT de Magnitude de marzo de 2026. Lee `3.Fuentes` de OneDrive y consulta Fabric en solo lectura. Contexto en [[domains/ficheros-de-grupo]].
+
+| Argumento | Por defecto | Significado |
+|---|---|---|
+| `ageing` o `revenue` | obligatorio | Fichero de Grupo a validar (argumento posicional). |
+| `--fuentes RUTA` | carpeta `3.Fuentes` de la biblioteca Reporting financiero en OneDrive | Carpeta de fuentes. Debe contener la carpeta de TXT "2026 03 - 0001 Magnitude Marzo". |
+
+Líneas de salida (las leen los tests):
+
+- `TRAMOS combinaciones=N diferencia_maxima=X` (ageing): compara el importe por sociedad y tramo (`GR0` a `GR9C`) del TXT con el aging de clientes al 31-03-2026. Es la cifra de control.
+- `  DIFERENCIA sociedad tramo txt=... calculado=...` (ageing): una línea por combinación con diferencia de al menos 0,001.
+- `SOCIEDAD codigo txt=... calculado=... dif=...` (revenue): total por sociedad desde Fact_Actuals frente al TXT. Es la cifra de control.
+- `CLIENTES lineas_txt=N exactas=N distintas=N solo_txt=N solo_calculadas=N` (ambos): cruce línea a línea por código de cliente Magnitude. Es informativa.
+- `  importe_sin_codigo=X` (ambos): importe sin código de cliente.
+- `GRICFLAG txt=N calculados=N coinciden=N` (ageing): compara los marcadores de intercompañía del TXT con los de la fuente. Es informativa.
+
+| Código | Significado |
+|---|---|
+| 0 | Las cifras de control cuadran: en ageing, diferencia máxima por tramo menor de 0,001; en revenue, diferencia por sociedad menor de 0,05. |
+| 1 | No cuadran. Las líneas CLIENTES, GRICFLAG e importe_sin_codigo no cambian el código de salida. |
+| 2 | Cuenta de Azure CLI incorrecta (comprobada por `fabric_comun.py`), o no se encuentra la carpeta de TXT de marzo en la ruta de `--fuentes`. | Un error no controlado también sale con 1.
+
+### anexo_pendientes.py y md_a_docx.py
+
+Herramientas de documentos que no consultan Fabric: `anexo_pendientes.py AUDITORIA` regenera el anexo de pendientes de la auditoría (0 generado, 1 puntos sin concepto o falta el fichero) y `md_a_docx.py ENTRADA.md SALIDA.docx --titulo ...` convierte Markdown a Word con la plantilla de Docenteo (0 generado, 1 Markdown sin título `# `, 2 argumentos o plantilla). Argumentos y convenciones completos en [[repos/rf-scripts/modules/documentos]].
+
 ## Funciones públicas de fabric_comun.py
 
-Módulo importado como `fc` por los tres scripts. Las funciones con prefijo `_` son privadas.
+Módulo importado como `fc` por los scripts de Fabric. Las funciones con prefijo `_` son privadas.
 
 ### Cuenta y tokens
 
@@ -87,6 +115,7 @@ Módulo importado como `fc` por los tres scripts. Las funciones con prefijo `_` 
 - `items(tok)`: devuelve la lista de items del workspace.
 - `nombre_carpeta(item)`: devuelve el nombre de carpeta `Nombre.Tipo` de un item.
 - `separar_item(carpeta)`: devuelve la pareja (nombre, tipo) de una carpeta `Nombre.Tipo`.
+- `es_exportable(item)`: indica si un item se exporta: su tipo tiene formato en `FORMATOS` y su nombre no está en `ITEMS_DE_SISTEMA`.
 - `descargar_definicion(item, tok)`: devuelve un diccionario ruta a bytes con la definición actual del item.
 - `partes_para_publicar(ficheros)`: devuelve las partes de la definición en base64, sin los ficheros no publicables.
 - `publicar_definicion(item, ficheros, tok)`: envía la definición al item y espera a que la operación termine.
@@ -111,25 +140,23 @@ Módulo importado como `fc` por los tres scripts. Las funciones con prefijo `_` 
 ## Constantes públicas
 
 - `FORMATOS`: tipo de item a formato de definición pedido a la API. `SemanticModel` usa TMDL, `Report` PBIR y `Notebook` ipynb; `Dataflow` y `DataPipeline` no piden formato. Solo estos tipos se exportan y publican.
+- `ITEMS_DE_SISTEMA`: nombres de items de métricas de uso de informes que la API no permite exportar. Los excluye `es_exportable`.
 - `NO_PUBLICABLES`: ficheros que la API devuelve pero no se publican (`.platform`).
 - `ESCRITURA_SQL`: palabras clave que hacen rechazar una consulta.
-- `CARPETAS_LAKEHOUSE`: carpetas de `fabric/` que salen del SQL endpoint (`sql` y `lakehouse`).
-- `COLUMNAS_ESQUEMA`: cabecera de `lakehouse/esquema.tsv`.
-- `CONSULTA_VISTAS` y `CONSULTA_COLUMNAS`: consultas que leen las vistas y las columnas de las capas 100, 200 y 300.
-- `API`: URL base de la API REST de Fabric.
-- `RAIZ_REPO` y `CARPETA_FABRIC`: raíz del repositorio y carpeta `reporting-financiero/fabric`.
-- `WORKSPACE_ID`, `TENANT_ID`, `CUENTA`, `SQL_SERVIDOR` y `SQL_BASE_DATOS`: identificadores del workspace, tenant, cuenta y SQL endpoint. Son constantes de `fabric_comun.py`; sus valores no se documentan aquí.
+- `CARPETAS_LAKEHOUSE` (carpetas `sql` y `lakehouse` de `fabric/`), `COLUMNAS_ESQUEMA` (cabecera de `lakehouse/esquema.tsv`), `CONSULTA_VISTAS` y `CONSULTA_COLUMNAS` (vistas y columnas de las capas 100, 200 y 300).
+- Rutas, URL de la API e identificadores del workspace, tenant, cuenta y SQL endpoint: ver [[configuration]]; sus valores no se documentan aquí.
 
-## Dependencias
-
-- Python 3.14.7 (`reporting-financiero/.venv/pyvenv.cfg`); `mssql-python==1.16.0` y `pytest==9.1.1` en `reporting-financiero/requirements.txt`; Azure CLI no está declarado en ningún fichero.
+Dependencias y versiones: ver [[configuration]].
 
 ## Evidence
 
+- `exportar_fabric.py#descargar_todo` - exportación de items, filtrada por `es_exportable`.
 - `exportar_fabric.py#main`, `exportar_fabric.py#comprobar`, `exportar_fabric.py#exportar` - argumentos y códigos de salida de exportar.
 - `publicar_fabric.py#main` - argumentos, simulación y códigos de salida de publicar.
 - `consultar_sql.py#main` - argumentos y códigos de salida de la consulta.
+- `validar_ficheros_grupo.py#main`, `validar_ficheros_grupo.py#validar_ageing`, `validar_ficheros_grupo.py#validar_revenue` - argumentos, líneas de salida y códigos de salida de la validación.
 - `fabric_comun.py#comprobar_cuenta`, `fabric_comun.py#token` - cuenta y tokens.
+- `fabric_comun.py#es_exportable`, `fabric_comun.py#ITEMS_DE_SISTEMA` - exclusión de items de sistema.
 - `fabric_comun.py#descargar_definicion`, `fabric_comun.py#publicar_definicion`, `fabric_comun.py#partes_para_publicar` - definiciones de items.
 - `fabric_comun.py#ficheros_en_git`, `fabric_comun.py#solo_items`, `fabric_comun.py#comparar` - lectura de git y comparación.
 - `fabric_comun.py#descargar_sql`, `fabric_comun.py#ficheros_sql`, `fabric_comun.py#es_consulta_de_lectura` - SQL del lakehouse.

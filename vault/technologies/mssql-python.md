@@ -11,7 +11,7 @@ tags: [technology, mssql-python]
 
 ## Repos that use it
 
-- [[repos/rf-scripts/README|rf-scripts]] - conexión, descarga de vistas y consulta de solo lectura (`reporting-financiero/scripts/fabric_comun.py#conectar_sql`, `reporting-financiero/scripts/fabric_comun.py#ficheros_sql`, `reporting-financiero/scripts/fabric_comun.py#descargar_sql`, `reporting-financiero/scripts/consultar_sql.py`); versión fijada en `reporting-financiero/requirements.txt`
+- [[repos/rf-scripts/README|rf-scripts]] - conexión, descarga de vistas y consulta de solo lectura (`reporting-financiero/scripts/fabric_comun.py#conectar_sql`, `reporting-financiero/scripts/fabric_comun.py#ficheros_sql`, `reporting-financiero/scripts/fabric_comun.py#descargar_sql`, `reporting-financiero/scripts/consultar_sql.py`, y las dos consultas fijas de solo lectura de `reporting-financiero/scripts/validar_ficheros_grupo.py#consultar`); versión fijada en `reporting-financiero/requirements.txt`
 
 ## Integration surface
 

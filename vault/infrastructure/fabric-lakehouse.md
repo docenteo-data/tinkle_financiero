@@ -12,7 +12,7 @@ tags: [infrastructure, fabric-lakehouse]
 ## Repos that use it
 
 - [[repos/rf-fabric/README|rf-fabric]] - los dataflows escriben tablas en los esquemas 100, 200 y 300 (`reporting-financiero/fabric/INGESTA_Carga_Datos.Dataflow/mashup.pq`); el modelo Financial Model abre el lakehouse en Direct Lake (`reporting-financiero/fabric/Financial Model.SemanticModel/definition/expressions.tmdl`); Agings lee el esquema 200 por el SQL endpoint (`reporting-financiero/fabric/Agings.SemanticModel/definition/tables/200 Aging_Clientes.tmdl`); el notebook lee dos vistas y escribe TXT en Files (`reporting-financiero/fabric/Generar_txt_Balance_Saldos.Notebook/notebook-content.ipynb`)
-- [[repos/rf-scripts/README|rf-scripts]] - consulta el SQL endpoint, descarga las vistas y el esquema de columnas, y ofrece una consulta de solo lectura (`reporting-financiero/scripts/fabric_comun.py#SQL_SERVIDOR`, `reporting-financiero/scripts/fabric_comun.py#descargar_sql`, `reporting-financiero/scripts/consultar_sql.py`)
+- [[repos/rf-scripts/README|rf-scripts]] - consulta el SQL endpoint, descarga las vistas y el esquema de columnas, y ofrece una consulta de solo lectura (`reporting-financiero/scripts/fabric_comun.py#SQL_SERVIDOR`, `reporting-financiero/scripts/fabric_comun.py#descargar_sql`, `reporting-financiero/scripts/consultar_sql.py`); lee `200.MMS`, `300.Fact_Actuals`, `300.Dim_Cuentas` y `300.Dim_Clientes` para validar los ficheros de Grupo (`reporting-financiero/scripts/validar_ficheros_grupo.py#consultar`)
 
 ## Configuration & deployment
 
