@@ -6,10 +6,62 @@ Pega esto tal cual al abrir la nueva conversación.
 
 Voy a construir en Microsoft Fabric el proceso de generación del TXT de **Pendiente_Facturar** para el proyecto de Reporting Financiero de Tinkle, replicando un patrón ya existente (Balance) que funciona en producción. Tengo acceso al MCP de Fabric (`fabric-local`) y a Asana. Te doy solo hechos verificados; lo que no está verificado lo marco explícitamente como pregunta abierta. No asumas ni inventes nada de lo marcado como abierto: pregúntamelo antes de escribir la lógica definitiva.
 
+## 0. Respuestas recibidas el 2026-11-03 y CORRECCIÓN de una conclusión anterior (prevalece sobre las secciones siguientes)
+
+Fuente de las respuestas: la persona que llevó el proyecto al inicio. Sobre esta área no tenía claro el cálculo; se revisará en una sesión conjunta.
+
+**Lo que aporta la respuesta de Ageing**: `GRWIP` forma parte de la misma plantilla de Grupo que los tramos de Ageing (misma cuenta `MB4000`), junto con `GRWIP1` (WIP 0-365 días) y `GRWIP9` (WIP más de 1 año). En marzo solo aparece `GRWIP`.
+
+**Corrección**: la sección 5bis concluye que las sumas de MMS estaban "a varios órdenes de magnitud" del objetivo y que la aproximación estaba mal planteada. **Esa conclusión es errónea**: comparaba euros con un fichero que, como Ageing (comprobado: 4.637.740 € / 1000 = 4.637), casi seguro está en miles de euros. Objetivos reales en euros:
+
+| Sociedad | Filas | Total en el fichero | Total en euros (x1000) |
+|---|---|---|---|
+| TINKLE_COMM (ESP066) | 16 | 257,13 | ~257.130 € |
+| TINKLE_CONS (ESP070) | 16 | 134,40 | ~134.400 € |
+| TINKLE_EU (ESP067) | 3 | 30,59 | ~30.590 € |
+| TINKLE_JAZZ (ESP068) | 12 | 99,56 | ~99.560 € |
+| TINKLE_ONION (ESP069) | 1 | 16,91 | ~16.910 € |
+
+Ejemplo por cliente: `REPSOL01 = 45,12` equivale a unos 45.120 €.
+
+Con esa escala, las sumas de MMS sí están en el orden correcto (estado `I` de TINKLE_COMM en 202603 = 246.053 €). La hipótesis de MMS queda **reabierta**. Además, el filtro `PERIODO = 202603` probablemente era incorrecto: que exista `GRWIP9` (más de 1 año) indica que el WIP incluye periodos anteriores no facturados.
+
+**Consultas para la sesión conjunta**:
+
+```sql
+-- Por estado, todos los periodos hasta el cierre, en miles
+SELECT [Estado Orden], SUM([IMPORTE]) / 1000.0 AS TotalMiles, COUNT(*) AS n
+FROM [200].[MMS]
+WHERE [Fecha Factura Cli.] IS NULL
+  AND [PERIODO] <= 202603
+  AND [Compañia] LIKE '%COMMUNICATIONS%'
+GROUP BY [Estado Orden];
+
+-- Un cliente concreto contra su valor esperado (REPSOL01 = 45,12)
+SELECT [Cod. Cliente], [Cliente], [Estado Orden], [PERIODO], SUM([IMPORTE]) AS Importe
+FROM [200].[MMS]
+WHERE [Fecha Factura Cli.] IS NULL
+  AND [PERIODO] <= 202603
+  AND [Compañia] LIKE '%COMMUNICATIONS%'
+  AND [Cliente] LIKE '%REPSOL%'
+GROUP BY [Cod. Cliente], [Cliente], [Estado Orden], [PERIODO]
+ORDER BY [PERIODO];
+```
+
+Observación a tener en cuenta: en el fichero real todos los importes por cliente son positivos, mientras que MMS tiene líneas negativas (estados `C`, `P`, `E`). Puede que el fichero neteé por cliente y descarte los saldos negativos, o que solo cuenten ciertos estados.
+
+**Código de cliente (`D_CLIENT`)**: mismo caso que Ageing; nueva columna en `Dim_Clientes` a partir de `Revenue 2026 FT3.xlsm` (tarea abierta). MMS se cruzaría por `ClienteKey_MMS`.
+
+**Resultado de las consultas (2026-11-03): NO se reproduce.** Con `Fecha Factura Cli.` nula y `PERIODO <= 202603`, en miles:
+- Por sociedad y estado: ningún estado ni combinación evidente da los objetivos. En ONION todos los estados salen negativos (el objetivo es +16,91), y el estado `P` es enorme y negativo en todas las sociedades (COMM: -17.459 miles).
+- Por cliente en COMM: REPSOL (varias entidades) da en estado `I` 12,27 + 1,26 + 18,25 + 42,89 - 13,00, sin ninguna combinación igual a 45,12; ASTRAZENECA `I` = 7,08 (objetivo 46,08); T-SYSTEMS e IKEA salen siempre negativos (objetivos positivos: 12,15 y 3,08).
+
+Conclusión: la escala en miles sigue siendo lo más probable, pero el filtro "factura de cliente en blanco" no identifica el WIP. Probablemente `MMS` mezcla líneas de cliente y de proveedor, o el WIP se calcula de otra forma (por ejemplo, producción reconocida menos facturado). Hay que verlo en la sesión conjunta antes de seguir con SQL.
+
 ## 1. Patrón técnico ya confirmado (funciona para Balance, replicable tal cual)
 
 - Workspace Fabric: **"Tinkle - Financiero"**. Lakehouse: **lh_tinkle_financiero**. SQL Analytics Endpoint, esquema **200** para datos consolidados/intermedios.
-- El pipeline **"Grabar salidas"** tiene, para Balance: actividad **Notebook** (ejecuta `Generar_txt_Balance_Saldos`) → actividad **Copy data** ("Grabar balance").
+- El pipeline **"Grabar salidas"** tiene, para Balance: actividad **Notebook** (ejecuta `Generar_txt_Balance_Saldos`) y después actividad **Copy data** ("Grabar balance").
 - Configuración exacta de esa actividad Copy data (verificada en el portal):
   - **Source**: conexión "Lakehouse reporting (Preview)", Lakehouse `lh_tinkle_financiero`, Root folder = Files, Wildcard file path = `Exportaciones/Balance` / `*.txt`, Recursively = true, formato Binary.
   - **Destination**: conexión "SharePoint reporting" (SharePoint Online File), File path = `Shared Documents/Reporting Financiero/2. Salida de ficheros/Balance`, formato Binary.
@@ -29,9 +81,9 @@ ESP070 -> TINKLE_CONS
 ## 3. Layout REAL del fichero de Pendiente_Facturar (verificado contra ficheros TXT reales de marzo 2026, no supuesto)
 
 Ruta de los ficheros de ejemplo reales, ya en el proyecto:
-`otros/2026 03 - 0001 Magnitude Marzo/Pendiente_Facturar/03 MAR-26/*.txt` (uno por sociedad, 5 ficheros, muy pocas filas — entre 16 y 17 líneas de datos en la sociedad de ejemplo revisada).
+`otros/2026 03 - 0001 Magnitude Marzo/Pendiente_Facturar/03 MAR-26/*.txt` (uno por sociedad, 5 ficheros, muy pocas filas, entre 16 y 17 líneas de datos en la sociedad de ejemplo revisada).
 
-Nombre de fichero real observado: `TINKLE_COMM_Pendiente_Facturar_MAR-26_20260401_105108.txt` → patrón `{SOCIEDAD}_Pendiente_Facturar_{MES-AA}_{timestamp:%Y%m%d_%H%M%S}.txt`.
+Nombre de fichero real observado: `TINKLE_COMM_Pendiente_Facturar_MAR-26_20260401_105108.txt`: patrón `{SOCIEDAD}_Pendiente_Facturar_{MES-AA}_{timestamp:%Y%m%d_%H%M%S}.txt`.
 
 Formato: CSV separado por `;`, cabecera **en minúsculas** (igual que Ageing), codificación ASCII/UTF-8, fin de línea `\n`. Mismo layout de 26 columnas + 1 residual que Ageing/Revenue, mismo orden de campos.
 
@@ -47,7 +99,7 @@ Columnas exactas observadas (48 filas de datos en total entre los 5 ficheros de 
 | 5 | D_DIM2     | Siempre vacío |
 | 6 | D_DIM3     | Siempre vacío |
 | 7 | D_ACTY     | Siempre vacío |
-| 8 | D_CLIENT   | Código corto de cliente tipo MMS/Oracle (45 valores distintos en la muestra) — mismo tipo de código que en Ageing/Revenue |
+| 8 | D_CLIENT   | Código corto de cliente tipo MMS/Oracle (45 valores distintos en la muestra), mismo tipo de código que en Ageing/Revenue |
 | 9 | D_PE       | Igual que D_DP |
 | 10| D_ORU      | Siempre vacío |
 | 11| D_AC       | Fijo: `MB4000` (misma cuenta que Ageing) |
@@ -64,17 +116,17 @@ Columnas exactas observadas (48 filas de datos en total entre los 5 ficheros de 
 | 22| D_DEST     | Siempre vacío |
 | 23| D_AREA     | Siempre vacío |
 | 24| P_COMMENT  | Siempre vacío |
-| 25| P_AMOUNT   | Importe numérico, aquí con **coma** decimal en la muestra (ej. `7,30`, `0,42`) — a diferencia de Ageing/Revenue, que usan punto. Verificar si es un error puntual del fichero de marzo o el formato real esperado. |
+| 25| P_AMOUNT   | Importe numérico, aquí con **coma** decimal en la muestra (ej. `7,30`, `0,42`), a diferencia de Ageing/Revenue, que usan punto. Verificar si es un error puntual del fichero de marzo o el formato real esperado. |
 | 26| (vacío)    | Columna residual |
 
-## 4. Reglas de negocio confirmadas por transcripción de reunión (Josep Zoppetti — testimonio verbal, no verificado contra datos)
+## 4. Reglas de negocio confirmadas por transcripción de reunión (Josep Zoppetti, testimonio verbal, no verificado contra datos)
 
 - Esto **no sale de contabilidad ni del módulo de Aging**: Josep lo explica con detalle usando **MMS**. Cita textual (resumida): "para ver en realidad que tengo pendiente de facturar... la información que uso son los filtros: en la fecha de factura, si pongo un espacio en blanco, si no tiene fecha de factura es que no está facturado". También usa el campo de **estado de la orden** en MMS (valores tipo `F`=facturado, `C`, "emitido", "iniciado"...) para filtrar qué está pendiente de facturar.
-- Es una partida delicada a nivel de auditoría: hay importes "pendientes de facturar" de años anteriores (2024, 2025) que los auditores cuestionan si no se resuelven ("cómo puede ser que tú tuvieras una previsión cuando cerraste 2024 y todavía la tienes pendiente de facturar"). Esto sugiere que el fichero probablemente deba incluir partidas de **cualquier periodo/año con trabajo no facturado**, no solo del mes en curso — no confirmado si el TXT de Grupo hace ese corte histórico o solo el acumulado del cierre actual.
+- Es una partida delicada a nivel de auditoría: hay importes "pendientes de facturar" de años anteriores (2024, 2025) que los auditores cuestionan si no se resuelven ("cómo puede ser que tú tuvieras una previsión cuando cerraste 2024 y todavía la tienes pendiente de facturar"). Esto sugiere que el fichero probablemente deba incluir partidas de **cualquier periodo/año con trabajo no facturado**, no solo del mes en curso, no confirmado si el TXT de Grupo hace ese corte histórico o solo el acumulado del cierre actual.
 
 ## 5. Datos disponibles en el Lakehouse (esquema 200) para construir esto
 
-- **Confirmado contra el esquema real** (`documentacion/esquema_lh_tinkle_financiero_100_200.tsv`): la tabla `MMS` (esquema 200, 192 columnas — la más ancha del lakehouse) tiene, entre otras, estas columnas relevantes:
+- **Confirmado contra el esquema real** (`documentacion/esquema_lh_tinkle_financiero_100_200.tsv`): la tabla `MMS` (esquema 200, 192 columnas, la más ancha del lakehouse) tiene, entre otras, estas columnas relevantes:
   - `Compañia` (relacionada en el modelo semántico con `Dim_Sociedades.Sociedad_MMS`, según la documentación del proyecto)
   - `Cod. Cliente`, `Cliente`, `ClienteKey_MMS`
   - `Estado Orden` (el campo que menciona Josep: valores tipo F/C/emitido/iniciado)
@@ -88,10 +140,10 @@ Columnas exactas observadas (48 filas de datos en total entre los 5 ficheros de 
 ## 5bis. Comprobación en vivo (2026-09-30): la hipótesis simple NO reproduce el fichero real
 
 Se probó `SELECT ... FROM [200].[MMS] WHERE [Fecha Factura Cli.] IS NULL AND [PERIODO]=202603 AND [Compañia] LIKE '%COMMUNICATIONS%'` y el resultado **no se parece** al fichero de ejemplo de marzo:
-- Salen importes grandes y variados (`3686`, `8447.42`, `9000`, `-11000`, `-178`...) con signos mezclados, varias líneas por cliente — el fichero real tenía una única línea pequeña y siempre positiva por cliente (ej. `REPSOL01 = 45.12`, no varias líneas con miles de euros).
+- Salen importes grandes y variados (`3686`, `8447.42`, `9000`, `-11000`, `-178`...) con signos mezclados, varias líneas por cliente, el fichero real tenía una única línea pequeña y siempre positiva por cliente (ej. `REPSOL01 = 45.12`, no varias líneas con miles de euros).
 - `Estado Orden` tiene 9 valores distintos entre las filas con factura en blanco: `P` (12.967 filas), `C` (3.887), `I` (1.680), `FP` (499), `E` (169), `pfP` (105), `pf` (45), `P#` (5), `p` (3). No sabemos el significado de negocio de ninguno de estos códigos, ni cuáles (si alguno) corresponden a "pendiente de facturar" en el sentido que describía Josep.
 
-**Conclusión: la hipótesis "factura en blanco + periodo actual" está descartada tal cual.** El cálculo real debe ser distinto (probablemente una agregación o comparación distinta, no una simple suma de líneas de `MMS` del mes), y no se puede seguir adivinando por SQL — hace falta que alguien de Tinkle (Josep) explique en detalle, con un ejemplo real delante, cómo se llega exactamente a esas 16-17 líneas pequeñas por sociedad.
+**Conclusión: la hipótesis "factura en blanco + periodo actual" está descartada tal cual.** El cálculo real debe ser distinto (probablemente una agregación o comparación distinta, no una simple suma de líneas de `MMS` del mes), y no se puede seguir adivinando por SQL, hace falta que alguien de Tinkle (Josep) explique en detalle, con un ejemplo real delante, cómo se llega exactamente a esas 16-17 líneas pequeñas por sociedad.
 
 **Segunda comprobación (2026-09-30), desagregando por `Estado Orden`**: se sumó `IMPORTE` agrupado por `Estado Orden` para el mismo filtro (TINKLE_COMM, `PERIODO`=202603, factura en blanco):
 
@@ -107,11 +159,11 @@ El objetivo era reproducir **257,13** (suma de las 16 líneas reales de TINKLE_C
 
 ## 6. Preguntas abiertas que hay que resolver ANTES de dar la lógica por buena (no las asumas)
 
-1. **La más importante, y ya no es una simple verificación SQL**: pedirle a Josep/Álvaro que reproduzca en vivo, con el fichero de marzo delante, de dónde sale cada una de esas 16-17 líneas para TINKLE_COMM (ej. por qué `REPSOL01` da exactamente `45.12` y no otro importe). Sin eso, seguir probando filtros por SQL es adivinar a ciegas — ya se descartó la hipótesis obvia (sección 5bis).
+1. **La más importante, y ya no es una simple verificación SQL**: pedirle a Josep/Álvaro que reproduzca en vivo, con el fichero de marzo delante, de dónde sale cada una de esas 16-17 líneas para TINKLE_COMM (ej. por qué `REPSOL01` da exactamente `45.12` y no otro importe). Sin eso, seguir probando filtros por SQL es adivinar a ciegas, ya se descartó la hipótesis obvia (sección 5bis).
 2. Qué significa cada valor de `Estado Orden` (`P`, `C`, `I`, `FP`, `E`, `pfP`, `pf`, `P#`, `p`) y cuáles cuentan como "pendiente de facturar".
-3. ¿El importe usa coma o punto decimal? El fichero de ejemplo de marzo usa coma, distinto de Ageing/Revenue que usan punto — confirmar si es así siempre o es una particularidad de ese fichero.
+3. ¿El importe usa coma o punto decimal? El fichero de ejemplo de marzo usa coma, distinto de Ageing/Revenue que usan punto, confirmar si es así siempre o es una particularidad de ese fichero.
 4. ¿El fichero incluye partidas de periodos/años anteriores (2024, 2025 pendientes) o solo del cierre del mes en curso?
-5. ¿Cómo se traduce `Cod. Cliente`/`ClienteKey_MMS` al código corto `D_CLIENT` del fichero (`01500400`, `16300001`, `AMAZO594`...)? (Puede que sea directamente `Cod. Cliente`, o que haga falta pasar por `Dim_Clientes.ClienteKey_MMS`/`Cliente MMS` — verificar; recordar que `Dim_Clientes` para IKEA dio `18956`, no `IKEA`, así que probablemente tampoco sea la fuente directa de este código).
+5. ¿Cómo se traduce `Cod. Cliente`/`ClienteKey_MMS` al código corto `D_CLIENT` del fichero (`01500400`, `16300001`, `AMAZO594`...)? (Puede que sea directamente `Cod. Cliente`, o que haga falta pasar por `Dim_Clientes.ClienteKey_MMS`/`Cliente MMS`, verificar; recordar que `Dim_Clientes` para IKEA dio `18956`, no `IKEA`, así que probablemente tampoco sea la fuente directa de este código).
 
 ## 7. Qué quiero que hagas
 

@@ -113,6 +113,7 @@ Libro de cierre que finanzas revisa cada mes con balance, P&L y desgloses de cue
 **Intercompañía**:
 Operación entre sociedades del Grupo, que se identifica aparte en el reporting.
 _Avoid_: intercía, IC
+**Medido el 2026-11-03**: en el fichero de Grupo de Ageing se marca con una fila `GRICFLAG` de valor 1 por cliente. Sale casi seguro de `200.Aging_Clientes[Interno] = 'Y'` (28 facturas, todas de empresas del Grupo); la comprobación final espera al maestro de clientes de Magnitude.
 
 ### Presupuesto y previsión
 
@@ -137,6 +138,7 @@ Hojas de captura en Fabric donde las directoras revisan el forecast de revenue y
 **Revenue**:
 Ingreso de un cliente en un periodo.
 _Avoid_: ingresos, facturación
+**Medido el 2026-11-03**: el fichero de Grupo de Revenue no lleva solo ingresos: es la medida `REAL (Fees & other)` (cuentas X `X70000` y `X60000`, es decir, el **Gross Income**), acumulada desde enero, con el signo invertido y en miles. Cuadra con el TXT de marzo en 4 de las 5 sociedades (`scripts/validar_ficheros_grupo.py revenue`).
 
 **Honorarios**:
 Parte del revenue que corresponde a los fees de Tinkle por el servicio (cuenta X `X705000`).
@@ -174,9 +176,16 @@ _Avoid_: Ageing (salvo en el nombre del fichero de Grupo), vencimientos
 **Tramo de aging**:
 Intervalo de días vencidos en el que cae una factura pendiente (por ejemplo 61-90 o más de un año).
 _Avoid_: bucket
+**Confirmado el 2026-11-03** (plantilla de Grupo, respuesta de quien llevó el proyecto al inicio): en el fichero de Grupo, `GR0` no vencido, `GR1` 0-30 días, `GR2` 31-60, `GR3` 61-90, `GR4` 91-120, `GR5` 121-180, `GR8C` 181-365 y `GR9C` más de un año, con los límites de la columna `AgingBucket` del modelo `Agings`. **Medido el 2026-11-03**: con el aging del 31-03-2026 y el importe en miles, las 35 combinaciones de sociedad y tramo cuadran con el TXT de marzo (`scripts/validar_ficheros_grupo.py ageing`).
 
 **Pendiente de facturar**:
 Importe de trabajo ya realizado para un cliente que todavía no se ha facturado.
+**Confirmado el 2026-11-03**: en la plantilla de Grupo es el código `GRWIP` (Work in progress), en la misma cuenta que el aging de clientes; `GRWIP1` y `GRWIP9` lo separan en hasta un año y más de un año. La regla de cálculo desde **MMS** está pendiente: la suma de órdenes sin factura de cliente no reproduce el TXT de marzo.
+
+**Código de cliente Magnitude**:
+Código con el que se identifica a un cliente en los ficheros de Grupo (por ejemplo `IKEA`, `01500400` o `ESP066RIC85`), distinto de las claves de **Oracle** y **MMS**.
+_Avoid_: código corto, código de cliente (a secas)
+**Medido el 2026-11-03**: el Excel `Revenue 2026 FT3.xlsm` lo trae para parte de los clientes (columna `Codigo cliente Magnitude`, cruzable por `Cliente` = clave Oracle y `Codigo MMS`), pero no es el maestro completo: le faltan 21 de los 167 códigos usados en marzo y asigna a algunos clientes otro código. Se creará como columna nueva en `Dim_Clientes`.
 
 **Working capital**:
 Fichero de capital circulante que se reporta al Grupo cada cierre.
@@ -219,3 +228,5 @@ Fichero de Grupo con los saldos de las cuentas de los grupos 4 y 7 por sociedad.
 - "Aging" (informes) y "Ageing" (fichero de Grupo) son el mismo concepto. Resuelto: **Aging**.
 - Las actas de las reuniones de abril y mayo usan varios términos de forma distinta a este glosario ("Real" en la hoja de las directoras, "producción", "previsión", "coste fee", centro de coste como directora). Están listados en `docs/reuniones/README.md`, sección de contradicciones; pendientes de resolver en la auditoría.
 - El significado de los códigos de tramo del fichero de Grupo (`GR0` a `GR9C`, `GRICFLAG`) está pendiente de confirmar con el cliente (ver `docs/contexto/PREGUNTAS_PARA_TINKLE.md`).
+  **CORRECCIÓN 2026-11-03**: resuelto, ver **Tramo de aging** e **Intercompañía**.
+- "Revenue" nombra el ingreso de un cliente, pero el fichero de Grupo de Revenue lleva el **Gross Income** (ingresos menos coste de producción). Se mantiene el nombre del fichero; en el resto, **Revenue** es solo ingreso.

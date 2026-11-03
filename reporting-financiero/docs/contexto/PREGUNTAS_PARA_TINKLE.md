@@ -1,34 +1,46 @@
-# Preguntas para Tinkle (Josep / Álvaro) — TXT de Grupo pendientes
+# Preguntas para Tinkle, TXT de Grupo
 
-## General y lo más importante
+Estado a 2026-11-03. Las respuestas recibidas proceden de la persona que llevó el proyecto al inicio, no de Tinkle directamente.
 
-1. El fichero de marzo compartido, ¿es exactamente lo que se genera cada mes para el reporting de Grupo, o tiene alguna diferencia (formato, filtros) respecto al proceso real?
-2. Por varias menciones en las reuniones y en el nombre de la carpeta compartida, se ha asumido que el destino final de estos ficheros es el sistema "Magnitude". ¿Es correcto, o el destino es otro / ha cambiado?
-3. Cuando se prepara hoy a mano el fichero, el cliente aparece con un código corto (ej. `IKEA`, `01500400`, `AMAZO594`). ¿De dónde sale ese código exactamente? ¿Existe un listado o fichero en algún sitio que relacione cada cliente con su código? (Afecta a Ageing, Revenue y Pendiente_Facturar).
+## Respondidas
 
-## Ageing
+- **Código corto de cliente** (`IKEA`, `01500400`...): es el código de cliente en Magnitude. Hay que generarlo como columna nueva en `Dim_Clientes`. Referencia: `Revenue 2026 FT3.xlsm` (tarea abierta).
+- **Destino de los ficheros**: Magnitude (confirmado de forma implícita por la respuesta anterior).
+- **Códigos de Ageing** (plantilla Excel):
 
-4. Los tramos de antigüedad ya están calculados en días (0-30, 31-60, 61-90, 91-120, 121-180, más de 1 año). En el fichero final aparecen como códigos `GR0, GR1, GR2, GR3, GR4, GR5, GR8C, GR9C` y `GRICFLAG`. ¿Qué tramo corresponde a cada código?
-5. `GRICFLAG` no parece ser un tramo de días, sino algo aparte. ¿Es el marcador de operaciones intercompany (con otras empresas del grupo Havas)?
-6. El fichero de marzo compartido solo tenía clientes. ¿Ageing de Grupo también necesita un bloque de proveedores, o es solo de clientes?
+| Código | Concepto |
+|---|---|
+| GRICFLAG | Intercompany flag (1 = Grupo) |
+| GRPROV | Provisión por dudoso cobro (siempre en negativo) |
+| GRWIP | Total Work in progress |
+| GRWIP1 | WIP 0-365 días |
+| GRWIP9 | WIP más de 1 año |
+| GR0 | Current (not due) |
+| GR1 | 0-30 días |
+| GR2 | 30-60 días |
+| GR3 | 60-90 días |
+| GR4 | 90-120 días |
+| GR5 | 121-180 días |
+| GR8C | 181-365 días |
+| GR9C | Más de 1 año |
+| GRRL | Límite de riesgo |
+| (calculado) | Total sin límite de riesgo |
 
-## Revenue
+- **GRICFLAG**: indicador de intercompany, no es un tramo. En el TXT de marzo aparece con valor 1 en clientes del Grupo (`HAVAS474`, `ICHAVASWW`, `ESP016TIN637`, `ICESP046`, `ESP067COM550`).
+- **GRICFLAG (comprobado con datos)**: casi seguro sale de `Aging_Clientes.Interno = 'Y'`. Falta la verificación final con el código Magnitude de cliente.
+- **Revenue**: el dato real sale de `Fact_Actuals` y el importe es el total. Comprobado con datos: es la medida `REAL (Fees & other)` (ingresos menos coste de producción), acumulada del año, con el signo invertido y en miles. Cuadra en 4 de 5 sociedades; en COMM hay una diferencia del 0,24% pendiente de explicar.
+- **Working_Capital**: la lógica de cálculo no se documentó en las reuniones.
+- **CashFlow**: no está en el Excel porque es información específica para el reporting de Grupo. Existe una macro que lo calcula, pero no se facilitó.
 
-7. La tabla de ingresos identificada como fuente está vacía en el sistema. ¿Se puede relanzar su proceso de carga para que vuelva a tener datos?
-8. ¿El importe que va al fichero es el ingreso total del cliente (honorarios + producción juntos), o solo una de las dos partidas?
+## Pendientes
 
-## Pendiente_Facturar
-
-9. Se ha intentado reproducir el cálculo de varias formas con los datos de MMS (por fecha de factura en blanco, desagregando también por estado de pedido) y en ningún caso salen números parecidos a los del fichero de ejemplo. ¿Se puede mostrar, con el fichero de marzo delante, cómo se calcula exactamente el importe pendiente de facturar de un cliente concreto (por ejemplo Repsol)?
-10. En MMS hay varios estados de pedido (`P`, `C`, `I`, `FP`, `E`, entre otros). ¿Cuáles de esos estados cuentan como "pendiente de facturar"?
-
-## Working_Capital
-
-11. No se ha encontrado ningún dato en el sistema que explique este fichero. ¿Working_Capital sale de algún cálculo, o son líneas que se introducen a mano directamente en Magnitude?
-12. Si sale de un cálculo, ¿de qué información parte (aging, tesorería, algo del balance)?
-
-## CashFlow
-
-13. El fichero se llama internamente "HMES - Asientos con contrapartida fija" y mezcla cuentas de banco, proveedores, clientes, intercompany, nóminas, gastos financieros e impuestos — no es solo la cuenta 572. ¿Qué informe o consulta concreta de Oracle genera exactamente este listado, y con qué criterio selecciona esas líneas?
-14. ¿La fecha de inicio del informe es siempre el 1 de enero del ejercicio (acumulado desde principio de año hasta el cierre), o depende de otra cosa?
-15. Al principio de cada línea del fichero aparece un código de compañía (ej. `53`). ¿Qué código interno es ese?
+1. El fichero de marzo compartido, ¿es exactamente lo que se genera cada mes para Grupo, o tiene alguna diferencia (formato, filtros) respecto al proceso real?
+2. Ageing: todo apunta a que solo se exportan clientes (plantilla, fichero de marzo y la reunión del 27 de abril, donde se dijo que el Grupo "todavía" no pide aging de proveedores). ¿Sigue siendo así?
+3. Ageing: en contabilidad hay provisión por dudoso cobro (cuenta 490: COMM -395.437 €, CONS -133.991 €), pero el TXT de marzo no lleva líneas `GRPROV`. ¿Debe informarse? Si es así, ¿cómo se reparte por cliente, si en contabilidad es un único apunte por sociedad?
+4. Ageing: `GRRL` (límite de riesgo) no puede informarse porque no hay datos de límites de crédito. ¿Se confirma que no hace falta hasta que se facilite ese fichero? ¿Y `GRWIP1`/`GRWIP9`?
+5. Código de cliente Magnitude: el Excel `Revenue 2026 FT3.xlsm` no cubre todos los clientes. De los 167 códigos usados en los TXT de marzo, faltan 21 en el Excel, y 19 de ellos en todos los Excel del proyecto: `ARTURO`, `ESP001GEO98`, `ESP016CAR757`, `ESP016MAG821`, `ESP036TEL906`, `ESP066RIC328`, `ESP066RIC659`, `ESP066RIC8`, `ESP066RIC85`, `ESP070RIC138`, `ESP070RIC176`, `ESP070RIC199`, `ESP070RIC241`, `ESP070RIC297`, `ESP070RIC61`, `ESP070RIC806`, `ESP070RIC872`, `ICESP046`, `SAC257` (`RENFE` y `ESP066OPI154` solo aparecen en otros Excel). ¿Existe un maestro completo de clientes de Magnitude? Es bloqueante para Ageing: aplicando el mapeo del Excel a las facturas del aging de marzo solo se reproducen 192 de las 280 líneas del TXT, porque faltan códigos y porque algunos clientes tienen un código distinto (por ejemplo, el genérico `16300001` y los intercompany). Hace falta el maestro que se usó para generar el TXT de marzo. En Revenue el mismo Excel reproduce 132 de 172 líneas: va mejor, pero también hay clientes con otro código (por ejemplo, `ESP013TEL489` en el Excel frente a `ESP036TEL906` en el TXT).
+6. Pendiente_Facturar: revisar juntos el cálculo (ver propuesta de validación en el prompt de Pendiente_Facturar).
+7. Working_Capital: ¿cuál es la lógica de cálculo, o son líneas que se introducen a mano en Magnitude?
+8. CashFlow: ¿se puede conseguir la macro que lo calcula?
+9. CashFlow: el fichero de la carpeta CashFlow tiene formato de listado de Oracle ("HMES - Asientos con contrapartida fija"), no el formato de líneas Magnitude del resto. ¿Ese listado es lo que se entrega a Grupo, o es la entrada de la macro?
+10. CashFlow: al principio de cada línea aparece un código de compañía (ej. `53`). ¿Qué código interno es?

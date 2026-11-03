@@ -6,10 +6,78 @@ Pega esto tal cual al abrir la nueva conversación.
 
 Voy a construir en Microsoft Fabric el proceso de generación del TXT de **Revenue** para el proyecto de Reporting Financiero de Tinkle, replicando un patrón ya existente (Balance) que funciona en producción. Tengo acceso al MCP de Fabric (`fabric-local`) y a Asana. Te doy solo hechos verificados; lo que no está verificado lo marco explícitamente como pregunta abierta. No asumas ni inventes nada de lo marcado como abierto: pregúntamelo antes de escribir la lógica definitiva.
 
+## 0. Respuestas recibidas el 2026-11-03 (prevalecen sobre cualquier hipótesis de las secciones siguientes)
+
+Fuente: la persona que llevó el proyecto al inicio (no Tinkle directamente).
+
+- **La fuente es `Fact_Actuals` (dato real), no la tabla `200.Revenues`.** Lo que se dice más abajo de `Revenues` como fuente queda descartado. Esa tabla solo interesa porque se cargaba desde `Revenue 2026 FT3.xlsm`, que es la referencia del código de cliente de Magnitude.
+- **El importe es el total** (honorarios y producción juntos).
+- **Código de cliente (`D_CLIENT`)**: es el código de cliente en Magnitude; se creará como columna nueva en `Dim_Clientes` a partir de `Revenue 2026 FT3.xlsm` (tarea abierta). El cruce previsto va de `Fact_Actuals.ClienteKey_Oracle` a `Dim_Clientes.ClienteKey_Oracle` y de ahí a la nueva columna de código Magnitude.
+
+**Totales de referencia del fichero de marzo** (suma de `P_AMOUNT`):
+
+| Sociedad | Filas | Total |
+|---|---|---|
+| TINKLE_COMM (ESP066) | 71 | 2.804,59 |
+| TINKLE_CONS (ESP070) | 58 | 1.342,81 |
+| TINKLE_EU (ESP067) | 9 | 180,38 |
+| TINKLE_JAZZ (ESP068) | 24 | 952,00 |
+| TINKLE_ONION (ESP069) | 10 | 354,25 |
+
+**RESUELTO con datos (2026-11-03)**: el importe es la medida `REAL (Fees & other)` del `Financial Model`:
+
+```dax
+REAL (Fees & other) = CALCULATE([Importe Base], Dim_Cuentas[Cuenta_magnitude] = "X60000" || Dim_Cuentas[Cuenta_magnitude] = "X70000")
+Importe Base        = DIVIDE(SUM(Fact_Actuals[Saldo]), [Escala Seleccionado])
+```
+
+acumulada de enero al cierre, **con el signo invertido** y **en miles**. Consulta que lo reproduce:
+
+```sql
+SELECT f.[CodigoSociedad],
+  -SUM(f.[Saldo]) / 1000.0 AS ImporteMiles
+FROM [300].[Fact_Actuals] f
+JOIN [300].[Dim_Cuentas] c ON c.[ID_Account] = f.[ID_Account]   -- ID_Account es único en Dim_Cuentas (657 filas, 657 ids)
+WHERE c.[Cuenta_magnitude] IN ('X60000','X70000')
+  AND CAST(f.[Periodo] AS date) BETWEEN '2026-01-01' AND '2026-03-31'
+GROUP BY f.[CodigoSociedad];
+```
+
+| Sociedad | Fichero de marzo | Calculado |
+|---|---|---|
+| CONS | 1.342,81 | 1.342,80 |
+| EURO | 180,38 | 180,37 |
+| JAZZ | 952,00 | 952,01 |
+| ONION | 354,25 | 354,25 |
+| COMM | 2.804,59 | 2.811,41 (diferencia 6,82, el 0,24%) |
+
+Pendiente: explicar la diferencia de COMM (comparar cliente a cliente cuando exista el código Magnitude; posibles causas: clientes excluidos del fichero o apuntes contabilizados después del 1 de abril). La candidata "honorarios + producción" (`X700000` + `X705000`) queda descartada: da 5.333 en COMM. "El total" significa ingresos menos coste de producción (`X60000` incluye el coste).
+
+**Validación por cliente (2026-11-03)**: agrupando por `ClienteKey_Oracle`, cruzando con `Dim_Clientes` (`Cliente ORACLE` tipo `EE19362`, `Cliente MMS`) y con el Excel `Revenue 2026 FT3.xlsm` (hoja "Revenue by client FT3 2026", columnas `Cliente`/`Codigo MMS` y `Codigo cliente Magnitude`, rellenando con ceros a 8 dígitos los códigos numéricos, porque Excel pierde el cero inicial), **se reproducen exactas 132 de las 172 líneas del TXT de marzo (77%)** y todo el importe recibe código. El resto falla porque el mismo cliente lleva otro código en el TXT (por ejemplo, 87,97 sale como `ESP013TEL489` en el Excel y como `ESP036TEL906` en el TXT, y 77,47 como `ESP018GAS306` frente a `16300103`) y porque el genérico `16300001` agrupa clientes distintos. Las hojas B1 2026 y B1 2025 dan peor resultado. Conclusión: el Excel sirve como primera versión, pero el código definitivo depende del maestro de clientes de Magnitude de Tinkle (igual que en Ageing). Datos exportados en `C:\dev\tinkle_financiero\reporting-financiero\data\revenue_clientes_2026T1.csv` (no versionado).
+
+La lógica por cliente sale de agrupar además por `f.[ClienteKey_Oracle]` y cruzar con `Dim_Clientes` para obtener el código Magnitude (columna pendiente de crear). Cada línea del TXT va redondeada a 2 decimales.
+
+**Puntos originales de validación (ya resueltos arriba, se conservan como referencia)**:
+1. Escala: en Ageing y Balance los importes van en miles de euros; lo esperable es que aquí también (2.804,59 = unos 2,8 millones de euros).
+2. Cuentas: Josep habló de la 700 (ventas) y la 705 (servicios de agencia, honorarios). El `Financial Model` tiene una medida `REAL (Fees & other)` que probablemente define exactamente qué cuentas cuentan como ingreso real: leer su DAX en la vista TMDL del modelo, igual que se hizo con `AgingBucket`.
+3. Periodo: mes o acumulado del ejercicio. `vw_Export_Grupo` acumula las cuentas de resultados (`R`) desde enero; es la primera hipótesis a probar.
+
+Consulta de arranque sugerida (ajustar cuentas tras leer la medida):
+
+```sql
+SELECT f.[Sociedad], f.[ClienteKey_Oracle], SUM(f.[Saldo]) / 1000.0 AS ImporteMiles
+FROM [300].[Fact_Actuals] f
+WHERE (f.[Cuenta_origen] LIKE '700%' OR f.[Cuenta_origen] LIKE '705%')
+  AND CAST(f.[Periodo] AS date) BETWEEN '2026-01-01' AND '2026-03-31'
+GROUP BY f.[Sociedad], f.[ClienteKey_Oracle];
+```
+
+Comparar la suma por sociedad con la tabla de arriba (ojo al signo: en `vw_Export_Grupo` las cuentas `R` se invierten).
+
 ## 1. Patrón técnico ya confirmado (funciona para Balance, replicable tal cual)
 
 - Workspace Fabric: **"Tinkle - Financiero"**. Lakehouse: **lh_tinkle_financiero**. SQL Analytics Endpoint, esquema **200** para datos consolidados/intermedios.
-- El pipeline **"Grabar salidas"** tiene, para Balance: actividad **Notebook** (ejecuta `Generar_txt_Balance_Saldos`) → actividad **Copy data** ("Grabar balance").
+- El pipeline **"Grabar salidas"** tiene, para Balance: actividad **Notebook** (ejecuta `Generar_txt_Balance_Saldos`) y después actividad **Copy data** ("Grabar balance").
 - Configuración exacta de esa actividad Copy data (verificada en el portal):
   - **Source**: conexión "Lakehouse reporting (Preview)", Lakehouse `lh_tinkle_financiero`, Root folder = Files, Wildcard file path = `Exportaciones/Balance` / `*.txt`, Recursively = true, formato Binary.
   - **Destination**: conexión "SharePoint reporting" (SharePoint Online File), File path = `Shared Documents/Reporting Financiero/2. Salida de ficheros/Balance`, formato Binary.
@@ -31,7 +99,7 @@ ESP070 -> TINKLE_CONS
 Ruta de los ficheros de ejemplo reales, ya en el proyecto:
 `otros/2026 03 - 0001 Magnitude Marzo/Revenue/03 MAR-26/*.txt` (uno por sociedad, 5 ficheros, entre 5 y 72 líneas de datos según la sociedad).
 
-Nombre de fichero real observado: `TINKLE_COMM_Revenue_MAR-26_20260401_105250.txt` → patrón `{SOCIEDAD}_Revenue_{MES-AA}_{timestamp:%Y%m%d_%H%M%S}.txt`.
+Nombre de fichero real observado: `TINKLE_COMM_Revenue_MAR-26_20260401_105250.txt`: patrón `{SOCIEDAD}_Revenue_{MES-AA}_{timestamp:%Y%m%d_%H%M%S}.txt`.
 
 Formato: CSV separado por `;`, con cabecera **en mayúsculas** (a diferencia de Ageing, que la lleva en minúsculas), codificación ASCII/UTF-8, fin de línea `\n` (no CRLF). Cada fila (incluida probablemente la cabecera) termina en `;` con un campo vacío residual al final (27 posiciones en total, igual que Ageing).
 
@@ -47,7 +115,7 @@ Columnas exactas, mismo orden que Ageing (26 nombres + 1 residual), con lo obser
 | 5 | D_DIM2     | Siempre vacío |
 | 6 | D_DIM3     | Siempre vacío |
 | 7 | D_ACTY     | Fijo: `GADV` |
-| 8 | D_CLIENT   | Código corto de cliente tipo MMS/Oracle (149 valores distintos en la muestra, ej. `AMAZO594`, `ESP036IBE147`) — mismo tipo de código que en Ageing, no el nombre completo |
+| 8 | D_CLIENT   | Código corto de cliente tipo MMS/Oracle (149 valores distintos en la muestra, ej. `AMAZO594`, `ESP036IBE147`), mismo tipo de código que en Ageing, no el nombre completo |
 | 9 | D_PE       | Igual que D_DP |
 | 10| D_ORU      | Siempre vacío |
 | 11| D_AC       | Fijo: `MP2010` |
@@ -67,19 +135,19 @@ Columnas exactas, mismo orden que Ageing (26 nombres + 1 residual), con lo obser
 | 25| P_AMOUNT   | Importe numérico con **punto** decimal, puede ser negativo (ej. `12.97`, `-506.81`, `0.40`) |
 | 26| (vacío)    | Columna residual |
 
-## 4. Reglas de negocio confirmadas por transcripción de reunión (Josep Zoppetti — testimonio verbal, no verificado contra datos)
+## 4. Reglas de negocio confirmadas por transcripción de reunión (Josep Zoppetti, testimonio verbal, no verificado contra datos)
 
 - En el plan contable, las cuentas de ingresos son la **700** (ventas) y la **705** (servicios de agencia / honorarios). El propio Josep dice: "en reporting de magnitud solo hemos de dar esta información" (honorarios + producción, en una sola cifra agregada), aunque internamente ellos desglosan honorarios vs producción para análisis propio (eso NO va al TXT de Grupo).
-- MMS es la fuente que usan internamente para el seguimiento de honorarios/producción por cliente, pero **no está confirmado** que el TXT de Revenue salga de MMS en vez de la contabilidad real — dado que `D_ACTY=GADV` y `D_AC=MP2010` parecen códigos de un extracto contable (similar a Balance), es más probable (no confirmado) que salga de un extracto de cuentas 700/705 de `Fact_Actuals` o equivalente, agregado por cliente.
+- MMS es la fuente que usan internamente para el seguimiento de honorarios/producción por cliente, pero **no está confirmado** que el TXT de Revenue salga de MMS en vez de la contabilidad real, dado que `D_ACTY=GADV` y `D_AC=MP2010` parecen códigos de un extracto contable (similar a Balance), es más probable (no confirmado) que salga de un extracto de cuentas 700/705 de `Fact_Actuals` o equivalente, agregado por cliente.
 
 ## 5. Datos disponibles en el Lakehouse (esquema 200) para construir esto
 
 - **Hallazgo importante, verificado contra el esquema real (`documentacion/esquema_lh_tinkle_financiero_100_200.tsv`)**: la tabla `Revenues` (esquema 200, 13 columnas) tiene exactamente estas columnas: `Origen, Compañía, Nombre Cliente, Cliente, Compañía Magnitude, Codigo MMS, Code Magnitude, Empresa, Nombre MMS, Codigo cliente Magnitude, Año, Mes, Valor`.
-  - Las columnas **`Codigo cliente Magnitude`** y **`Code Magnitude`** encajan casi con toda seguridad con el tipo de código corto que aparece en `D_CLIENT` (`IKEA`, `01500400`...) — resolvería la pregunta 3 de abajo.
+  - Las columnas **`Codigo cliente Magnitude`** y **`Code Magnitude`** encajan casi con toda seguridad con el tipo de código corto que aparece en `D_CLIENT` (`IKEA`, `01500400`...), resolvería la pregunta 3 de abajo.
   - `Compañía Magnitude` podría ser directamente el código de sociedad a usar en `D_RU`, o una pieza para deducirlo.
   - `Año` + `Mes` + `Valor` encajan con `D_PE`/`D_DP` + `P_AMOUNT`.
-  - Según la documentación de auditoría del proyecto (`documentacion/Documentacion_Tinkle_Financiero.md`, hallazgo M7/N8), **esta tabla no tiene ningún consumidor conocido actualmente** (ningún dataflow, notebook ni modelo semántico la lee) — es decir, nadie ha construido todavía nada sobre ella. Es la candidata más fuerte para ser la fuente de este TXT, pero no está confirmado.
-  - **ALERTA verificada en vivo (2026-09-30): la tabla `[200].[Revenues]` está completamente VACÍA (0 filas) en este momento.** `SELECT * FROM [200].[Revenues]` no devuelve nada. Antes de construir nada sobre ella, hay que averiguar por qué: ¿la carga inicial (`INICIAL_Carga_Revenues`) nunca llegó a poblarla correctamente, se vació después, o el fichero origen `Revenue 2026 FT3.xlsx` ya no está donde el dataflow lo espera? Sin datos, esta tabla no sirve de nada tal cual está hoy — sería necesario re-ejecutar o arreglar su ingesta antes de poder usarla como fuente.
+  - Según la documentación de auditoría del proyecto (`documentacion/Documentacion_Tinkle_Financiero.md`, hallazgo M7/N8), **esta tabla no tiene ningún consumidor conocido actualmente** (ningún dataflow, notebook ni modelo semántico la lee), es decir, nadie ha construido todavía nada sobre ella. Es la candidata más fuerte para ser la fuente de este TXT, pero no está confirmado.
+  - **ALERTA verificada en vivo (2026-09-30): la tabla `[200].[Revenues]` está completamente VACÍA (0 filas) en este momento.** `SELECT * FROM [200].[Revenues]` no devuelve nada. Antes de construir nada sobre ella, hay que averiguar por qué: ¿la carga inicial (`INICIAL_Carga_Revenues`) nunca llegó a poblarla correctamente, se vació después, o el fichero origen `Revenue 2026 FT3.xlsx` ya no está donde el dataflow lo espera? Sin datos, esta tabla no sirve de nada tal cual está hoy, sería necesario re-ejecutar o arreglar su ingesta antes de poder usarla como fuente.
 - **No existe ninguna vista `vw_Export_Revenue`** en el SQL Analytics Endpoint (verificado: solo existen `vw_Export_Grupo`, `vw_Export_Saldos_4_7` y `vw_Reporting_Actuals`).
 - **Verificado por consulta SQL que `vw_Export_Grupo` NO contiene** filas con `D_AC = 'MP2010'`. Revenue no está oculto dentro de esa vista.
 
@@ -88,7 +156,7 @@ Columnas exactas, mismo orden que Ageing (26 nombres + 1 residual), con lo obser
 1. Confirmar con una consulta `SELECT TOP 20 * FROM [200].[Revenues]` que el contenido real de `Codigo cliente Magnitude` / `Compañía Magnitude` coincide con los valores de `D_CLIENT`/`D_RU` de los ficheros de ejemplo (`IKEA`, `01500400`, `ESP066`...).
 2. ¿El importe (`P_AMOUNT`) es el ingreso total (honorarios + producción sumados), o solo una de las dos partidas? Josep menciona que internamente separan ambas pero que a Magnitude solo va una cifra. ¿`Valor` en `Revenues` ya viene agregado así, o hay que sumar varias filas (`Origen` distintos) por cliente/mes?
 3. ¿Por qué el número de filas por sociedad varía tanto (de 5 a 72 en la muestra de marzo)? ¿Es simplemente el número de clientes activos ese mes en cada sociedad, o hay algún filtro adicional (ej. solo clientes con importe distinto de cero, o solo ciertas líneas de negocio)?
-4. `Revenues` se carga una sola vez desde Excel (`INICIAL_Carga_Revenues`, sin proceso recurrente documentado, según la auditoría) — confirmar si sigue actualizándose mes a mes o si haría falta arreglar/crear su ingesta recurrente antes de poder usarla en producción.
+4. `Revenues` se carga una sola vez desde Excel (`INICIAL_Carga_Revenues`, sin proceso recurrente documentado, según la auditoría), confirmar si sigue actualizándose mes a mes o si haría falta arreglar/crear su ingesta recurrente antes de poder usarla en producción.
 
 ## 7. Qué quiero que hagas
 
