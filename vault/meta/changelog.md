@@ -16,3 +16,9 @@ tags: [meta]
 ## 2026-10-27T07:59:07Z · rf-scripts
 
 - initial bootstrap · baseline `7d6aa2b`
+
+## 2026-11-03T14:59:09Z · rf-scripts
+
+- commits: `7d6aa2b` → `0ad7fdb`
+- changed files (5): `anexo_pendientes.py`, `exportar_fabric.py`, `fabric_comun.py`, `md_a_docx.py`, `validar_ficheros_grupo.py`
+- affected docs: `repos\rf-scripts\apis.md`, `repos\rf-scripts\architecture.md`, `repos\rf-scripts\configuration.md`, `repos\rf-scripts\integrations.md`, `repos\rf-scripts\overview.md`, `repos\rf-scripts\quality.md`

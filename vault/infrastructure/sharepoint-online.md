@@ -12,6 +12,7 @@ tags: [infrastructure, sharepoint-online]
 ## Repos that use it
 
 - [[repos/rf-fabric/README|rf-fabric]] - origen: la carpeta Reporting Financiero de Files del lakehouse es un shortcut a OneDrive o SharePoint, con las subcarpetas Arranque, Dinamicos y Maestros (`reporting-financiero/fabric/INGESTA_Carga_Datos.Dataflow/mashup.pq`, `reporting-financiero/fabric/INICIAL_Carga_Agings.Dataflow/mashup.pq`); destino: la actividad Copy del pipeline copia los TXT a la biblioteca Shared Documents (`reporting-financiero/fabric/Grabar salidas.DataPipeline/pipeline-content.json`)
+- [[repos/rf-scripts/README|rf-scripts]] - lectura local, sin API: `validar_ficheros_grupo.py` lee la carpeta `3.Fuentes` del proyecto en el SharePoint de Docenteo (biblioteca DOCENTEO - General, sincronizada en el equipo por OneDrive), con los TXT de Magnitude de marzo de 2026, el aging de clientes y el libro Revenue 2026 FT3 (`reporting-financiero/scripts/validar_ficheros_grupo.py#FUENTES`). Es un sitio distinto del de entrada y salida de Fabric.
 
 ## Configuration & deployment
 

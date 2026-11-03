@@ -6,10 +6,15 @@ Pega esto tal cual al abrir la nueva conversación.
 
 Voy a construir en Microsoft Fabric el proceso de generación del TXT de **Working_Capital** para el proyecto de Reporting Financiero de Tinkle, replicando un patrón ya existente (Balance) que funciona en producción. Tengo acceso al MCP de Fabric (`fabric-local`) y a Asana. Te doy solo hechos verificados; lo que no está verificado lo marco explícitamente como pregunta abierta. No asumas ni inventes nada de lo marcado como abierto: pregúntamelo antes de escribir la lógica definitiva. **Esta es el área con menos información recopilada de las cinco pendientes: no aparece mencionada en ninguna de las 5 transcripciones de reunión con Tinkle que tengo disponibles.**
 
+## 0. Respuestas recibidas el 2026-11-03
+
+- La lógica de cálculo de este fichero **no se documentó en las reuniones**. Sigue pendiente de preguntar a Tinkle si es un cálculo o una entrada manual en Magnitude.
+- Pista adicional (de la definición SQL de `vw_Export_Grupo`, en `documentacion/create_vw_Export_Grupo.txt`): Working_Capital comparte con Balance el layout de columnas, los literales `D_TO = 'ORIG07-01'` y `D_GO = '0000.PACKAGE'`, `D_ORU = D_RU` y el periodo con cero a la izquierda (`2026.03`). Balance expresa los importes en miles de euros redondeados a entero, y los importes de Working_Capital también son enteros (`63`, `162`, `3450`, `4378`). Si resulta ser un cálculo, lo más probable es que siga el mismo patrón que `vw_Export_Grupo` (miles, redondeo a entero), cambiando solo las cuentas (`MBFR010/011/020/021`) y `D_FL = 'F99'` en vez de `'ASOC01'`.
+
 ## 1. Patrón técnico ya confirmado (funciona para Balance, replicable tal cual)
 
 - Workspace Fabric: **"Tinkle - Financiero"**. Lakehouse: **lh_tinkle_financiero**. SQL Analytics Endpoint, esquema **200** para datos consolidados/intermedios.
-- El pipeline **"Grabar salidas"** tiene, para Balance: actividad **Notebook** (ejecuta `Generar_txt_Balance_Saldos`) → actividad **Copy data** ("Grabar balance").
+- El pipeline **"Grabar salidas"** tiene, para Balance: actividad **Notebook** (ejecuta `Generar_txt_Balance_Saldos`) y después actividad **Copy data** ("Grabar balance").
 - Configuración exacta de esa actividad Copy data (verificada en el portal):
   - **Source**: conexión "Lakehouse reporting (Preview)", Lakehouse `lh_tinkle_financiero`, Root folder = Files, Wildcard file path = `Exportaciones/Balance` / `*.txt`, Recursively = true, formato Binary.
   - **Destination**: conexión "SharePoint reporting" (SharePoint Online File), File path = `Shared Documents/Reporting Financiero/2. Salida de ficheros/Balance`, formato Binary.
@@ -31,9 +36,9 @@ ESP070 -> TINKLE_CONS
 Ruta de los ficheros de ejemplo reales, ya en el proyecto:
 `otros/2026 03 - 0001 Magnitude Marzo/Working_Capital/03 MAR-26/*.txt` (uno por sociedad, 5 ficheros, **muy pocas filas**: 4 filas de datos en el fichero de ejemplo revisado, 18 filas de datos en total entre los 5 ficheros).
 
-Nombre de fichero real observado: `TINKLE_COMM_Working_Capital_MAR-26_20260401_105012.txt` → patrón `{SOCIEDAD}_Working_Capital_{MES-AA}_{timestamp:%Y%m%d_%H%M%S}.txt`.
+Nombre de fichero real observado: `TINKLE_COMM_Working_Capital_MAR-26_20260401_105012.txt`: patrón `{SOCIEDAD}_Working_Capital_{MES-AA}_{timestamp:%Y%m%d_%H%M%S}.txt`.
 
-Formato: CSV separado por `;`, cabecera en mayúsculas, ASCII/UTF-8, fin de línea `\n`. **Importante: el layout es distinto al de Ageing/Revenue/Pendiente_Facturar** — es el mismo orden de columnas que usa Balance (con `D_RU` justo después de `D_PE`, no después de `D_DP`), más dos columnas extra al final antes del importe: `D_MU` y `D_PMU`. Total: 29 columnas.
+Formato: CSV separado por `;`, cabecera en mayúsculas, ASCII/UTF-8, fin de línea `\n`. **Importante: el layout es distinto al de Ageing/Revenue/Pendiente_Facturar**, es el mismo orden de columnas que usa Balance (con `D_RU` justo después de `D_PE`, no después de `D_DP`), más dos columnas extra al final antes del importe: `D_MU` y `D_PMU`. Total: 29 columnas.
 
 Columnas exactas observadas (18 filas de datos en total entre los 5 ficheros de la muestra):
 
@@ -66,13 +71,13 @@ Columnas exactas observadas (18 filas de datos en total entre los 5 ficheros de 
 | 24| D_TFTR     | Siempre vacío |
 | 25| D_MU       | Siempre vacío en la muestra |
 | 26| D_PMU      | Siempre vacío en la muestra |
-| 27| P_AMOUNT   | Importe numérico entero en la muestra (ej. `63`, `162`, `3450`, `4378`) — sin decimales visibles, sin coma ni punto |
+| 27| P_AMOUNT   | Importe numérico entero en la muestra (ej. `63`, `162`, `3450`, `4378`), sin decimales visibles, sin coma ni punto |
 | 28| P_COMMENT  | Siempre vacío |
 
 ## 4. Reglas de negocio: NINGUNA CONFIRMADA
 
 A diferencia de las otras 4 áreas, **no he encontrado ninguna mención a "Working Capital" ni "capital circulante" en las 5 transcripciones de reunión con Tinkle disponibles** (documentos "Reporting Tinkle - Documentación & Requerimientos I a V"). No sé:
-- Si esto se calcula a partir de datos operativos (facturación, aging, tesorería) o si son **líneas de ajuste manuales** que alguien introduce directamente en Magnitude a nivel de Grupo (los valores fijos `D_GO=0000.PACKAGE` y `D_TO=ORIG07-01`, junto con el número tan bajo de filas — solo 4 por sociedad — apuntan más a esto último que a un cálculo derivado de tablas operativas).
+- Si esto se calcula a partir de datos operativos (facturación, aging, tesorería) o si son **líneas de ajuste manuales** que alguien introduce directamente en Magnitude a nivel de Grupo (los valores fijos `D_GO=0000.PACKAGE` y `D_TO=ORIG07-01`, junto con el número tan bajo de filas, solo 4 por sociedad, apuntan más a esto último que a un cálculo derivado de tablas operativas).
 - Qué significan exactamente las cuentas `MBFR010/011/020/021`.
 - Por qué solo hay 4 filas por sociedad y qué representa cada una (posiblemente 2 conceptos con su contrapartida: 010↔011 y 020↔011, o similar).
 
@@ -83,11 +88,11 @@ A diferencia de las otras 4 áreas, **no he encontrado ninguna mención a "Worki
 - **Búsqueda exhaustiva en vivo (2026-09-30), todo negativo**: se comprobaron las 4 tablas de mapeo/presupuesto candidatas razonables del esquema 200 y ninguna tiene rastro de estas cuentas ni del concepto "Working Capital"/"Package":
   - `Dim_Mapeo_Cuentas` (300): sin filas con `Cuenta_magnitude` tipo `MB%`/`MP%`/`MBFR%` (confirmado antes).
   - `Presupuestos`: todas las cuentas empiezan por `R` (son presupuesto de P&L/Revenue, nada de balance ni working capital).
-  - `COA_Oracle`: columna `TIPO` solo tiene valores `Null`, `PYG`, `Balance` — nada específico de working capital.
+  - `COA_Oracle`: columna `TIPO` solo tiene valores `Null`, `PYG`, `Balance`, nada específico de working capital.
   - `Budget_historico`: sin nada relacionado (y recordemos que la auditoría del proyecto ya señalaba esta tabla como "sin consumidor conocido").
   - **Con esto se agotan las tablas candidatas razonables del Lakehouse.** Refuerza la hipótesis de la sección 4: esto es muy probablemente una entrada manual directa en Magnitude a nivel de Grupo, no algo derivable de los datos operativos de Tinkle en Fabric.
 
-## 6. Preguntas abiertas que hay que resolver ANTES de dar la lógica por buena (no las asumas) — aquí prácticamente todo está abierto
+## 6. Preguntas abiertas que hay que resolver ANTES de dar la lógica por buena (no las asumas), aquí prácticamente todo está abierto
 
 1. ¿Este fichero se genera a partir de datos que ya existen en Fabric, o son líneas que Tinkle introduce manualmente hoy en Magnitude (y por tanto "replicar" significaría dar de alta un formulario/proceso de captura manual, no una consulta automática)?
 2. ¿Qué representan las cuentas `MBFR010`, `MBFR011`, `MBFR020`, `MBFR021`?
@@ -96,4 +101,4 @@ A diferencia de las otras 4 áreas, **no he encontrado ninguna mención a "Worki
 
 ## 7. Qué quiero que hagas
 
-Antes de construir nada, ayúdame a averiguar si este fichero tiene siquiera una fuente de datos automatizable (sección 6, pregunta 1) — pregúntale directamente a quien gestiona el reporting de Grupo en Tinkle. Si resulta que son líneas manuales, dilo claramente: puede que "replicar" este proceso no sea un notebook de Fabric, sino simplemente documentar cómo se introducen esas 4 líneas a mano. No inventes una fuente de datos ni un cálculo de capital circulante genérico solo por rellenar el hueco.
+Antes de construir nada, ayúdame a averiguar si este fichero tiene siquiera una fuente de datos automatizable (sección 6, pregunta 1), pregúntale directamente a quien gestiona el reporting de Grupo en Tinkle. Si resulta que son líneas manuales, dilo claramente: puede que "replicar" este proceso no sea un notebook de Fabric, sino simplemente documentar cómo se introducen esas 4 líneas a mano. No inventes una fuente de datos ni un cálculo de capital circulante genérico solo por rellenar el hueco.

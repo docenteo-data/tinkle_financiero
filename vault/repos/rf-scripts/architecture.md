@@ -4,8 +4,8 @@ load_tier: 2
 schema_version: 1
 repo: rf-scripts
 source: reporting-financiero/scripts
-commit: 7d6aa2b
-last_sync: 2026-10-27T00:10:00Z
+commit: 0ad7fdb
+last_sync: 2026-11-03T15:00:00Z
 stack: python
 source_globs: ["*.py"]
 tags: [rf-scripts, architecture]
@@ -13,7 +13,7 @@ tags: [rf-scripts, architecture]
 
 # rf-scripts - Architecture
 
-> Cuándo cargar: necesitas entender cómo se relacionan los scripts de Fabric de Tinkle (exportar, publicar, consultar SQL) o dónde vive la lógica compartida (cuenta, API REST, git, SQL).
+> Cuándo cargar: necesitas entender cómo se relacionan los scripts de Fabric de Tinkle (exportar, publicar, consultar SQL), dónde vive la lógica compartida (cuenta, API REST, git, SQL), o cómo funcionan los scripts de validación de ficheros del Grupo, de anexo de pendientes y de conversión a Word.
 
 ## Núcleo: fabric_comun.py
 
@@ -24,20 +24,23 @@ Módulo compartido sin punto de entrada propio. Tiene cuatro bloques:
 - Git: `ficheros_en_git` lee la carpeta `reporting-financiero/fabric` de un commit con `git archive`, sin tocar la carpeta de trabajo. `solo_items` filtra a lo exportable y `comparar` clasifica las diferencias en nuevos, cambiados y borrados.
 - SQL: `conectar_sql` abre la conexión al SQL endpoint del lakehouse con token. `descargar_sql` y `ficheros_sql` leen vistas y columnas de los esquemas 100, 200 y 300. `es_consulta_de_lectura` bloquea las sentencias de escritura.
 
-Configuración clave en el módulo: `FORMATOS` define qué tipos de item se exportan y publican y con qué formato de definición. Las User Data Functions quedan fuera a propósito. `CARPETAS_LAKEHOUSE` marca las carpetas de vistas y esquema.
+Configuración clave en el módulo: `FORMATOS` define qué tipos de item se exportan y publican y con qué formato de definición. Las User Data Functions quedan fuera a propósito. `CARPETAS_LAKEHOUSE` marca las carpetas de vistas y esquema. `ITEMS_DE_SISTEMA` y `es_exportable` excluyen los items que Power BI crea al abrir las métricas de uso de un informe (Report Usage Metrics Report, Report Usage Metrics Model y Usage Metrics Report), que no forman parte de la solución y que la API no permite exportar.
 
 ## Puntos de entrada
 
 - `exportar_fabric.py`: lee Fabric y escribe `fabric/` o compara con un commit.
 - `publicar_fabric.py`: escribe en Fabric desde un commit de git. Solo actualiza items existentes.
 - `consultar_sql.py`: consulta de solo lectura al SQL endpoint.
+- `validar_ficheros_grupo.py`: reproduce los ficheros de Grupo de Ageing y Revenue de marzo de 2026 desde las fuentes y los compara con los TXT de Magnitude. Lee Excel y consulta Fabric en solo lectura.
+- `anexo_pendientes.py`: genera el anexo de pendientes de la auditoría general, a partir del registro de reuniones, la auditoría técnica y las preguntas para Tinkle.
+- `md_a_docx.py`: convierte un documento Markdown del proyecto a Word con la plantilla de Docenteo.
 
 ## Flujos
 
 ### Exportar
 
 1. Comprobar la cuenta y obtener el token de Fabric (`comprobar_cuenta`, `token`).
-2. Listar los items del workspace (`items`) y quedarse con los tipos de `FORMATOS`, ordenados por tipo y nombre.
+2. Listar los items del workspace (`items`) y quedarse con los que cumplen `es_exportable`, ordenados por tipo y nombre.
 3. Descargar cada definición con `descargar_definicion`. Si la respuesta no es 200, espera la operación asíncrona (`esperar_operacion`) y lee el resultado. Un error en un item se registra y el proceso sigue.
 4. Añadir las vistas y el esquema del lakehouse con `descargar_sql` (`sql/` y `lakehouse/esquema.tsv`).
 5. Si hay errores en cualquier item o en SQL, no escribe ni compara y sale con código 2.
@@ -63,14 +66,49 @@ Configuración clave en el módulo: `FORMATOS` define qué tipos de item se expo
 5. Ejecutar. Con `--csv` escribe todas las filas en UTF-8 separadas por punto y coma. Sin él imprime como mucho `--max-filas` filas (50 por defecto) en ASCII.
 6. Un error del driver sale con código 1.
 
+### Validar ficheros de Grupo
+
+Procesa un fichero por ejecución (`ageing` o `revenue`), con la carpeta `3.Fuentes` de OneDrive como origen (o `--fuentes`).
+
+1. Comprobar que existe la carpeta de TXT de marzo. Si no, sale con código 2. Después comprobar la cuenta con `comprobar_cuenta`.
+2. Leer los TXT de marzo (`leer_txt`), separados por punto y coma.
+3. Modo `ageing`: `validar_ageing` lee la hoja DATOS del aging de clientes a 31-03-2026 y asigna cada factura a un tramo (GR0 a GR9C) según los días hasta el corte (`tramo`). Compara los importes por sociedad y tramo con los TXT. Aparte, cruza factura y NIF con la tabla MMS del esquema 200 (`consultar`) y con el código de cliente Magnitude de `mapeo_magnitude`. El código es informativo y se compara línea a línea, junto con los flags GRICFLAG.
+4. Modo `revenue`: `validar_revenue` suma `Fact_Actuals` del primer trimestre (esquema 300) por sociedad y lo compara con los TXT, con una tolerancia de 0,05. El código de cliente se obtiene con `Dim_Clientes` y el mismo mapeo, también de forma informativa.
+5. `mapeo_magnitude` lee el Excel Revenue FT3 de `Presupuestos`. La hoja FT3 2026 tiene prioridad y el resto solo completa huecos. Los códigos numéricos se rellenan a 8 dígitos.
+6. Sale con 0 si las cifras de control cuadran, con 1 si no cuadran y con 2 si fallan la cuenta o los ficheros. La salida es ASCII.
+
+### Generar anexo de pendientes
+
+1. Recibe la ruta de la auditoría como argumento. Su sección 1 contiene la tabla de conceptos, con filas de 8 columnas agrupadas por bloque (`leer_conceptos`).
+2. Carga el registro de reuniones (`leer_registro`), la auditoría técnica con el estado más reciente de cada riesgo (`leer_tecnica`, donde manda el apartado 13.7 sobre el 13.6) y las preguntas para Tinkle (`leer_preguntas`).
+3. Por cada concepto extrae los puntos P-nnn, los riesgos S, O, M, D y N, y el rango de preguntas, y copia sus descripciones desde las fuentes (`generar`).
+4. Limpia el texto copiado de caracteres de redacción (rayas, flechas y barras verticales).
+5. Escribe el anexo entre las marcas `<!-- anexo:inicio -->` y `<!-- anexo:fin -->`, o lo añade al final si no existen (`main`). Volver a ejecutarlo deja el mismo resultado.
+6. Si un punto del registro no pertenece a ningún concepto, termina con error.
+
+### Convertir Markdown a Word
+
+1. Localiza la plantilla `docenteo-documento.dotx` de la skill docenteo-design en la versión más alta instalada del plugin docenteo-skills (`plantilla_por_defecto`), salvo que se pase `--plantilla`. Si no la encuentra, sale con código 2.
+2. La primera línea `# ` es el título y no se pinta, porque va en la portada. Lo que hay hasta el primer capítulo se pinta como ficha del documento.
+3. Convierte capítulos, apartados, subapartados, etiquetas en negrita, listas (cada lista numerada reinicia su numeración) y párrafos a los estilos de la plantilla. Las tablas se adaptan a anchos fijos (`tabla`). La tabla de conceptos de 8 columnas se parte en una tabla por bloque, con una nota de pendientes (`tablas_de_conceptos`).
+4. Reescribe el cuerpo del documento, la numeración, el tipo de contenido y el título de las propiedades. El resto del paquete de la plantilla se copia tal cual.
+5. El script termina sin verificar el resultado. Indica revisarlo después con el verificador de la skill.
+
 ## Dependencias
 
-- Azure CLI (`az`) en el PATH, con sesión en la cuenta de Tinkle.
-- Biblioteca `mssql_python`, para `consultar_sql.py` y para la exportación de vistas y esquema en `exportar_fabric.py`. El resto usa la biblioteca estándar de Python.
+- Azure CLI (`az`) en el PATH, con sesión en la cuenta de Tinkle. Lo usa `fabric_comun.py` y, por tanto, todos los scripts que consultan Fabric.
+- Biblioteca `mssql_python`, para `consultar_sql.py` y para la exportación de vistas y esquema en `exportar_fabric.py`. `validar_ficheros_grupo.py` consulta SQL a través de `fabric_comun.py`.
+- Biblioteca `openpyxl`, para leer los Excel de `validar_ficheros_grupo.py`.
+- Carpeta `3.Fuentes` de OneDrive, con los Excel de aging y Revenue y los TXT de Magnitude de marzo.
+- Plantilla `docenteo-documento.dotx` de la skill docenteo-design, para `md_a_docx.py`.
+- `anexo_pendientes.py` y `md_a_docx.py` usan solo la biblioteca estándar de Python.
 
 ## Evidence
 
-- `fabric_comun.py#comprobar_cuenta`, `#token`, `#peticion`, `#esperar_operacion`, `#descargar_definicion`, `#publicar_definicion`, `#ficheros_en_git`, `#solo_items`, `#comparar`, `#descargar_sql`, `#ficheros_sql`, `#conectar_sql`, `#es_consulta_de_lectura`.
+- `fabric_comun.py#comprobar_cuenta`, `#token`, `#peticion`, `#esperar_operacion`, `#descargar_definicion`, `#publicar_definicion`, `#ficheros_en_git`, `#solo_items`, `#comparar`, `#descargar_sql`, `#ficheros_sql`, `#conectar_sql`, `#es_consulta_de_lectura`, `#es_exportable`, `#ITEMS_DE_SISTEMA`.
 - `exportar_fabric.py#descargar_todo`, `#exportar`, `#comprobar`, `#main`.
 - `publicar_fabric.py#main`.
 - `consultar_sql.py#main`.
+- `validar_ficheros_grupo.py#main`, `#validar_ageing`, `#validar_revenue`, `#mapeo_magnitude`, `#leer_txt`, `#tramo`, `#consultar`, `#comparar_lineas`.
+- `anexo_pendientes.py#generar`, `#leer_conceptos`, `#leer_registro`, `#leer_tecnica`, `#leer_preguntas`, `#main`.
+- `md_a_docx.py#plantilla_por_defecto`, `#tabla`, `#tablas_de_conceptos`, `#lista`, `#convertir`.
