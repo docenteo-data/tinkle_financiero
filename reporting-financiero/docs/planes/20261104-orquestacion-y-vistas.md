@@ -94,6 +94,12 @@ Notebook publicado y `Generar_salidas` creado (`983f7eb`, exportación sin cambi
 | `ficheros=Balance` (14:33) | Completed | Solo los 5 Balance |
 | `periodo_esperado=2026.04` | Failed: "Se esperaba el periodo 2026.04 y se han cargado: ['2026.03']" | Ninguno |
 
+### Tarea 4: flujos (04/11/2026)
+
+- Actividad `ExecutePipeline` (la `InvokePipeline` está marcada como obsoleta en el esquema de Fabric), con `referenceName` = id del pipeline hijo y `waitOnCompletion` verdadero. Fabric la guarda tal cual.
+- `Flujo_actualizar_datos` (id `7f86c295-fa58-49c5-a199-fd1fca7b0795`): Completed (14:50 a 14:53). Los hijos se ejecutaron en orden: `100.New_Oracle` v38 a las 14:50; `200.Oracle_historico` v27, `200.HAPA` v26 y `200.MMS` v44 a las 14:52; `300.Fact_Actuals` v25 a las 14:53. Mismos datos: 34.405 filas, suma de `Saldo` 72.423.595.604,55 y periodo 2026-03; 32.868, 103 y 37.898 filas en las tablas con histórico.
+- La API de jobs de cada pipeline solo lista las ejecuciones lanzadas directamente, no las que lanza otro pipeline: para saber si un hijo se ejecutó hay que mirar el flujo o las tablas.
+
 ## Revisión (riesgos que ningún test cubre)
 
 1. Las vistas nuevas devuelven distinto que las viejas: se cubre con la comparación EXCEPT de la tarea 1.
