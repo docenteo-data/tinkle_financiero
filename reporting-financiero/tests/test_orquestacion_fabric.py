@@ -13,6 +13,7 @@ Modos de fallo cubiertos:
 """
 
 import json
+import re
 from pathlib import Path
 
 PROYECTO = Path(__file__).resolve().parents[1]
@@ -48,11 +49,19 @@ def depende_de(act):
     return {d["activity"]: d["dependencyConditions"] for d in act["dependsOn"]}
 
 
+def codigo_notebook():
+    """Solo el código de las celdas: las salidas guardadas de ejecuciones anteriores no cuentan."""
+    celdas = json.loads(NOTEBOOK.read_text(encoding="utf-8"))["cells"]
+    return "\n".join("".join(c["source"]) for c in celdas if c["cell_type"] == "code")
+
+
 def test_ficheros_leen_vistas_de_300():
-    texto = NOTEBOOK.read_text(encoding="utf-8")
-    assert "300.vw_Export_Grupo" in texto
-    assert "300.vw_Export_Saldos_4_7" in texto
-    assert "200.vw_Export" not in texto
+    # El notebook monta el nombre como f"{LAKEHOUSE}.{ESQUEMA}.{VISTA}": lo que manda es ESQUEMA.
+    codigo = codigo_notebook()
+    assert re.search(r'^ESQUEMA\s*=\s*"300"', codigo, re.M), "ESQUEMA no es 300"
+    assert re.search(r'^VISTA_BALANCE\s*=\s*"vw_Export_Grupo"', codigo, re.M)
+    assert re.search(r'^VISTA_SALDOS\s*=\s*"vw_Export_Saldos_4_7"', codigo, re.M)
+    assert "200.vw_Export" not in codigo
 
 
 def test_vistas_de_salida_en_300():
