@@ -110,3 +110,40 @@ def test_dim_clientes_codigo_magnitude():
         "SELECT COUNT(*) FROM [300].[Dim_Clientes] WHERE [Codigo_Magnitude] IS NOT NULL "
         "AND [Codigo_Magnitude] NOT LIKE '%[^0-9]%' AND LEN([Codigo_Magnitude]) < 8")[0][0]
     assert cortos == 0
+
+
+FL_VALIDOS = ("GR0", "GR1", "GR2", "GR3", "GR4", "GR5", "GR8C", "GR9C", "GRICFLAG")
+
+
+def test_vista_ageing_cuadra_con_la_fuente():
+    """La suma de importes de la vista es la de Aging_Clientes en miles (sin perder ni duplicar facturas)."""
+    vista, lineas = consultar(
+        "SELECT SUM(CAST([p_amount] AS float)), COUNT(*) FROM [300].[vw_Export_Ageing] "
+        "WHERE [d_fl] <> 'GRICFLAG'")[0]
+    fuente = consultar("SELECT SUM(CAST([S_Pendiente] AS float)) / 1000.0 FROM [200].[Aging_Clientes]")[0][0]
+    assert abs(vista - fuente) < 0.0005 * lineas
+
+
+def test_vista_ageing_layout():
+    fijos = consultar(
+        "SELECT COUNT(*) FROM [300].[vw_Export_Ageing] WHERE [d_ca] <> 'C' OR [d_ac] <> 'MB4000' "
+        "OR [d_au] <> '0LIA01' OR [d_cu] <> 'EUR' OR [d_dp] <> [d_pe] "
+        "OR [d_ru] NOT IN ('ESP066','ESP067','ESP068','ESP069','ESP070') "
+        "OR [d_dp] NOT LIKE '[0-9][0-9][0-9][0-9].[0-9]%'")[0][0]
+    assert fijos == 0
+
+    vacios = consultar(
+        "SELECT COUNT(*) FROM [300].[vw_Export_Ageing] WHERE [d_oru] IS NOT NULL OR [d_devtr] IS NOT NULL "
+        "OR [d_sajob] IS NOT NULL OR [p_comment] IS NOT NULL")[0][0]
+    assert vacios == 0
+
+    tramos = {fila[0] for fila in consultar("SELECT DISTINCT [d_fl] FROM [300].[vw_Export_Ageing]")}
+    assert tramos <= set(FL_VALIDOS)
+    assert "GRICFLAG" in tramos
+
+
+def test_vista_ageing_sin_duplicados():
+    repetidas = consultar(
+        "SELECT COUNT(*) FROM (SELECT [d_ru], [d_client], [d_fl] FROM [300].[vw_Export_Ageing] "
+        "GROUP BY [d_ru], [d_client], [d_fl] HAVING COUNT(*) > 1) t")[0][0]
+    assert repetidas == 0
