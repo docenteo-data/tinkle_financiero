@@ -17,12 +17,44 @@
 - Identificadores (sección 1 de `docs/contexto/Documentacion_Tinkle_Financiero.md` y definiciones actuales): workspace `b31820dc-4b4f-4696-9a96-bbee438e9306`; dataflows INGESTA_Carga_Datos `c8d12168-9a15-4df6-8632-eb647c58a861`, INGESTA_Maestros `60412b6d-8169-49a4-b6b9-0a5b8ec6e0f6`, TRANS_Silver `e34a567e-3986-467e-ac59-9c89b8014b87`, TRANS_Gold `2ddb6bc7-1a91-490f-9a6b-60ade6940b4e`; modelos Financial Model `847ce270-06ab-408b-85c9-cb8f390fad1c`, Agings `e19def87-fdf3-4b44-bd60-d22e5d79ce88`; notebook `c649ae24-2b54-4fce-bd5c-d23a9516ec37`.
 - Actividades: las mismas `type`, `typeProperties` y `policy` que las de "Generar Reporting" y "Grabar salidas" (se copian de esos JSON); todas las dependencias con `["Succeeded"]`.
 - El código de las UDF no se lee ni se imprime mientras lleve el secreto. Respaldo en `.secretos/udf/2026-11-04/` (ignorado por Git).
-- Pruebas: cada pipeline modular se prueba solo en Fabric (lo lanza una persona) antes de montar flujos encima.
+- Pruebas: cada pipeline modular se prueba solo en Fabric (`ejecutar_fabric.py --confirmar`, con aprobación) antes de montar flujos encima.
+- Antes de ejecutar cualquier pipeline que escriba datos: apuntar aquí las filas y la versión Delta de las tablas que escribe, y una cifra de control si aplica. Después, compararlas.
 
 ## Punto de partida (04/11/2026)
 
 - `exportar_fabric.py --comprobar main`: código 0.
 - Versiones Delta, para recuperar con time travel (`RESTORE TABLE`): `200.Oracle_historico` v25, `200.HAPA` v24, `200.MMS` v42. Última escritura de las tres: 15/09/2026.
+
+### Ingesta_datos (04/11/2026, Completed)
+
+Recuentos antes y después, reconstruidos del registro Delta (no se apuntaron antes de lanzar): sin cambios en ninguna tabla, así que los ficheros de entrada eran los mismos que en la última carga.
+
+| Tabla | Versión antes | Versión después | Filas antes y después |
+|---|---|---|---|
+| 100.New_Oracle | v36 (15/09) | v37 | 12.850 |
+| 100.New_MMS | v11 (15/09) | v12 | 16.533 |
+| 100.New_HAPA | v16 (15/09) | v17 | 103 |
+| 100.New_PT_extrato_contas | v33 (15/09) | v34 | 1.434 |
+| 100.New_Agings_Clientes | v5 (15/09) | v6 | 815 |
+| 100.New_Agings_Proveedores | v6 (15/09) | v7 | 708 |
+| 200.Mapping_HAPA, 200.Mapping Portugal, 200.COA_Oracle | 21/08 | +1 | 374, 83, 657 |
+| 300.Dim_CDC, Aux_CDC, Dim_Clientes, Dim_RRHH, Dim_Sociedades, Dim_Report_Line, Map_Report_Line_Account, Dim_Calendar | 21/08 | +1 | 15, 40, 675, 289, 7, 480, 1.580, 4.018 |
+
+### Antes de Transformacion_datos (04/11/2026)
+
+| Tabla | Filas |
+|---|---|
+| 200.Oracle_historico (v25) | 32.868 |
+| 200.HAPA (v24) | 103 |
+| 200.MMS (v42) | 37.898 |
+| 200.Portugal | 1.434 |
+| 200.Aging_Clientes | 815 |
+| 200.Aging_Proveedores | 708 |
+| 300.Fact_Actuals | 34.405 |
+| 300.Dim_Cuentas | 657 |
+| 300.Dim_Mapeo_Cuentas | 1.114 |
+
+Control de `300.Fact_Actuals`: suma de `Saldo` 72.423.595.604,55; último periodo 2026-03-01.
 
 ## Revisión (riesgos que ningún test cubre)
 
