@@ -40,7 +40,7 @@ Fabric, el MCP `fabric-local` y los scripts usan la cuenta por defecto de Azure 
 
 ## 4. Al empezar a trabajar
 
-1. `git fetch` y `git log HEAD..origin/main --oneline`. Si hay commits nuevos, se dice a la persona y se le sugiere integrarlos. Nunca `git pull` ni `git push` sin su confirmación.
+1. `git fetch` y `git log HEAD..origin/main --oneline`. Si hay commits nuevos, se dice a la persona y se le sugiere integrarlos. Nunca `git pull` sin su confirmación. Nunca `git push` sin pedir aprobación a la persona justo antes, en cada push: se le dice qué ramas y qué commits se suben y se espera su sí; una aprobación anterior no vale para el siguiente.
 2. `git branch --show-current`: se trabaja en `reporting-financiero`.
 3. Comprobar la cuenta (sección 3).
 4. `exportar_fabric.py --comprobar main`. Código 0: Fabric coincide con `main`. Código 1: alguien ha cambiado Fabric sin pasarlo al repositorio; antes de nada, flujo A desde el paso 3.
@@ -53,7 +53,7 @@ Fabric, el MCP `fabric-local` y los scripts usan la cuenta por defecto de Azure 
 2. Se valida en Fabric (informe, refresco, cifras de control).
 3. `exportar_fabric.py` en `reporting-financiero`.
 4. Revisar `git status` y `git diff`: solo deben aparecer los items tocados. Commit: `feat(fabric): ...` o `fix(fabric): ...`, con qué cambia y por qué.
-5. Merge `--no-ff` en `main`, preguntando antes. Push con confirmación.
+5. Merge `--no-ff` en `main`, preguntando antes. Push solo tras pedir aprobación justo antes (sección 4, paso 1).
 6. `exportar_fabric.py --comprobar main` debe dar 0.
 
 ### Flujo B: el cambio se prepara en el repositorio (con IA)
@@ -63,7 +63,7 @@ Fabric, el MCP `fabric-local` y los scripts usan la cuenta por defecto de Azure 
 3. Publicar: `publicar_fabric.py "<Item>" --ref reporting-financiero --confirmar`. Requiere la confirmación explícita de la persona en ese momento, item a item, y que no haya nadie cambiando esos items en Fabric.
 4. Refrescar o ejecutar en Fabric lo que haga falta para validar (lo hace una persona) y comprobar las cifras de control.
 5. `exportar_fabric.py` y `git diff`: lo que devuelve Fabric puede diferir en detalles de formato de lo editado. Commit de esos ajustes.
-6. Merge `--no-ff` en `main`, preguntando antes. Push con confirmación.
+6. Merge `--no-ff` en `main`, preguntando antes. Push solo tras pedir aprobación justo antes (sección 4, paso 1).
 7. `exportar_fabric.py --comprobar main` debe dar 0.
 
 ## 6. Rollback

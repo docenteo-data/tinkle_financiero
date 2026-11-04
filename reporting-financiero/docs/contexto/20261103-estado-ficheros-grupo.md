@@ -31,8 +31,6 @@
 | Lo que queda tras desbloquear | 3 a 7 |
 | **Total** | **7 a 12,5** |
 
-La estimación del 28/10/2026 (`docs/auditoria/20261028-estimacion-traspaso-y-pendientes.md`) daba 17 jornadas sin IA para estas cinco líneas, unas 8,5 con IA; no incluye el código de cliente ni la integración, y sí Balance y Saldos 4_7 de HAPA y Portugal, que aquí no se cuentan.
-
 ## Ruta crítica
 
 El maestro de clientes de Magnitude bloquea la entrega de Ageing, Revenue y Pendiente_Facturar. El Excel `Revenue 2026 FT3.xlsm` no basta: le faltan 21 de los 167 códigos usados en marzo (19 no están en ningún Excel del proyecto) y asigna a algunos clientes un código distinto del que se usó en marzo (sobre todo el genérico `16300001` y los de intercompañía).
