@@ -79,3 +79,34 @@ def test_revenue_total_comm_cuadra(revenue):
 
 def test_revenue_informa_cobertura_de_clientes(revenue):
     assert re.search(r"^CLIENTES lineas_txt=\d+ exactas=\d+", revenue.stdout, re.M)
+
+
+def consultar(sql):
+    """Filas de una consulta de solo lectura al SQL endpoint de Tinkle."""
+    sys.path.insert(0, str(SCRIPT.parent))
+    import fabric_comun as fc
+
+    fc.comprobar_cuenta()
+    con = fc.conectar_sql()
+    try:
+        cursor = con.cursor()
+        cursor.execute(sql)
+        return cursor.fetchall()
+    finally:
+        con.close()
+
+
+def test_dim_clientes_codigo_magnitude():
+    """Codigo_Magnitude existe, tiene datos, no duplica clientes y los numericos van a 8 digitos."""
+    con_codigo = consultar("SELECT COUNT(*) FROM [300].[Dim_Clientes] WHERE [Codigo_Magnitude] IS NOT NULL")[0][0]
+    assert con_codigo > 0
+
+    repetidos = consultar(
+        "SELECT COUNT(*) FROM (SELECT [Cliente MMS], [Empresa] FROM [300].[Dim_Clientes] "
+        "GROUP BY [Cliente MMS], [Empresa] HAVING COUNT(*) > 1) t")[0][0]
+    assert repetidos == 0
+
+    cortos = consultar(
+        "SELECT COUNT(*) FROM [300].[Dim_Clientes] WHERE [Codigo_Magnitude] IS NOT NULL "
+        "AND [Codigo_Magnitude] NOT LIKE '%[^0-9]%' AND LEN([Codigo_Magnitude]) < 8")[0][0]
+    assert cortos == 0

@@ -49,6 +49,12 @@
       "queryGroupId": "e132116b-5be5-4d6a-a6b3-2f149947396d",
       "loadEnabled": false
     },
+    "Mapeo_Magnitude": {
+      "queryId": "b7a1c3e2-5d04-4f6a-9c18-2e7f40a9d3b5",
+      "queryName": "Mapeo_Magnitude",
+      "queryGroupId": "5c96c27e-1828-4f2a-b6fa-205912c4731a",
+      "loadEnabled": false
+    },
     "Dim_Clientes": {
       "queryId": "6fc68044-c2bf-40ff-ac09-dcea01debd2d",
       "queryName": "Dim_Clientes",
