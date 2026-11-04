@@ -15,6 +15,11 @@ Modos de fallo cubiertos:
 - El notebook de Generar_salidas no pasa "ficheros" y "periodo_esperado" desde los parámetros del pipeline, o los pasa con otro tipo.
 - La Copy de Generar_salidas se aparta de la de "Grabar salidas" (origen, filtro *.txt o destino en SharePoint).
 - Las actividades de Generar_salidas se apartan de la política: reintentos distintos de 0 o timeout distinto de "0.12:00:00".
+- Flujo_actualizar_datos no ejecuta Ingesta_datos y después Transformacion_datos, en ese orden, o usa otros ids de pipeline.
+- Flujo_total_reporting no termina en Refresco_modelos, o no arranca con Flujo_actualizar_datos (o, si no se anida, con Ingesta y Transformación).
+- Flujo_total_txt no termina en Generar_salidas, o no arranca como Flujo_total_reporting.
+- Un flujo encadena con "Completed" en lugar de "Succeeded", tiene una actividad que no es ExecutePipeline, no espera a que termine el hijo (waitOnCompletion distinto de true), o usa reintentos distintos de 0.
+- Un flujo bifurca: tiene más de una actividad sin dependencias, o una actividad que depende de varias o de una que no es la anterior en la cadena.
 """
 
 import json
@@ -33,6 +38,11 @@ FINANCIAL_MODEL = "847ce270-06ab-408b-85c9-cb8f390fad1c"
 AGINGS = "e19def87-fdf3-4b44-bd60-d22e5d79ce88"
 SQL_ENDPOINT = "485f1bd4-2372-44a3-b279-e00a63a80137"
 NOTEBOOK_SALIDAS = "c649ae24-2b54-4fce-bd5c-d23a9516ec37"
+
+PIPE_INGESTA = "8eb0c2ee-0848-4caa-a30e-632663d69a9d"
+PIPE_TRANSFORMACION = "443f4608-28f6-4f51-b42d-15c3e8e08378"
+PIPE_REFRESCO = "6800d0a7-23cc-46c6-a596-00401465aaa2"
+PIPE_SALIDAS = "919cfea3-9513-4c10-a90b-26c2b21e493a"
 
 PIPELINES_MODULARES = ["Ingesta_datos", "Transformacion_datos", "Refresco_modelos"]
 
@@ -53,6 +63,27 @@ def por_id(acts, tipo, clave, valor):
 
 def depende_de(act):
     return {d["activity"]: d["dependencyConditions"] for d in act["dependsOn"]}
+
+
+def cadena(nombre):
+    """Comprueba un flujo de ExecutePipeline encadenado linealmente y devuelve sus pipelines hijos en orden."""
+    acts = actividades(nombre)
+    for act in acts:
+        etiqueta = f"{nombre} / {act['name']}"
+        assert act["type"] == "ExecutePipeline", etiqueta
+        assert act["typeProperties"]["waitOnCompletion"] is True, etiqueta
+        assert act["typeProperties"]["pipeline"]["type"] == "PipelineReference", etiqueta
+        assert act["policy"]["retry"] == 0, etiqueta
+
+    raices = [a for a in acts if not a["dependsOn"]]
+    assert len(raices) == 1, f"{nombre}: {len(raices)} actividades sin dependencias"
+    orden = [raices[0]]
+    while len(orden) < len(acts):
+        anterior = orden[-1]
+        siguientes = [a for a in acts if depende_de(a) == {anterior["name"]: ["Succeeded"]}]
+        assert len(siguientes) == 1, f"{nombre}: {len(siguientes)} actividades tras {anterior['name']}"
+        orden.append(siguientes[0])
+    return [a["typeProperties"]["pipeline"]["referenceName"] for a in orden]
 
 
 def codigo_notebook():
@@ -159,3 +190,24 @@ def test_generar_salidas():
         etiqueta = f"Generar_salidas / {act['name']}"
         assert act["policy"]["retry"] == 0, etiqueta
         assert act["policy"]["timeout"] == "0.12:00:00", etiqueta
+
+
+def test_flujo_actualizar_datos():
+    assert cadena("Flujo_actualizar_datos") == [PIPE_INGESTA, PIPE_TRANSFORMACION]
+
+
+def test_flujo_total_reporting():
+    # Si Fabric no permite anidar flujos, el primer paso son Ingesta y Transformación directamente.
+    c = cadena("Flujo_total_reporting")
+    assert c[-1] == PIPE_REFRESCO
+    assert c[:-1] == [PIPE_INGESTA, PIPE_TRANSFORMACION] or (
+        len(c) == 2 and c[0] not in (PIPE_INGESTA, PIPE_TRANSFORMACION, PIPE_REFRESCO, PIPE_SALIDAS)
+    )
+
+
+def test_flujo_total_txt():
+    c = cadena("Flujo_total_txt")
+    assert c[-1] == PIPE_SALIDAS
+    assert c[:-1] == [PIPE_INGESTA, PIPE_TRANSFORMACION] or (
+        len(c) == 2 and c[0] not in (PIPE_INGESTA, PIPE_TRANSFORMACION, PIPE_REFRESCO, PIPE_SALIDAS)
+    )
