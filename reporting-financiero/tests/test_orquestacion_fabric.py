@@ -43,6 +43,7 @@ PIPE_INGESTA = "8eb0c2ee-0848-4caa-a30e-632663d69a9d"
 PIPE_TRANSFORMACION = "443f4608-28f6-4f51-b42d-15c3e8e08378"
 PIPE_REFRESCO = "6800d0a7-23cc-46c6-a596-00401465aaa2"
 PIPE_SALIDAS = "919cfea3-9513-4c10-a90b-26c2b21e493a"
+FLUJO_ACTUALIZAR = "7f86c295-fa58-49c5-a199-fd1fca7b0795"
 
 PIPELINES_MODULARES = ["Ingesta_datos", "Transformacion_datos", "Refresco_modelos"]
 
@@ -200,14 +201,10 @@ def test_flujo_total_reporting():
     # Si Fabric no permite anidar flujos, el primer paso son Ingesta y Transformación directamente.
     c = cadena("Flujo_total_reporting")
     assert c[-1] == PIPE_REFRESCO
-    assert c[:-1] == [PIPE_INGESTA, PIPE_TRANSFORMACION] or (
-        len(c) == 2 and c[0] not in (PIPE_INGESTA, PIPE_TRANSFORMACION, PIPE_REFRESCO, PIPE_SALIDAS)
-    )
+    assert c[:-1] in ([FLUJO_ACTUALIZAR], [PIPE_INGESTA, PIPE_TRANSFORMACION])
 
 
 def test_flujo_total_txt():
     c = cadena("Flujo_total_txt")
     assert c[-1] == PIPE_SALIDAS
-    assert c[:-1] == [PIPE_INGESTA, PIPE_TRANSFORMACION] or (
-        len(c) == 2 and c[0] not in (PIPE_INGESTA, PIPE_TRANSFORMACION, PIPE_REFRESCO, PIPE_SALIDAS)
-    )
+    assert c[:-1] in ([FLUJO_ACTUALIZAR], [PIPE_INGESTA, PIPE_TRANSFORMACION])
