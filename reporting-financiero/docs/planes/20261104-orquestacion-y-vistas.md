@@ -82,7 +82,17 @@ Mismas filas en las 9 tablas y la misma cifra de control de `300.Fact_Actuals` (
 - El cambio de `7319a2b` solo tocó las salidas guardadas del notebook; el código seguía con `ESQUEMA = "200"`. La ejecución de "Grabar salidas" de las 12:09 leyó todavía las vistas del 200. Corregido en `f934253` (solo `ESQUEMA`, y el test mira el código de las celdas), publicado y "Grabar salidas" relanzado: Completed a las 14:10, ya sin vistas en el 200.
 - TXT de las 14:10 frente a los de las 12:09: 6 iguales (los 5 Balance y Saldos 4_7 de EU, sin contar la cabecera con la fecha); en 4 de Saldos 4_7 cambian de 2 a 4 líneas con saldo 0,00 que pasan de columna (debe, haber o negativo).
 - Causa, comprobada en `[300].vw_Export_Saldos_4_7`: `Debe`, `Haber` y `Saldo` de `300.Fact_Actuals` son `float`, y esas cuentas tienen restos de 1e-12 a 1e-14 cuyo signo depende del orden de la suma entre ejecuciones. No lo causa el cambio de vistas.
-- Pendiente (nuevo): redondear a 2 decimales antes de decidir la columna, en la vista o en el notebook, para que el mismo dato dé siempre el mismo TXT.
+- Pendiente (nuevo): redondear a 2 decimales antes de decidir la columna, en la vista o en el notebook, para que el mismo dato dé siempre el mismo TXT. Hecho en la tarea 3, en el notebook.
+
+### Tarea 3: Generar_salidas (04/11/2026)
+
+Notebook publicado y `Generar_salidas` creado (`983f7eb`, exportación sin cambios de contenido en `009f11f`). Pruebas en Fabric:
+
+| Prueba | Resultado | Ficheros escritos |
+|---|---|---|
+| Sin parámetros (14:28) | Completed | 5 Balance y 5 Saldos 4_7. Los Balance, iguales a los de las 14:10; en los Saldos 4_7 solo cambian líneas casi cero, que ahora salen como 0,00 sin debe ni haber |
+| `ficheros=Balance` (14:33) | Completed | Solo los 5 Balance |
+| `periodo_esperado=2026.04` | Failed: "Se esperaba el periodo 2026.04 y se han cargado: ['2026.03']" | Ninguno |
 
 ## Revisión (riesgos que ningún test cubre)
 
