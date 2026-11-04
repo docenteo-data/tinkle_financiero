@@ -28,6 +28,7 @@ Reglas:
 
 - La lógica se lee primero en `fabric/`, no en Fabric. Si hay que asegurarse de que está vigente, `exportar_fabric.py --comprobar main`.
 - Las herramientas del MCP que escriben (crear, actualizar o borrar items, workspaces, shortcuts o ficheros, ejecutar pipelines) están bloqueadas en `.claude/settings.json`. Para escribir solo se usa `publicar_fabric.py`, y para ejecutar pipelines, `ejecutar_fabric.py`.
+- Comprobar una ejecución: `ejecutar_fabric.py` espera al job que lanza y devuelve su estado final. Ojo con el historial de jobs de un pipeline (`GET .../items/{id}/jobs/instances`): solo lista las ejecuciones lanzadas directamente, no las que lanza otro pipeline con `ExecutePipeline`. Para saber si un hijo se ejecutó dentro de un flujo, mira el flujo en el portal (Supervisión) o las tablas que escribe (versiones Delta, recuentos).
 - `fabric-local` no devuelve definiciones de items ni ejecuta SQL: para eso están los ficheros de `fabric/` y `consultar_sql.py`.
 - El MCP remoto `fabric` y GitHub Copilot no forman parte del flujo.
 

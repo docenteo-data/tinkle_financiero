@@ -176,6 +176,6 @@ Un subagente por pipeline. Test: `test_orquestacion_fabric.py`.
 ### Tarea 7: cierre
 
 - [ ] ADR 0001 a "aceptada". Merge `--no-ff` en `main` (preguntando) y `exportar_fabric.py --comprobar main` con código 0.
-- [ ] En `main`, refresco del vault con la skill `refresco-vault`; `test_linaje_vault.py` en verde.
+- [ ] En `main`, refresco del vault con la skill `refresco-vault`; `test_linaje_vault.py` en verde. Llevar al vault, con su Evidence: el historial de jobs de un pipeline no incluye las ejecuciones lanzadas por otro pipeline (`technologies/fabric-rest-api.md`), y la nueva propiedad y conexión del modelo Agings.
 - [ ] Diagramas con `docs/prompts/PROMPT_diagramas_docenteo.md`.
 - [ ] Etiqueta, push con aprobación y borrado de la rama (local y remota, con aprobación).
