@@ -14,7 +14,14 @@ from pathlib import Path
 
 PROYECTO = Path(__file__).resolve().parents[1]
 SCRIPT = PROYECTO / "scripts" / "anexo_pendientes.py"
-AUDITORIA = PROYECTO / "docs" / "auditoria" / "20261028-auditoria-general.md"
+AUDITORIA = PROYECTO / "docs" / "auditoria" / "auditoria-general.md"
+PREGUNTAS = PROYECTO / "docs" / "contexto" / "PREGUNTAS_PARA_TINKLE.md"
+
+
+def preguntas_pendientes():
+    """Números de la sección "Pendientes" de PREGUNTAS_PARA_TINKLE.md (se renumeran al llegar respuestas)."""
+    pendientes = PREGUNTAS.read_text(encoding="utf-8").split("## Pendientes", 1)[1].split("\n## ", 1)[0]
+    return sorted(int(n) for n in re.findall(r"^(\d+)\. ", pendientes, re.M))
 
 
 def ejecutar(ruta):
@@ -41,7 +48,7 @@ def test_referencias_tecnicas_y_preguntas_explicadas(tmp_path):
     for ident in ["S1", "S6", "O1", "O7", "O9", "M9", "N1", "N10"]:
         assert re.search(rf"^\| {ident} \| (Alta|Media|Baja) \|", a, re.M), ident
     preguntas = re.findall(r"^\| (\d+) \| [^|]+\|$", a, re.M)
-    assert sorted(set(map(int, preguntas))) == list(range(1, 16))
+    assert sorted(set(map(int, preguntas))) == preguntas_pendientes() != []
 
 
 def test_sin_rayas_ni_flechas(tmp_path):

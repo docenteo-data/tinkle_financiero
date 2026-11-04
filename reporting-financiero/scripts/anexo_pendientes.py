@@ -11,7 +11,7 @@ Escribe el anexo entre las marcas `<!-- anexo:inicio -->` y `<!-- anexo:fin -->`
 si no existen, las añade. Volver a ejecutarlo deja el mismo resultado.
 
 Uso, desde la raíz del repositorio:
-    python reporting-financiero/scripts/anexo_pendientes.py reporting-financiero/docs/auditoria/20261028-auditoria-general.md
+    python reporting-financiero/scripts/anexo_pendientes.py reporting-financiero/docs/auditoria/auditoria-general.md
 """
 
 import io
@@ -39,18 +39,18 @@ def expandir(texto, prefijo):
 
 
 def leer_conceptos(auditoria):
-    s1 = auditoria.split("## 1.", 1)[1].split("### Totales", 1)[0]
+    s1 = auditoria.split("## 1.", 1)[1].split("\n## 2.", 1)[0]
     conceptos, bloque = [], None
     for linea in s1.splitlines():
         if not linea.startswith("| "):
             continue
         c = celdas(linea)
-        if len(c) != 8 or c[0] in ("Nº",) or set(c[0]) <= {"-"}:
+        if len(c) != 5 or c[0] in ("Nº",) or set(c[0]) <= {"-"}:
             continue
         if not c[0]:
             bloque = c[1].strip("*")
             continue
-        conceptos.append({"n": int(c[0]), "nombre": c[1], "bloque": bloque, "pendientes": c[7]})
+        conceptos.append({"n": int(c[0]), "nombre": c[1], "bloque": bloque, "pendientes": c[4]})
     return conceptos
 
 
@@ -105,11 +105,11 @@ def generar(auditoria):
     preguntas = leer_preguntas()
 
     out = [
-        "## 11. Anexo. Pendientes por concepto",
+        "## 10. Anexo. Pendientes por concepto",
         "",
         "Todos los puntos que agrupa cada concepto de la sección 1, con su descripción. Se genera con "
         "`scripts/anexo_pendientes.py` a partir del registro de reuniones, la auditoría técnica y las "
-        "preguntas de septiembre; no se edita a mano.",
+        "preguntas pendientes para Tinkle; no se edita a mano.",
         "",
         "- Puntos del registro (P-nnn): estado a 07/05/2026, fecha de la última reunión; el origen exacto "
         "(acta y minuto) está en `docs/reuniones/README.md`.",
