@@ -166,9 +166,9 @@ Un subagente por pipeline. Test: `test_orquestacion_fabric.py`.
 
 Los botones se quedan como están. Cada UDF referencia su pipeline por id, una sola vez en su código; se sustituye ese id y nada más, con un script que no muestra el código (lleva el secreto).
 
-- [ ] **[publicar]** `Ejecución Reporting`: id de "Generar Reporting" (`147b24eb-352f-4f88-9d64-b4a7fc1d67f6`) por el de `Flujo_total_reporting`. `Generar_txt`: id de "Grabar salidas" (`56a37cd5-3664-47b4-b28f-ec7f26d23075`) por el de `Generar_salidas` (`919cfea3-9513-4c10-a90b-26c2b21e493a`). Antes, comprobar que la definición en Fabric es igual al respaldo de `.secretos/udf/2026-11-04/`.
-- [ ] **[Fabric]** Probar cada botón una vez y comprobar que se ejecuta el pipeline nuevo.
-- [ ] Respaldo de la versión nueva en `.secretos/udf/` y commit de la documentación.
+- [x] **[publicar]** `Ejecución Reporting`: id de "Generar Reporting" (`147b24eb-352f-4f88-9d64-b4a7fc1d67f6`) por el de `Flujo_total_reporting`. `Generar_txt`: id de "Grabar salidas" (`56a37cd5-3664-47b4-b28f-ec7f26d23075`) por el de `Generar_salidas` (`919cfea3-9513-4c10-a90b-26c2b21e493a`). Antes, comprobar que la definición en Fabric es igual al respaldo de `.secretos/udf/2026-11-04/`.
+- [ ] **[Fabric]** Probar cada botón una vez y comprobar que se ejecuta el pipeline nuevo. Pendiente: se probará más adelante (decisión del usuario, 04/11/2026). No se sabe aún si Fabric aplica el código al publicar la definición o si hay que publicar las UDF en el portal.
+- [x] Respaldo de la versión nueva en `.secretos/udf/2026-11-04_1651/` y commit de la documentación. Publicado el 04/11/2026: en cada UDF el id viejo aparece 0 veces y el nuevo 1 (`Flujo_total_reporting` es `85763cdb-1c40-4eb7-aaf1-c493fd86b216`).
 
 ### Tarea 5b: pendiente de revisar (no se hace en esta rama)
 
@@ -185,7 +185,7 @@ Los botones se quedan como están. Cada UDF referencia su pipeline por id, una s
 
 ### Tarea 6: retirada de los pipelines antiguos
 
-- [ ] **[Fabric]** Con la tarea 5a probada, borrar "Generar Reporting" y "Grabar salidas" del workspace.
+- [ ] **[Fabric]** Cuando se prueben los botones (tarea 5a), borrar "Generar Reporting" y "Grabar salidas" del workspace. Hasta entonces se mantienen: si las UDF siguieran con el código antiguo, los botones fallarían sin ellos.
 - [ ] Exportar (desaparecen sus carpetas), tests en verde, commit `chore(orquestacion): retirada de Generar Reporting y Grabar salidas`.
 
 ### Tarea 7: cierre
