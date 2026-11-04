@@ -2,6 +2,8 @@
 
 Los `PROMPT_nueva_conversacion_*.md` arrancan una conversación por fichero de Grupo (Ageing, Revenue, Pendiente_Facturar, Working_Capital y CashFlow). Se escribieron en septiembre de 2026 y se actualizaron el 2026-11-03 con las respuestas recibidas y las validaciones con datos: cada uno empieza por una sección 0 que prevalece sobre las hipótesis antiguas que siguen debajo. El estado resumido de las cinco líneas está en `docs/contexto/20261103-estado-ficheros-grupo.md`, y las preguntas abiertas en `docs/contexto/PREGUNTAS_PARA_TINKLE.md`.
 
+`PROMPT_diagramas_docenteo.md` (2026-11-04) arranca una conversación para rehacer los diagramas de `docs/diagramas/` con la marca de Docenteo: recoge los hechos verificados contra la copia de Fabric y los errores de los diagramas antiguos.
+
 `copilot/` guarda las preguntas y respuestas usadas con GitHub Copilot para documentar el workspace, como registro.
 
 Rutas que citan los prompts y su equivalente actual:
