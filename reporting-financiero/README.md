@@ -25,7 +25,7 @@ Sustituir el reporting financiero de Tinkle basado en Excel (Oracle, Portugal, H
     tests/                    tests de los scripts (los de Fabric, con FABRIC_E2E=1)
     docs/contexto/            documentación técnica, manual funcional, preguntas abiertas y apuntes
     docs/prompts/             prompts de análisis por fichero de Grupo y de Copilot
-    docs/diagramas/           flujo de datos, arquitectura y orquestación
+    docs/diagramas/           arquitectura-reporting-financiero.html: arquitectura, capas, orquestación y ficheros de Grupo
     docs/reuniones/           actas revisadas de las reuniones y correos con Tinkle, y registro de pendientes (README)
     docs/auditoria/           auditoría general del proyecto (auditoria-general.md, documento vivo)
     docs/planes/              planes de trabajo (AAAAMMDD-nombre.md)

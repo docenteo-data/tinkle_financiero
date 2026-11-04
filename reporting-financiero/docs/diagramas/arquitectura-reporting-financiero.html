@@ -1,0 +1,1351 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arquitectura del reporting financiero</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&family=Trirong:wght@300&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Docenteo · Piezas de datos (cuadros de mando, informes y EDA)
+   Core: Brand/guias/brand-design-system.md · Perfil: Brand/guias/brand-datos.md
+   Fuente única de estilos de las piezas de datos. Al entregar una pieza,
+   este CSS se incrusta en el HTML (piezas autocontenidas).
+============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c-dark:#09323F; --c-teal:#04747A; --c-cyan:#62FEFF; --c-lime:#EAF942; --c-ice:#CFF5F7; --c-off:#F4F8F8; --c-white:#fff;
+  --c-slate:#1B4D5C; --c-sage:#5A9E9A; --c-gold:#D4A117; --c-burgundy:#8C2F39; --c-stone:#B3A394;
+  --c-text:#000; --c-muted:#5F6368; --c-border:rgba(9,50,63,.12); --c-sep:rgba(9,50,63,.08);
+  --g-brand:linear-gradient(197deg,#04747A 13.72%,#09323F 100%);
+  --f-body:'IBM Plex Sans',-apple-system,Arial,sans-serif; --f-display:'Trirong',Georgia,serif;
+  --r-xs:6px; --r-sm:12px; --r-md:20px; --r-pill:999px;
+  --ease:cubic-bezier(.22,1,.36,1); --t-instant:.15s; --t-fast:.25s; --t-medium:.45s;
+}
+body{font-family:var(--f-body);background:var(--c-white);color:var(--c-text);min-height:100vh;font-size:14px;line-height:1.5}
+:focus-visible{outline:2px solid var(--c-dark);outline-offset:2px}
+.num,.kpi-value,td.r{font-variant-numeric:tabular-nums}
+
+/* ---------- Cabecera compacta (D53, D61) ----------
+   Barra en gradiente: logo negativo 20 px, separador y título en Plex 17 px,
+   alineados por línea base. Metadatos obligatorios a la derecha. */
+.db-top{position:sticky;top:0;z-index:100}
+.db-brand{background:var(--g-brand);color:#fff;min-height:52px;display:flex;align-items:center;gap:8px 16px;padding:8px 24px;flex-wrap:wrap}
+.db-id{display:flex;align-items:baseline;gap:16px;margin-right:auto;position:relative;top:3px}
+.db-logo{height:20px;width:auto;display:block}
+.db-sep{align-self:baseline;width:1px;height:20px;background:rgba(255,255,255,.35)}
+.db-title{font-family:var(--f-body);font-weight:400;font-size:17px;line-height:1.2}
+.db-meta{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.db-meta b{color:#fff;font-weight:500}
+.db-action{font:inherit;display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:6px 14px;border:1px solid rgba(255,255,255,.5);border-radius:var(--r-pill);background:transparent;color:#fff;cursor:pointer;transition:background var(--t-instant)}
+.db-action:hover{background:rgba(255,255,255,.1)}
+.db-action svg{width:14px;height:14px}
+
+/* Barra blanca: pestañas (línea teal) y filtros globales a la derecha */
+.db-bar{background:#fff;border-bottom:1px solid var(--c-border);display:flex;align-items:center;gap:12px 20px;padding:0 24px;min-height:52px;flex-wrap:wrap}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin-right:auto}
+.tabs::-webkit-scrollbar{display:none}
+.tab{position:relative;font:inherit;font-size:14px;color:var(--c-text);background:none;border:0;padding:15px 12px 14px;cursor:pointer;white-space:nowrap}
+.tab::after{content:'';position:absolute;left:12px;bottom:0;width:0;height:2px;background:var(--c-teal);transition:width var(--t-fast) var(--ease)}
+.tab:hover::after{width:30%}
+.tab.active{font-weight:500}.tab.active::after{width:calc(100% - 24px)}
+.seg{display:inline-flex;background:var(--c-off);border-radius:var(--r-pill);padding:3px}
+.seg button{font:inherit;font-size:13px;padding:6px 14px;border:0;border-radius:var(--r-pill);background:none;color:var(--c-text);cursor:pointer;transition:background var(--t-fast) var(--ease),color var(--t-fast) var(--ease)}
+.seg button.active{background:var(--c-dark);color:#fff}
+
+/* ---------- Contenido ---------- */
+.content{max-width:1360px;margin:0 auto;padding:32px 48px 72px}
+.content.narrow{max-width:1180px}
+.panel{display:none}
+.panel.active{display:block}
+.section-title{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.14em;margin:44px 0 16px}
+.section-title:first-child{margin-top:0}
+.chapter{font-family:var(--f-display);font-weight:300;font-size:clamp(26px,3vw,34px);line-height:1.15;margin:56px 0 18px;scroll-margin-top:120px}
+
+/* ---------- KPI: filas equilibradas (D57). --n lo fija balanceKpis() ---------- */
+.kpi-grid{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));gap:16px}
+.kpi{background:#fff;border:1px solid var(--c-border);border-radius:var(--r-md);padding:22px}
+.kpi-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--c-muted);margin-bottom:10px}
+.kpi-value{font-size:28px;font-weight:600;line-height:1.05;letter-spacing:-.01em}
+.kpi-sub{font-size:12px;color:var(--c-muted);margin-top:6px}
+.delta{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;margin-top:8px}
+.delta::before{content:'';width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent}
+.delta.pos::before{border-bottom:8px solid var(--c-teal)}
+.delta.neg::before{border-top:8px solid var(--c-burgundy)}
+/* Métrica protagonista (informes y EDA): cifra editorial Trirong Bold teal */
+.hero-metric{font-family:var(--f-display);font-weight:700;font-size:56px;line-height:1;color:var(--c-teal)}
+
+/* Barra de progreso: el color lo lleva la barra (estado); el texto, en negro */
+.progress{margin-top:12px}
+.progress-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;color:var(--c-muted)}
+.progress-head b{color:var(--c-text);font-weight:600}
+.progress-track{height:6px;background:var(--c-off);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;background:var(--c-teal)}
+
+/* ---------- Tarjetas y gráficos ---------- */
+.cards-row{display:grid;gap:16px}
+.c2{grid-template-columns:repeat(2,1fr)}.c3{grid-template-columns:repeat(3,1fr)}.c21{grid-template-columns:2fr 1fr}
+.card{background:#fff;border:1px solid var(--c-border);border-radius:var(--r-md);padding:24px}
+.card-hero{padding:28px 28px 24px}
+.card h3{font-size:16px;font-weight:600;margin-bottom:2px}
+.card .csub{font-size:12px;color:var(--c-muted);margin-bottom:16px}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.chart-box{position:relative;height:280px}
+.chart-box.hero{height:380px}
+
+/* ---------- Gráfico ampliado: botón arriba a la derecha de cada .card[data-chart]. Lo monta DS.ampliar() ---------- */
+.card[data-chart]{position:relative}
+.card[data-chart] h3{padding-right:44px}
+.expand,.icon-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--c-border);background:#fff;color:var(--c-text);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background var(--t-instant)}
+.expand{position:absolute;top:16px;right:16px}
+.expand:hover,.icon-btn:hover{background:var(--c-off)}
+.expand svg,.icon-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.btn-sm{font:inherit;font-size:13px;font-weight:400;padding:6px 14px;border:1px solid var(--c-border);border-radius:var(--r-pill);background:#fff;color:var(--c-text);cursor:pointer;transition:background var(--t-instant)}
+.btn-sm:hover{background:var(--c-off)}
+/* Velo del sistema y panel blanco sin sombra; en móvil, panel inferior */
+.scrim{position:fixed;inset:0;z-index:150;background:rgba(9,50,63,.45);opacity:0;pointer-events:none;transition:opacity var(--t-medium) var(--ease)}
+.scrim.on{opacity:1;pointer-events:auto}
+.modal{position:fixed;z-index:160;top:50%;left:50%;width:min(1120px,94vw);height:min(720px,88vh);background:#fff;border-radius:var(--r-md);padding:24px 28px;display:flex;flex-direction:column;gap:12px;opacity:0;visibility:hidden;transform:translate(-50%,-48%);transition:opacity var(--t-medium) var(--ease),transform var(--t-medium) var(--ease),visibility var(--t-medium)}
+.modal.on{opacity:1;visibility:visible;transform:translate(-50%,-50%)}
+.modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.modal-head h3{font-size:18px;font-weight:600}
+.modal-eyebrow{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--c-muted)}
+.modal-tools{display:flex;gap:8px;align-items:center}
+.modal-body{position:relative;flex:1;min-height:0}
+.modal-hint{font-size:12px;color:var(--c-muted)}
+
+/* ---------- Lectura de los datos: frase destacada, una por sección (D56) ---------- */
+.lectura{border-left:2px solid var(--c-teal);padding:2px 0 2px 16px;font-weight:300;font-size:18px;line-height:1.45;max-width:46ch}
+.lectura b{font-weight:500}
+.lectura-k{display:block;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--c-muted);margin-bottom:6px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+
+/* Tres tiempos en informes y EDA (D62): qué pasa, por qué y qué hacemos, una frase cada uno */
+.tiempos{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:20px}
+.tiempos > div{border-top:1px solid var(--c-border);padding-top:12px;font-size:15px}
+.tiempos .lectura-k{margin-bottom:4px}
+@media(max-width:980px){.tiempos{grid-template-columns:1fr;gap:12px}}
+
+/* ---------- Notas tipadas del EDA (D55) ---------- */
+.note{background:#fff;border:1px solid var(--c-sep);border-left:3px solid var(--c-teal);border-radius:var(--r-sm);padding:12px 16px;font-size:13px;margin-bottom:16px}
+.note-k{display:block;font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;color:var(--c-teal)}
+.note.decision{border-left-color:var(--c-dark)}.note.decision .note-k{color:var(--c-dark)}
+.note.pendiente{border-left-color:var(--c-gold)}.note.pendiente .note-k{color:var(--c-text)}
+
+/* ---------- Tablas: formato condicional mínimo, solo la variación lleva color (D60) ---------- */
+.tbl-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#fff;color:var(--c-muted);padding:12px;text-align:left;font-weight:500;font-size:11px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;position:sticky;top:0;border-bottom:1px solid var(--c-border)}
+tbody td{padding:11px 12px;border-bottom:1px solid var(--c-sep);height:44px}
+tbody tr:hover{background:var(--c-off)}
+tfoot td{font-weight:600;padding:12px;border-top:1px solid var(--c-text)}
+.r{text-align:right}.c{text-align:center}
+.up{color:var(--c-teal);font-weight:500}.down{color:var(--c-burgundy);font-weight:500}
+
+/* ---------- Índice de capítulos fijo (informes) ---------- */
+.toc{position:sticky;top:52px;z-index:90;background:#fff;border-bottom:1px solid var(--c-sep)}
+.toc-in{max-width:1180px;margin:0 auto;padding:10px 48px;display:flex;gap:8px;overflow-x:auto}
+.toc a{flex:none;font-size:13px;color:var(--c-text);text-decoration:none;padding:6px 14px;border-radius:var(--r-pill);border:1px solid var(--c-border);transition:background var(--t-instant)}
+.toc a.active{background:var(--c-dark);color:#fff;border-color:var(--c-dark)}
+
+/* ---------- Footer ---------- */
+.ftr{max-width:1360px;margin:0 auto;padding:0 48px 48px}
+.ftr-line{border-top:1px solid var(--c-text);padding-top:28px}
+.ftr-logo{display:block;height:28px;width:auto}
+.ftr-copy{margin-top:16px;font-size:14px}
+
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(var(--n-md,var(--n)),minmax(0,1fr))}}
+@media(max-width:980px){
+  .c2,.c3,.c21,.split{grid-template-columns:1fr}
+  .content,.toc-in{padding-left:16px;padding-right:16px}.ftr{padding:0 16px 32px}
+  .db-brand,.db-bar{padding-left:16px;padding-right:16px}
+  .db-meta{order:3;width:100%}
+  .tabs{width:100%;margin-right:0}
+  .seg{margin-bottom:10px}
+  .modal{width:100vw;height:92vh;top:auto;bottom:0;left:0;border-radius:var(--r-md) var(--r-md) 0 0;transform:translateY(8%)}
+  .modal.on{transform:none}
+}
+@media(max-width:640px){
+  .kpi-grid{grid-template-columns:repeat(var(--n-sm,1),minmax(0,1fr))}
+  .db-top,.toc{position:static}
+  .db-action{font-size:0;gap:0;padding:7px}
+  .kpi{padding:16px}.kpi-value{font-size:22px}
+  .hero-metric{font-size:44px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+
+</style>
+<style>
+
+/* Diagramas SVG: el contenedor desplaza en horizontal; el svg va en bloque y su min-width lo pone quien lo inserta */
+.card[data-diagram]{position:relative}
+.card[data-diagram] h3{padding-right:44px}
+.diagram{overflow-x:auto}
+.diagram > svg{display:block}
+
+</style>
+</head>
+<body>
+<header class="db-top">
+  <div class="db-brand">
+    <div class="db-id">
+      <img class="db-logo" src="data:image/png;base64,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" alt="Docenteo">
+      <span class="db-sep" aria-hidden="true"></span>
+      <h1 class="db-title">Arquitectura del reporting financiero</h1>
+    </div>
+    <div class="db-meta" id="dbMeta"></div>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Capítulos">
+  <div class="toc-in">
+    <a href="#arquitectura">Arquitectura general</a>
+    <a href="#capas">Capas del lakehouse</a>
+    <a href="#orquestacion">Orquestación</a>
+    <a href="#balance">Fichero Balance</a>
+    <a href="#saldos">Fichero Saldos 4_7</a>
+  </div>
+</nav>
+
+<main class="content narrow">
+  <h2 class="section-title">Lo destacado</h2>
+  <p class="lectura">La carga, la transformación, el refresco de los modelos y la generación de ficheros de Grupo van en cuatro pipelines que se lanzan por separado o encadenados en tres flujos. Los diagramas salen del vault del repositorio, a 04/11/2026.</p>
+
+  <section id="arquitectura">
+    <h2 class="chapter">Arquitectura general</h2>
+    <p>Los extractos llegan a una carpeta de OneDrive, los dataflows los llevan al lakehouse por capas y de ahí salen los informes de Power BI y los ficheros de Grupo.</p>
+    <div class="card" data-diagram="arquitectura">
+      <div class="card-head"><h3>De los extractos a informes y ficheros de Grupo</h3></div>
+      <div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 560" width="1040" style="min-width:1040px;display:block" role="img" aria-labelledby="arq-title arq-desc">
+  <title id="arq-title">Arquitectura del reporting financiero</title>
+  <desc id="arq-desc">De las carpetas de entrada en OneDrive al lakehouse por capas y de ahí a los informes de Power BI y a los ficheros de Grupo.</desc>
+  <defs>
+    <style>
+      .arq-eyebrow{font-family:'IBM Plex Sans',sans-serif;font-weight:500;font-size:11px;letter-spacing:.12em;fill:var(--c-slate)}
+      .arq-name{font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:13px;fill:var(--c-dark)}
+      .arq-mono{font-family:'IBM Plex Mono',monospace;font-weight:400;font-size:11px;fill:var(--c-slate)}
+      .arq-sub{font-family:'IBM Plex Sans',sans-serif;font-weight:500;font-size:11px;fill:var(--c-muted)}
+      .arq-label{font-family:'IBM Plex Sans',sans-serif;font-weight:500;font-size:11px;fill:var(--c-muted)}
+      .arq-tagtext{font-family:'IBM Plex Sans',sans-serif;font-weight:500;font-size:11px;fill:var(--c-muted)}
+      .arq-note{font-family:'IBM Plex Sans',sans-serif;font-weight:400;font-size:13px;fill:var(--c-muted)}
+      .arq-line{fill:none;stroke:var(--c-muted);stroke-width:1.2}
+      .arq-dash{stroke-dasharray:4 3}
+      .arq-mask{fill:var(--c-white)}
+      .arq-box-input{fill:var(--c-off);stroke:var(--c-muted);stroke-width:1}
+      .arq-box-back{fill:var(--c-white);stroke:var(--c-dark);stroke-width:1}
+      .arq-box-store{fill:var(--c-off);stroke:var(--c-slate);stroke-width:1}
+      .arq-box-ext{fill:var(--c-white);stroke:var(--c-muted);stroke-width:1}
+      .arq-box-manual{fill:none;stroke:var(--c-gold);stroke-width:1.2;stroke-dasharray:4 3}
+      .arq-box-focal{fill:var(--c-ice);stroke:var(--c-teal);stroke-width:1.2}
+      .arq-tag{fill:none;stroke:var(--c-gold);stroke-width:.8}
+      .arq-frame{fill:none;stroke:var(--c-border);stroke-width:1;stroke-dasharray:4 3}
+    </style>
+    <marker id="arq-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" style="fill:var(--c-muted)"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1040" height="560" style="fill:var(--c-white)"/>
+
+  <!-- Eyebrows -->
+  <text class="arq-eyebrow" x="14" y="36">ORÍGENES</text>
+  <text class="arq-eyebrow" x="270" y="36">INGESTA Y TRANSFORMACIÓN</text>
+  <text class="arq-eyebrow" x="566" y="36">NÚCLEO</text>
+  <text class="arq-eyebrow" x="806" y="36">CONSUMO</text>
+
+  <!-- Arrows (drawn before boxes) -->
+  <path class="arq-line" d="M174 274 H192 Q200 274 200 266 V102 Q200 94 208 94 H270" marker-end="url(#arq-arrow)"/>
+  <line class="arq-line arq-dash" x1="174" y1="298" x2="270" y2="298" marker-end="url(#arq-arrow)"/>
+  <path class="arq-line" d="M486 94 H612 Q620 94 620 102 V250" marker-end="url(#arq-arrow)"/>
+  <line class="arq-line" x1="486" y1="298" x2="566" y2="298" marker-end="url(#arq-arrow)"/>
+  <path class="arq-line" d="M608 346 V392 Q608 400 600 400 H486" marker-end="url(#arq-arrow)"/>
+  <path class="arq-line" d="M486 440 H648 Q656 440 656 432 V346" marker-end="url(#arq-arrow)"/>
+  <path class="arq-line" d="M684 250 V102 Q684 94 692 94 H806" marker-end="url(#arq-arrow)"/>
+  <line class="arq-line" x1="916" y1="132" x2="916" y2="164" marker-end="url(#arq-arrow)"/>
+  <line class="arq-line" x1="726" y1="298" x2="806" y2="298" marker-end="url(#arq-arrow)"/>
+  <line class="arq-line" x1="916" y1="330" x2="916" y2="384" marker-end="url(#arq-arrow)"/>
+
+  <!-- Arrow labels: opaque masks, 8px gap from the stroke -->
+  <rect class="arq-mask" x="197" y="70" width="68" height="16" rx="2"/>
+  <text class="arq-label" x="231" y="82" text-anchor="middle">DINÁMICOS</text>
+  <rect class="arq-mask" x="186" y="306" width="72" height="16" rx="2"/>
+  <text class="arq-label" x="222" y="318" text-anchor="middle">ARRANQUE</text>
+  <rect class="arq-mask" x="521" y="70" width="56" height="16" rx="2"/>
+  <text class="arq-label" x="549" y="82" text-anchor="middle">ESCRIBE</text>
+  <rect class="arq-mask" x="498" y="274" width="56" height="16" rx="2"/>
+  <text class="arq-label" x="526" y="286" text-anchor="middle">ESCRIBE</text>
+  <rect class="arq-mask" x="533" y="376" width="28" height="16" rx="2"/>
+  <text class="arq-label" x="547" y="388" text-anchor="middle">LEE</text>
+  <rect class="arq-mask" x="543" y="448" width="56" height="16" rx="2"/>
+  <text class="arq-label" x="571" y="460" text-anchor="middle">ESCRIBE</text>
+  <rect class="arq-mask" x="735" y="70" width="28" height="16" rx="2"/>
+  <text class="arq-label" x="749" y="82" text-anchor="middle">LEE</text>
+  <rect class="arq-mask" x="735" y="274" width="62" height="16" rx="2"/>
+  <text class="arq-label" x="766" y="286" text-anchor="middle">VISTAS 300</text>
+  <rect class="arq-mask" x="924" y="350" width="64" height="16" rx="2"/>
+  <text class="arq-label" x="928" y="362">COPIA TXT</text>
+
+  <!-- 1. Carpetas de entrada (input) -->
+  <rect class="arq-mask" x="14" y="260" width="160" height="76" rx="6"/>
+  <rect class="arq-box-input" x="14" y="260" width="160" height="76" rx="6"/>
+  <text class="arq-name" x="94" y="286" text-anchor="middle">Carpetas de entrada</text>
+  <text class="arq-mono" x="94" y="306" text-anchor="middle">1. Entrada de Datos</text>
+  <text class="arq-sub" x="94" y="322" text-anchor="middle">OneDrive, por shortcut</text>
+
+  <!-- 2. Dataflows de ingesta (backend) -->
+  <rect class="arq-mask" x="270" y="56" width="216" height="76" rx="6"/>
+  <rect class="arq-box-back" x="270" y="56" width="216" height="76" rx="6"/>
+  <text class="arq-name" x="378" y="82" text-anchor="middle">Dataflows de ingesta</text>
+  <text class="arq-mono" x="378" y="102" text-anchor="middle">INGESTA_Carga_Datos</text>
+  <text class="arq-mono" x="378" y="118" text-anchor="middle">INGESTA_Maestros</text>
+
+  <!-- 3. Cargas iniciales (manual, sin relleno) -->
+  <rect class="arq-mask" x="270" y="254" width="216" height="88" rx="6"/>
+  <rect class="arq-box-manual" x="270" y="254" width="216" height="88" rx="6"/>
+  <text class="arq-name" x="378" y="278" text-anchor="middle">Cargas iniciales</text>
+  <rect class="arq-tag" x="282" y="286" width="152" height="16" rx="2"/>
+  <text class="arq-tagtext" x="358" y="298" text-anchor="middle">MANUAL, SIN ORQUESTAR</text>
+  <text class="arq-mono" x="378" y="322" text-anchor="middle">INICIAL_*, Seguridad_CDC</text>
+
+  <!-- 4. Dataflows de transformación (backend) -->
+  <rect class="arq-mask" x="270" y="386" width="216" height="76" rx="6"/>
+  <rect class="arq-box-back" x="270" y="386" width="216" height="76" rx="6"/>
+  <text class="arq-name" x="378" y="412" text-anchor="middle">Dataflows de transformación</text>
+  <text class="arq-mono" x="378" y="432" text-anchor="middle">TRANS_Silver</text>
+  <text class="arq-mono" x="378" y="448" text-anchor="middle">TRANS_Gold</text>
+
+  <!-- 5. Lakehouse (focal) -->
+  <rect class="arq-mask" x="566" y="250" width="160" height="96" rx="6"/>
+  <rect class="arq-box-focal" x="566" y="250" width="160" height="96" rx="6"/>
+  <text class="arq-name" x="646" y="280" text-anchor="middle">Lakehouse</text>
+  <text class="arq-mono" x="646" y="304" text-anchor="middle">lh_tinkle_financiero</text>
+  <text class="arq-sub" x="646" y="324" text-anchor="middle">Capas 100, 200 y 300</text>
+
+  <!-- 6. Modelos semánticos (store) -->
+  <rect class="arq-mask" x="806" y="56" width="220" height="76" rx="6"/>
+  <rect class="arq-box-store" x="806" y="56" width="220" height="76" rx="6"/>
+  <text class="arq-name" x="916" y="82" text-anchor="middle">Modelos semánticos</text>
+  <text class="arq-sub" x="916" y="102" text-anchor="middle">Financial Model (Direct Lake)</text>
+  <text class="arq-sub" x="916" y="118" text-anchor="middle">Agings (import)</text>
+
+  <!-- 7. Informes Power BI (external) -->
+  <rect class="arq-mask" x="806" y="164" width="220" height="64" rx="6"/>
+  <rect class="arq-box-ext" x="806" y="164" width="220" height="64" rx="6"/>
+  <text class="arq-name" x="916" y="190" text-anchor="middle">Informes Power BI</text>
+  <text class="arq-sub" x="916" y="210" text-anchor="middle">6 informes, con botones</text>
+
+  <!-- 8. Notebook de ficheros (backend) -->
+  <rect class="arq-mask" x="806" y="266" width="220" height="64" rx="6"/>
+  <rect class="arq-box-back" x="806" y="266" width="220" height="64" rx="6"/>
+  <text class="arq-name" x="916" y="292" text-anchor="middle">Notebook de ficheros</text>
+  <text class="arq-mono" x="916" y="312" text-anchor="middle">Generar_txt_Balance_Saldos</text>
+
+  <!-- 9. Carpeta de salida (input) -->
+  <rect class="arq-mask" x="806" y="384" width="220" height="76" rx="6"/>
+  <rect class="arq-box-input" x="806" y="384" width="220" height="76" rx="6"/>
+  <text class="arq-name" x="916" y="410" text-anchor="middle">Carpeta de salida</text>
+  <text class="arq-mono" x="916" y="430" text-anchor="middle">2. Salida de ficheros/Balance</text>
+  <text class="arq-sub" x="916" y="446" text-anchor="middle">OneDrive de reporting@likuit.com</text>
+
+  <!-- Nota editorial (callout, uno) -->
+  <rect class="arq-frame" x="566" y="480" width="460" height="64" rx="6"/>
+  <text class="arq-note" x="582" y="504">Ageing, Revenue, Pendiente_Facturar, Working_Capital</text>
+  <text class="arq-note" x="582" y="524">y CashFlow aún no están implantados.</text>
+
+  <!-- Franja inferior -->
+  <text class="arq-note" x="14" y="504">La orquestación (botones, flujos y pipelines) está en el capítulo 3.</text>
+</svg></div>
+    </div>
+  </section>
+
+  <section id="capas">
+    <h2 class="chapter">Capas del lakehouse</h2>
+    <p>Cada capa la escriben pocos procesos. Debajo, tabla a tabla, quién la escribe y quién la lee.</p>
+    <div class="card" data-diagram="capas">
+      <div class="card-head"><h3>Quién escribe y quién lee cada capa</h3></div>
+      <div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 492" width="1040" style="min-width:1040px;display:block" role="img" aria-labelledby="cap-title cap-desc">
+<title id="cap-title">Capas del lakehouse</title>
+<desc id="cap-desc">Qué procesos escriben y qué procesos leen cada una de las tres capas del lakehouse lh_tinkle_financiero.</desc>
+<defs>
+<style>
+.cap-bg{fill:var(--c-white)}
+.cap-box{fill:var(--c-off);stroke:var(--c-border);stroke-width:1}
+.cap-mask{fill:var(--c-white)}
+.cap-rule{stroke:var(--c-border);stroke-width:1}
+.cap-arrow{stroke:var(--c-teal);stroke-width:1.6;fill:none}
+.cap-arrowhead{fill:var(--c-teal)}
+.cap-name{font:600 13px 'IBM Plex Sans',sans-serif;fill:var(--c-dark)}
+.cap-num{font:600 20px 'IBM Plex Sans',sans-serif;fill:var(--c-dark)}
+.cap-unit{font:500 12px 'IBM Plex Sans',sans-serif;fill:var(--c-muted)}
+.cap-eyebrow{font:500 11px 'IBM Plex Sans',sans-serif;letter-spacing:.12em;fill:var(--c-slate)}
+.cap-body{font:500 12px 'IBM Plex Sans',sans-serif;fill:var(--c-dark)}
+.cap-tech{font:400 11px 'IBM Plex Mono',monospace;fill:var(--c-dark)}
+.cap-label{font:500 11px 'IBM Plex Sans',sans-serif;fill:var(--c-muted)}
+</style>
+<marker id="cap-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon class="cap-arrowhead" points="0 0, 8 3, 0 6"/></marker>
+</defs>
+<rect class="cap-bg" x="0" y="0" width="1040" height="492"/>
+
+<!-- Flechas de capa a capa (antes de las cajas) -->
+<line class="cap-arrow" x1="280" y1="90" x2="392" y2="90" marker-end="url(#cap-arrow)"/>
+<line class="cap-arrow" x1="648" y1="90" x2="760" y2="90" marker-end="url(#cap-arrow)"/>
+
+<!-- Etiquetas de flecha: máscara blanca y 8 px de separación del trazo -->
+<rect class="cap-mask" x="288" y="66" width="96" height="16" rx="2"/>
+<text class="cap-label" x="336" y="78" text-anchor="middle">TRANS_SILVER</text>
+<rect class="cap-mask" x="656" y="66" width="96" height="16" rx="2"/>
+<text class="cap-label" x="704" y="78" text-anchor="middle">TRANS_GOLD</text>
+
+<!-- Capa 100 · bruto -->
+<rect class="cap-box" x="24" y="24" width="256" height="368" rx="6"/>
+<text class="cap-name" x="40" y="54">Capa 100 · bruto</text>
+<text class="cap-num" x="40" y="90">7<tspan class="cap-unit" dx="6">tablas</tspan></text>
+<line class="cap-rule" x1="40" y1="106" x2="264" y2="106"/>
+<text class="cap-eyebrow" x="40" y="128">ESCRIBEN</text>
+<text class="cap-tech" x="40" y="148">INGESTA_Carga_Datos</text>
+<text class="cap-body" x="40" y="164">(6 tablas <tspan class="cap-tech">New_*</tspan>)</text>
+<text class="cap-tech" x="40" y="180">Seguridad_CDC</text>
+<text class="cap-body" x="40" y="196">(RLS)</text>
+<text class="cap-eyebrow" x="40" y="224">LEEN</text>
+<text class="cap-tech" x="40" y="244">TRANS_Silver</text>
+
+<!-- Capa 200 · plata -->
+<rect class="cap-box" x="392" y="24" width="256" height="368" rx="6"/>
+<text class="cap-name" x="408" y="54">Capa 200 · plata</text>
+<text class="cap-num" x="408" y="90">12<tspan class="cap-unit" dx="6">tablas</tspan></text>
+<line class="cap-rule" x1="408" y1="106" x2="632" y2="106"/>
+<text class="cap-eyebrow" x="408" y="128">ESCRIBEN</text>
+<text class="cap-tech" x="408" y="148">TRANS_Silver</text>
+<text class="cap-tech" x="408" y="164">INGESTA_Maestros</text>
+<text class="cap-body" x="408" y="180">(mapeos y <tspan class="cap-tech">COA_Oracle</tspan>)</text>
+<text class="cap-body" x="408" y="196">cargas <tspan class="cap-tech">INICIAL_*</tspan></text>
+<text class="cap-eyebrow" x="408" y="224">LEEN</text>
+<text class="cap-tech" x="408" y="244">TRANS_Silver</text>
+<text class="cap-body" x="408" y="260">(histórico de Oracle,</text>
+<text class="cap-body" x="408" y="276">HAPA y MMS)</text>
+<text class="cap-tech" x="408" y="292">TRANS_Gold</text>
+<text class="cap-body" x="408" y="308">Financial Model</text>
+<text class="cap-body" x="408" y="324">(MMS y Presupuestos)</text>
+<text class="cap-body" x="408" y="340">Agings</text>
+<text class="cap-body" x="408" y="356">(<tspan class="cap-tech">Aging_Clientes</tspan> y</text>
+<text class="cap-tech" x="408" y="372">Aging_Proveedores<tspan class="cap-body">)</tspan></text>
+
+<!-- Capa 300 · oro -->
+<rect class="cap-box" x="760" y="24" width="256" height="368" rx="6"/>
+<text class="cap-name" x="776" y="54">Capa 300 · oro</text>
+<text class="cap-num" x="776" y="90">13<tspan class="cap-unit" dx="6">tablas</tspan></text>
+<line class="cap-rule" x1="776" y1="106" x2="1000" y2="106"/>
+<text class="cap-eyebrow" x="776" y="128">ESCRIBEN</text>
+<text class="cap-tech" x="776" y="148">TRANS_Gold</text>
+<text class="cap-tech" x="776" y="164">(Fact_Actuals, Dim_Cuentas,</text>
+<text class="cap-tech" x="776" y="180">Dim_Mapeo_Cuentas)</text>
+<text class="cap-tech" x="776" y="196">INGESTA_Maestros</text>
+<text class="cap-body" x="776" y="212">(dimensiones)</text>
+<text class="cap-tech" x="776" y="228">INICIAL_Carga_Rentabilidades</text>
+<text class="cap-eyebrow" x="776" y="256">LEEN</text>
+<text class="cap-body" x="776" y="276">Financial Model</text>
+<text class="cap-body" x="776" y="292">(las 13 tablas)</text>
+<text class="cap-body" x="776" y="308">Vistas <tspan class="cap-tech">300.vw_Export_*</tspan></text>
+<text class="cap-body" x="776" y="324">(notebook de ficheros)</text>
+<text class="cap-tech" x="776" y="340">INICIAL_Carga_Rentabilidades</text>
+<text class="cap-body" x="776" y="356">(<tspan class="cap-tech">Dim_CDC</tspan>)</text>
+
+<!-- Franja de nota -->
+<rect class="cap-box" x="24" y="416" width="992" height="60" rx="6"/>
+<text class="cap-body" x="40" y="438">Sin lector en el repositorio: <tspan class="cap-tech">100.RLS, 200.Revenues, 200.Budget_historico</tspan> y <tspan class="cap-tech">300.vw_Reporting_Actuals</tspan>.</text>
+<text class="cap-body" x="40" y="458">El detalle tabla a tabla está en la tabla de abajo.</text>
+</svg></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Detalle por tabla</h3></div>
+      <div class="tbl-scroll"><table>
+  <thead>
+    <tr>
+      <th scope="col">Capa</th>
+      <th scope="col">Tabla</th>
+      <th scope="col">La escribe</th>
+      <th scope="col">La leen</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>100</td>
+      <td><code>New_Agings_Clientes</code></td>
+      <td>INGESTA_Carga_Datos</td>
+      <td>TRANS_Silver (200_New_Agings_Clientes)</td>
+    </tr>
+    <tr>
+      <td>100</td>
+      <td><code>New_Agings_Proveedores</code></td>
+      <td>INGESTA_Carga_Datos</td>
+      <td>TRANS_Silver (200_New_Agings_Proveedores)</td>
+    </tr>
+    <tr>
+      <td>100</td>
+      <td><code>New_HAPA</code></td>
+      <td>INGESTA_Carga_Datos</td>
+      <td>TRANS_Silver (200_New_HAPA_trans)</td>
+    </tr>
+    <tr>
+      <td>100</td>
+      <td><code>New_MMS</code></td>
+      <td>INGESTA_Carga_Datos</td>
+      <td>TRANS_Silver (200_New_MMS_trans)</td>
+    </tr>
+    <tr>
+      <td>100</td>
+      <td><code>New_Oracle</code></td>
+      <td>INGESTA_Carga_Datos</td>
+      <td>TRANS_Silver (200_New_Oracle_trans)</td>
+    </tr>
+    <tr>
+      <td>100</td>
+      <td><code>New_PT_extrato_contas</code></td>
+      <td>INGESTA_Carga_Datos</td>
+      <td>TRANS_Silver (200_Portugal_trans)</td>
+    </tr>
+    <tr>
+      <td>100</td>
+      <td><code>RLS</code></td>
+      <td>Seguridad_CDC</td>
+      <td>Sin lector en el repositorio</td>
+    </tr>
+    <tr>
+      <td>200</td>
+      <td><code>Aging_Clientes</code></td>
+      <td>INICIAL_Carga_Agings; TRANS_Silver</td>
+      <td>Modelo Agings (import)</td>
+    </tr>
+    <tr>
+      <td>200</td>
+      <td><code>Aging_Proveedores</code></td>
+      <td>INICIAL_Carga_Agings; TRANS_Silver</td>
+      <td>Modelo Agings (import)</td>
+    </tr>
+    <tr>
+      <td>200</td>
+      <td><code>Budget_historico</code></td>
+      <td>Sin productor</td>
+      <td>Sin lector en el repositorio</td>
+    </tr>
+    <tr>
+      <td>200</td>
+      <td><code>COA_Oracle</code></td>
+      <td>INGESTA_Maestros</td>
+      <td>TRANS_Gold</td>
+    </tr>
+    <tr>
+      <td>200</td>
+      <td><code>HAPA</code></td>
+      <td>TRANS_Silver</td>
+      <td>TRANS_Silver (200_HAPA), TRANS_Gold (HAPA)</td>
+    </tr>
+    <tr>
+      <td>200</td>
+      <td><code>Mapping Portugal</code></td>
+      <td>INGESTA_Maestros</td>
+      <td>TRANS_Gold</td>
+    </tr>
+    <tr>
+      <td>200</td>
+      <td><code>Mapping_HAPA</code></td>
+      <td>INGESTA_Maestros</td>
+      <td>TRANS_Gold</td>
+    </tr>
+    <tr>
+      <td>200</td>
+      <td><code>MMS</code></td>
+      <td>TRANS_Silver</td>
+      <td>TRANS_Silver (200_MMS), modelo Financial Model</td>
+    </tr>
+    <tr>
+      <td>200</td>
+      <td><code>Oracle_historico</code></td>
+      <td>INICIAL_Carga_Oracle; TRANS_Silver</td>
+      <td>TRANS_Silver (200_Oracle), TRANS_Gold (Oracle_historico)</td>
+    </tr>
+    <tr>
+      <td>200</td>
+      <td><code>Portugal</code></td>
+      <td>TRANS_Silver</td>
+      <td>TRANS_Gold (Portugal)</td>
+    </tr>
+    <tr>
+      <td>200</td>
+      <td><code>Presupuestos</code></td>
+      <td>INICIAL_Carga_budget_fct</td>
+      <td>Modelo Financial Model</td>
+    </tr>
+    <tr>
+      <td>200</td>
+      <td><code>Revenues</code></td>
+      <td>INICIAL_Carga_Revenues</td>
+      <td>Sin lector en el repositorio</td>
+    </tr>
+    <tr>
+      <td>300</td>
+      <td><code>Aux_CDC</code></td>
+      <td>INGESTA_Maestros</td>
+      <td>Modelo Financial Model</td>
+    </tr>
+    <tr>
+      <td>300</td>
+      <td><code>Dim_Calendar</code></td>
+      <td>INGESTA_Maestros</td>
+      <td>Modelo Financial Model</td>
+    </tr>
+    <tr>
+      <td>300</td>
+      <td><code>Dim_CDC</code></td>
+      <td>INGESTA_Maestros</td>
+      <td>Modelo Financial Model; INICIAL_Carga_Rentabilidades (Dim_CDC)</td>
+    </tr>
+    <tr>
+      <td>300</td>
+      <td><code>Dim_Clientes</code></td>
+      <td>INGESTA_Maestros</td>
+      <td>Modelo Financial Model</td>
+    </tr>
+    <tr>
+      <td>300</td>
+      <td><code>Dim_Cuentas</code></td>
+      <td>TRANS_Gold</td>
+      <td>Modelo Financial Model</td>
+    </tr>
+    <tr>
+      <td>300</td>
+      <td><code>Dim_equipos</code></td>
+      <td>INICIAL_Carga_Rentabilidades</td>
+      <td>Modelo Financial Model</td>
+    </tr>
+    <tr>
+      <td>300</td>
+      <td><code>Dim_Mapeo_Cuentas</code></td>
+      <td>TRANS_Gold</td>
+      <td>Modelo Financial Model; vistas 300.vw_Export_Grupo y 300.vw_Reporting_Actuals</td>
+    </tr>
+    <tr>
+      <td>300</td>
+      <td><code>Dim_Report_Line</code></td>
+      <td>INGESTA_Maestros</td>
+      <td>Modelo Financial Model</td>
+    </tr>
+    <tr>
+      <td>300</td>
+      <td><code>Dim_RRHH</code></td>
+      <td>INGESTA_Maestros</td>
+      <td>Modelo Financial Model</td>
+    </tr>
+    <tr>
+      <td>300</td>
+      <td><code>Dim_Sociedades</code></td>
+      <td>INGESTA_Maestros</td>
+      <td>Modelo Financial Model; vistas 300.vw_Export_Grupo y 300.vw_Export_Saldos_4_7</td>
+    </tr>
+    <tr>
+      <td>300</td>
+      <td><code>Fact_Actuals</code></td>
+      <td>TRANS_Gold</td>
+      <td>Modelo Financial Model; vistas 300.vw_Export_Grupo, 300.vw_Export_Saldos_4_7 y 300.vw_Reporting_Actuals</td>
+    </tr>
+    <tr>
+      <td>300</td>
+      <td><code>Fact_Asignacion_RRHH</code></td>
+      <td>INICIAL_Carga_Rentabilidades</td>
+      <td>Modelo Financial Model</td>
+    </tr>
+    <tr>
+      <td>300</td>
+      <td><code>Map_Report_Line_Account</code></td>
+      <td>INGESTA_Maestros</td>
+      <td>Modelo Financial Model; vista 300.vw_Reporting_Actuals</td>
+    </tr>
+  </tbody>
+</table></div>
+    </div>
+  </section>
+
+  <section id="orquestacion">
+    <h2 class="chapter">Orquestación</h2>
+    <p>Los botones y los flujos lanzan cuatro pipelines modulares, y Flujo_actualizar_datos es la pieza que comparten los dos flujos totales.</p>
+    <div class="card" data-diagram="orquestacion">
+      <div class="card-head"><h3>Botones, flujos y pipelines</h3></div>
+      <div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 548" width="1040" style="min-width:1040px;display:block" role="img" aria-labelledby="orq-title orq-desc">
+<title id="orq-title">Orquestación: botones, flujos y pipelines</title>
+<desc id="orq-desc">Qué lanza cada botón y cada flujo, y en qué orden se ejecutan los cuatro pipelines modulares.</desc>
+<style>
+.orq-bg{fill:var(--c-white)}
+.orq-m-muted{fill:var(--c-muted)}
+.orq-m-teal{fill:var(--c-teal)}
+.orq-arrow{fill:none;stroke:var(--c-muted);stroke-width:1}
+.orq-arrow-accent{fill:none;stroke:var(--c-teal);stroke-width:1.2}
+.orq-back{fill:var(--c-white);stroke:var(--c-dark);stroke-width:1}
+.orq-input{fill:var(--c-muted);fill-opacity:.1;stroke:var(--c-slate);stroke-width:1}
+.orq-focal{fill:var(--c-ice);stroke:var(--c-teal);stroke-width:1.2}
+.orq-state{fill:none;stroke:var(--c-gold);stroke-width:1}
+.orq-name{font-family:var(--f-body);font-size:13px;font-weight:600;fill:var(--c-dark)}
+.orq-mono{font-family:var(--f-mono);font-size:13px;font-weight:500;fill:var(--c-dark)}
+.orq-support{font-family:var(--f-body);font-size:11px;font-weight:500;fill:var(--c-muted)}
+.orq-chip{font-family:var(--f-body);font-size:11px;font-weight:500;letter-spacing:.12em;fill:var(--c-dark)}
+.orq-eyebrow{font-family:var(--f-body);font-size:11px;font-weight:500;letter-spacing:.12em;fill:var(--c-muted)}
+.orq-label{font-family:var(--f-body);font-size:11px;font-weight:500;letter-spacing:.06em;fill:var(--c-muted)}
+.orq-note{font-family:var(--f-body);font-size:13px;font-weight:400;fill:var(--c-muted)}
+.orq-rule{stroke:var(--c-border);stroke-width:1}
+</style>
+<defs>
+<marker id="orq-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" class="orq-m-muted"/></marker>
+<marker id="orq-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" class="orq-m-teal"/></marker>
+</defs>
+
+<rect width="1040" height="548" class="orq-bg"/>
+
+<!-- Eyebrows de fila -->
+<text x="40" y="36" class="orq-eyebrow">BOTONES</text>
+<text x="40" y="204" class="orq-eyebrow">FLUJOS</text>
+<text x="40" y="364" class="orq-eyebrow">PIPELINES</text>
+
+<!-- Flechas (antes que las cajas) -->
+<line x1="150" y1="128" x2="150" y2="216" class="orq-arrow" marker-end="url(#orq-arrow)"/>
+<line x1="923" y1="128" x2="923" y2="376" class="orq-arrow" marker-end="url(#orq-arrow)"/>
+<line x1="260" y1="256" x2="406" y2="256" class="orq-arrow" marker-end="url(#orq-arrow)"/>
+<line x1="150" y1="296" x2="150" y2="376" class="orq-arrow" marker-end="url(#orq-arrow)"/>
+<line x1="692" y1="256" x2="626" y2="256" class="orq-arrow" marker-end="url(#orq-arrow)"/>
+<line x1="834" y1="296" x2="834" y2="376" class="orq-arrow" marker-end="url(#orq-arrow)"/>
+<line x1="450" y1="296" x2="450" y2="376" class="orq-arrow-accent" marker-end="url(#orq-arrow-accent)"/>
+<line x1="580" y1="296" x2="580" y2="376" class="orq-arrow-accent" marker-end="url(#orq-arrow-accent)"/>
+
+<!-- Etiquetas de flecha con máscara -->
+<rect x="158" y="164" width="48" height="16" rx="2" class="orq-bg"/>
+<text x="182" y="176" class="orq-label" text-anchor="middle">LANZA</text>
+<rect x="931" y="164" width="48" height="16" rx="2" class="orq-bg"/>
+<text x="955" y="176" class="orq-label" text-anchor="middle">LANZA</text>
+<rect x="307" y="232" width="52" height="16" rx="2" class="orq-bg"/>
+<text x="333" y="244" class="orq-label" text-anchor="middle">PASO 1</text>
+<rect x="158" y="328" width="104" height="16" rx="2" class="orq-bg"/>
+<text x="210" y="340" class="orq-label" text-anchor="middle">PASO 2 SI OK</text>
+<rect x="633" y="232" width="52" height="16" rx="2" class="orq-bg"/>
+<text x="659" y="244" class="orq-label" text-anchor="middle">PASO 1</text>
+<rect x="722" y="328" width="104" height="16" rx="2" class="orq-bg"/>
+<text x="774" y="340" class="orq-label" text-anchor="middle">PASO 2 SI OK</text>
+<rect x="390" y="328" width="52" height="16" rx="2" class="orq-bg"/>
+<text x="416" y="340" class="orq-label" text-anchor="middle">PASO 1</text>
+<rect x="588" y="328" width="104" height="16" rx="2" class="orq-bg"/>
+<text x="640" y="340" class="orq-label" text-anchor="middle">PASO 2 SI OK</text>
+
+<!-- Fila BOTONES -->
+<rect x="40" y="48" width="220" height="80" rx="6" class="orq-bg"/>
+<rect x="40" y="48" width="220" height="80" rx="6" class="orq-input"/>
+<text x="56" y="76" class="orq-name">Cargar datos</text>
+<text x="56" y="94" class="orq-support">UDF Ejecución Reporting</text>
+<rect x="56" y="100" width="96" height="20" rx="6" class="orq-state"/>
+<text x="104" y="114" class="orq-chip" text-anchor="middle">SIN PROBAR</text>
+
+<rect x="772" y="48" width="220" height="80" rx="6" class="orq-bg"/>
+<rect x="772" y="48" width="220" height="80" rx="6" class="orq-input"/>
+<text x="788" y="76" class="orq-name">Generar txt</text>
+<text x="788" y="94" class="orq-support">UDF Generar_txt</text>
+<rect x="788" y="100" width="96" height="20" rx="6" class="orq-state"/>
+<text x="836" y="114" class="orq-chip" text-anchor="middle">SIN PROBAR</text>
+
+<!-- Fila FLUJOS -->
+<rect x="40" y="216" width="220" height="80" rx="6" class="orq-back"/>
+<text x="56" y="244" class="orq-mono">Flujo_total_reporting</text>
+
+<rect x="406" y="216" width="220" height="80" rx="6" class="orq-focal"/>
+<text x="422" y="244" class="orq-mono">Flujo_actualizar_datos</text>
+<text x="422" y="262" class="orq-support">lo comparten los dos flujos</text>
+<text x="422" y="276" class="orq-support">totales</text>
+
+<rect x="692" y="216" width="200" height="80" rx="6" class="orq-back"/>
+<text x="708" y="244" class="orq-mono">Flujo_total_txt</text>
+<text x="708" y="262" class="orq-support">se lanza desde Fabric</text>
+
+<!-- Fila PIPELINES -->
+<rect x="40" y="376" width="220" height="80" rx="6" class="orq-back"/>
+<text x="56" y="404" class="orq-mono">Refresco_modelos</text>
+<text x="56" y="422" class="orq-support">Financial Model y Agings</text>
+
+<rect x="284" y="376" width="220" height="80" rx="6" class="orq-back"/>
+<text x="300" y="404" class="orq-mono">Ingesta_datos</text>
+<text x="300" y="422" class="orq-support">maestros y carga, luego</text>
+<text x="300" y="436" class="orq-support">endpoint SQL</text>
+
+<rect x="528" y="376" width="220" height="80" rx="6" class="orq-back"/>
+<text x="544" y="404" class="orq-mono">Transformacion_datos</text>
+<text x="544" y="422" class="orq-support">silver, gold y endpoint SQL</text>
+
+<rect x="772" y="376" width="220" height="80" rx="6" class="orq-back"/>
+<text x="788" y="404" class="orq-mono">Generar_salidas</text>
+<text x="788" y="422" class="orq-support">TXT y copia a la carpeta</text>
+<text x="788" y="436" class="orq-support">de salida</text>
+
+<!-- Franja inferior -->
+<line x1="40" y1="488" x2="1000" y2="488" class="orq-rule"/>
+<text x="40" y="512" class="orq-note">Generar Reporting y Grabar salidas siguen en Fabric, pendientes de retirar cuando se prueben los botones.</text>
+<text x="40" y="532" class="orq-note">Ningún pipeline tiene programación: se lanzan a mano o con los botones.</text>
+</svg></div>
+    </div>
+  </section>
+
+  <section id="balance">
+    <h2 class="chapter">Fichero Balance</h2>
+    <p>Balance sale de la vista 300.vw_Export_Grupo: un fichero por sociedad en la carpeta de salida.</p>
+    <div class="card" data-diagram="balance">
+      <div class="card-head"><h3>De las tablas a la carpeta de salida</h3></div>
+      <div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 316" width="1040" style="min-width:1040px;display:block" role="img" aria-labelledby="bal-title bal-desc">
+<title id="bal-title">Fichero Balance</title>
+<desc id="bal-desc">De Fact_Actuals, Dim_Mapeo_Cuentas y Dim_Sociedades al fichero Balance que Finanzas recoge en la carpeta de salida.</desc>
+<defs>
+<style>
+.bal-bg{fill:var(--c-white)}
+.bal-eb{font:500 11px var(--f-body);letter-spacing:.12em;fill:var(--c-muted)}
+.bal-id{font:500 11px var(--f-mono);fill:var(--c-dark)}
+.bal-sub{font:500 11px var(--f-body);fill:var(--c-muted)}
+.bal-lab{font:500 11px var(--f-body);fill:var(--c-slate)}
+.bal-lab-acc{font:500 11px var(--f-body);fill:var(--c-teal)}
+.bal-note{font:400 13px var(--f-body);fill:var(--c-muted)}
+.bal-mask{fill:var(--c-white)}
+.bal-store{fill:var(--c-off);stroke:var(--c-muted);stroke-width:1}
+.bal-back{fill:var(--c-white);stroke:var(--c-dark);stroke-width:1}
+.bal-focal{fill:var(--c-ice);stroke:var(--c-teal);stroke-width:1.2}
+.bal-input{fill:var(--c-white);stroke:var(--c-slate);stroke-width:1}
+.bal-arr{fill:none;stroke:var(--c-muted);stroke-width:1}
+.bal-arr-acc{fill:none;stroke:var(--c-teal);stroke-width:1.2}
+.bal-rule{stroke:var(--c-border);stroke-width:.8}
+.bal-mk{fill:var(--c-muted)}
+.bal-mk-acc{fill:var(--c-teal)}
+</style>
+<marker id="bal-arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon class="bal-mk" points="0 0, 8 3, 0 6"/></marker>
+<marker id="bal-arr-acc" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon class="bal-mk-acc" points="0 0, 8 3, 0 6"/></marker>
+</defs>
+
+<rect class="bal-bg" x="0" y="0" width="1040" height="316"/>
+
+<!-- Eyebrows -->
+<text class="bal-eb" x="16" y="36">TABLAS 300</text>
+<text class="bal-eb" x="196" y="36">VISTA</text>
+<text class="bal-eb" x="412" y="36">NOTEBOOK</text>
+<text class="bal-eb" x="672" y="36">LAKEHOUSE</text>
+<text class="bal-eb" x="872" y="36">SALIDA</text>
+
+<!-- Arrows first, then boxes -->
+<line class="bal-arr" x1="160" y1="80" x2="196" y2="80" marker-end="url(#bal-arr)"/>
+<line class="bal-arr" x1="160" y1="152" x2="196" y2="152" marker-end="url(#bal-arr)"/>
+<line class="bal-arr" x1="160" y1="224" x2="196" y2="224" marker-end="url(#bal-arr)"/>
+<line class="bal-arr-acc" x1="372" y1="152" x2="412" y2="152" marker-end="url(#bal-arr-acc)"/>
+<line class="bal-arr" x1="576" y1="152" x2="672" y2="152" marker-end="url(#bal-arr)"/>
+<line class="bal-arr" x1="824" y1="152" x2="872" y2="152" marker-end="url(#bal-arr)"/>
+
+<!-- Arrow labels, masked, 6px gap above the stroke -->
+<rect class="bal-mask" x="378" y="134" width="28" height="12" rx="2"/>
+<text class="bal-lab-acc" x="392" y="144" text-anchor="middle">LEE</text>
+<rect class="bal-mask" x="584" y="134" width="80" height="12" rx="2"/>
+<text class="bal-lab" x="624" y="144" text-anchor="middle">ESCRIBE TXT</text>
+<rect class="bal-mask" x="828" y="134" width="40" height="12" rx="2"/>
+<text class="bal-lab" x="848" y="144" text-anchor="middle">COPIA</text>
+
+<!-- Tables (stores), column 1 -->
+<rect class="bal-store" x="16" y="56" width="144" height="48" rx="6"/>
+<text class="bal-id" x="26" y="84">Fact_Actuals</text>
+<rect class="bal-store" x="16" y="128" width="144" height="48" rx="6"/>
+<text class="bal-id" x="26" y="156">Dim_Mapeo_Cuentas</text>
+<rect class="bal-store" x="16" y="200" width="144" height="48" rx="6"/>
+<text class="bal-id" x="26" y="228">Dim_Sociedades</text>
+
+<!-- View (focal) -->
+<rect class="bal-focal" x="196" y="64" width="176" height="176" rx="6"/>
+<text class="bal-id" x="206" y="156">300.vw_Export_Grupo</text>
+
+<!-- Notebook (backend) -->
+<rect class="bal-back" x="412" y="92" width="164" height="120" rx="6"/>
+<text class="bal-id" x="422" y="120">Generar_txt_</text>
+<text class="bal-id" x="422" y="136">Balance_Saldos</text>
+<text class="bal-sub" x="422" y="158">Balance: un fichero</text>
+<text class="bal-sub" x="422" y="172">por sociedad (D_RU)</text>
+
+<!-- Lakehouse (store) -->
+<rect class="bal-store" x="672" y="92" width="152" height="120" rx="6"/>
+<text class="bal-id" x="682" y="120">Files/Exportaciones/</text>
+<text class="bal-id" x="682" y="136">Balance/&lt;periodo&gt;/</text>
+<text class="bal-sub" x="682" y="158">un TXT por sociedad</text>
+
+<!-- Output (input) -->
+<rect class="bal-input" x="872" y="92" width="152" height="120" rx="6"/>
+<text class="bal-id" x="882" y="120">2. Salida de</text>
+<text class="bal-id" x="882" y="136">ficheros/Balance</text>
+<text class="bal-sub" x="882" y="158">OneDrive de</text>
+<text class="bal-sub" x="882" y="172">reporting@likuit.com</text>
+<text class="bal-sub" x="882" y="186">Finanzas recoge el</text>
+<text class="bal-sub" x="882" y="200">fichero</text>
+
+<!-- Support under COPIA -->
+<text class="bal-sub" x="848" y="236" text-anchor="middle">Generar_salidas (antes, Grabar salidas)</text>
+
+<!-- Bottom strip with the note -->
+<line class="bal-rule" x1="16" y1="268" x2="1024" y2="268"/>
+<text class="bal-note" x="16" y="292">La vista calcula los saldos del último periodo en miles por cuenta Magnitude; el notebook valida el formato antes de escribir.</text>
+</svg></div>
+    </div>
+  </section>
+
+  <section id="saldos">
+    <h2 class="chapter">Fichero Saldos 4_7</h2>
+    <p>Saldos 4_7 sale de la vista 300.vw_Export_Saldos_4_7, con los saldos redondeados a 2 decimales antes de escribirlos.</p>
+    <div class="card" data-diagram="saldos">
+      <div class="card-head"><h3>De las tablas a la carpeta de salida</h3></div>
+      <div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 316" width="1040" style="min-width:1040px;display:block" role="img" aria-labelledby="sal-title sal-desc">
+<title id="sal-title">Fichero Saldos 4_7</title>
+<desc id="sal-desc">De Fact_Actuals y Dim_Sociedades al fichero Saldos 4_7 que Finanzas recoge en la carpeta de salida.</desc>
+<defs>
+<style>
+.sal-bg{fill:var(--c-white)}
+.sal-eb{font:500 11px var(--f-body);letter-spacing:.12em;fill:var(--c-muted)}
+.sal-id{font:500 11px var(--f-mono);fill:var(--c-dark)}
+.sal-sub{font:500 11px var(--f-body);fill:var(--c-muted)}
+.sal-lab{font:500 11px var(--f-body);fill:var(--c-slate)}
+.sal-lab-acc{font:500 11px var(--f-body);fill:var(--c-teal)}
+.sal-note{font:400 13px var(--f-body);fill:var(--c-muted)}
+.sal-mask{fill:var(--c-white)}
+.sal-store{fill:var(--c-off);stroke:var(--c-muted);stroke-width:1}
+.sal-back{fill:var(--c-white);stroke:var(--c-dark);stroke-width:1}
+.sal-focal{fill:var(--c-ice);stroke:var(--c-teal);stroke-width:1.2}
+.sal-input{fill:var(--c-white);stroke:var(--c-slate);stroke-width:1}
+.sal-arr{fill:none;stroke:var(--c-muted);stroke-width:1}
+.sal-arr-acc{fill:none;stroke:var(--c-teal);stroke-width:1.2}
+.sal-rule{stroke:var(--c-border);stroke-width:.8}
+.sal-mk{fill:var(--c-muted)}
+.sal-mk-acc{fill:var(--c-teal)}
+</style>
+<marker id="sal-arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon class="sal-mk" points="0 0, 8 3, 0 6"/></marker>
+<marker id="sal-arr-acc" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon class="sal-mk-acc" points="0 0, 8 3, 0 6"/></marker>
+</defs>
+
+<rect class="sal-bg" x="0" y="0" width="1040" height="316"/>
+
+<!-- Eyebrows -->
+<text class="sal-eb" x="16" y="36">TABLAS 300</text>
+<text class="sal-eb" x="196" y="36">VISTA</text>
+<text class="sal-eb" x="412" y="36">NOTEBOOK</text>
+<text class="sal-eb" x="672" y="36">LAKEHOUSE</text>
+<text class="sal-eb" x="872" y="36">SALIDA</text>
+
+<!-- Arrows first, then boxes -->
+<line class="sal-arr" x1="160" y1="116" x2="196" y2="116" marker-end="url(#sal-arr)"/>
+<line class="sal-arr" x1="160" y1="188" x2="196" y2="188" marker-end="url(#sal-arr)"/>
+<line class="sal-arr-acc" x1="372" y1="152" x2="412" y2="152" marker-end="url(#sal-arr-acc)"/>
+<line class="sal-arr" x1="576" y1="152" x2="672" y2="152" marker-end="url(#sal-arr)"/>
+<line class="sal-arr" x1="824" y1="152" x2="872" y2="152" marker-end="url(#sal-arr)"/>
+
+<!-- Arrow labels, masked, 6px gap above the stroke -->
+<rect class="sal-mask" x="378" y="134" width="28" height="12" rx="2"/>
+<text class="sal-lab-acc" x="392" y="144" text-anchor="middle">LEE</text>
+<rect class="sal-mask" x="584" y="134" width="80" height="12" rx="2"/>
+<text class="sal-lab" x="624" y="144" text-anchor="middle">ESCRIBE TXT</text>
+<rect class="sal-mask" x="828" y="134" width="40" height="12" rx="2"/>
+<text class="sal-lab" x="848" y="144" text-anchor="middle">COPIA</text>
+
+<!-- Tables (stores), column 1 -->
+<rect class="sal-store" x="16" y="92" width="144" height="48" rx="6"/>
+<text class="sal-id" x="26" y="120">Fact_Actuals</text>
+<rect class="sal-store" x="16" y="164" width="144" height="48" rx="6"/>
+<text class="sal-id" x="26" y="192">Dim_Sociedades</text>
+
+<!-- View (focal) -->
+<rect class="sal-focal" x="196" y="64" width="176" height="176" rx="6"/>
+<text class="sal-id" x="206" y="148">300.vw_Export_</text><text class="sal-id" x="206" y="164">Saldos_4_7</text>
+
+<!-- Notebook (backend) -->
+<rect class="sal-back" x="412" y="92" width="164" height="120" rx="6"/>
+<text class="sal-id" x="422" y="120">Generar_txt_</text>
+<text class="sal-id" x="422" y="136">Balance_Saldos</text>
+<text class="sal-sub" x="422" y="158">Saldos 4_7: redondeo a</text>
+<text class="sal-sub" x="422" y="172">2 decimales antes de</text>
+<text class="sal-sub" x="422" y="186">elegir columna</text>
+
+<!-- Lakehouse (store) -->
+<rect class="sal-store" x="672" y="92" width="152" height="120" rx="6"/>
+<text class="sal-id" x="682" y="120">Files/Exportaciones/</text>
+<text class="sal-id" x="682" y="136">Balance/&lt;periodo&gt;/</text>
+<text class="sal-sub" x="682" y="158">un TXT por sociedad</text>
+
+<!-- Output (input) -->
+<rect class="sal-input" x="872" y="92" width="152" height="120" rx="6"/>
+<text class="sal-id" x="882" y="120">2. Salida de</text>
+<text class="sal-id" x="882" y="136">ficheros/Balance</text>
+<text class="sal-sub" x="882" y="158">OneDrive de</text>
+<text class="sal-sub" x="882" y="172">reporting@likuit.com</text>
+<text class="sal-sub" x="882" y="186">Finanzas recoge el</text>
+<text class="sal-sub" x="882" y="200">fichero</text>
+
+<!-- Support under COPIA -->
+<text class="sal-sub" x="848" y="236" text-anchor="middle">Generar_salidas (antes, Grabar salidas)</text>
+
+<!-- Bottom strip with the note -->
+<line class="sal-rule" x1="16" y1="268" x2="1024" y2="268"/>
+<text class="sal-note" x="16" y="292">Con el redondeo, los mismos datos dan siempre el mismo fichero; antes, un resto de coma flotante movía un 0,00 entre debe y haber.</text>
+</svg></div>
+    </div>
+  </section>
+</main>
+
+<footer class="ftr">
+  <div class="ftr-line">
+    <img class="ftr-logo" src="data:image/png;base64,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" alt="Docenteo">
+    <p class="ftr-copy">&copy; 2026 DOCENTEO SL. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   Docenteo · Piezas de datos: utilidades comunes
+   Perfil: Brand/guias/brand-datos.md. Al entregar, se incrusta en el HTML.
+============================================================ */
+(function () {
+  // Paleta del core y estrategia de foco (D58): una serie en teal, el contexto en ice y stone
+  const C = { dark: '#09323F', teal: '#04747A', cyan: '#62FEFF', lime: '#EAF942', ice: '#CFF5F7', off: '#F4F8F8', stone: '#B3A394', gold: '#D4A117', burgundy: '#8C2F39', muted: '#5F6368' };
+  const SERIES = {
+    foco: C.teal,
+    contexto: [C.ice, 'rgba(179,163,148,.55)'],
+    completa: [C.dark, C.teal, C.cyan, C.lime, C.ice],   // solo para categorías del mismo peso
+    gradiente: { foco: C.lime, contexto: ['rgba(255,255,255,.75)', 'rgba(255,255,255,.35)'] },
+    // Codificación fija de series temporales
+    real: { borderColor: C.teal, borderWidth: 2 },
+    prevision: { borderColor: C.teal, borderWidth: 2, borderDash: [5, 4] },
+    objetivo: { borderColor: C.dark, borderWidth: 1, borderDash: [4, 3] },
+    anterior: { borderColor: C.stone, borderWidth: 1.25 },
+    rango: C.ice,
+  };
+
+  // Formatos del core: 1.240.300 €, 168 k€, 12,4%, +1,4 pp
+  const nf0 = new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 });
+  const fmt = {
+    eur: v => v == null ? '-' : nf0.format(v) + ' €',
+    k: v => v == null ? '-' : nf0.format(Math.round(v / 1000)) + ' k€',
+    pct: v => v == null ? '-' : (v * 100).toFixed(1).replace('.', ',') + '%',
+    pct0: v => v == null ? '-' : Math.round(v * 100) + '%',
+    signo: (v, f = fmt.pct) => v == null ? '-' : (v >= 0 ? '+' : '') + f(v),
+    fecha: d => { const M = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']; return `${d.getDate()} ${M[d.getMonth()]} ${d.getFullYear()}`; },
+    dmy: d => [d.getDate(), d.getMonth() + 1].map(n => String(n).padStart(2, '0')).join('/') + '/' + d.getFullYear(),
+  };
+
+  // Chart.js 4.4.0 con el estilo del core: leyenda arriba, solo guías horizontales finas, tooltip claro
+  function chartDefaults() {
+    if (!window.Chart) return;
+    const d = Chart.defaults;
+    d.font.family = "'IBM Plex Sans', sans-serif"; d.color = C.muted; d.maintainAspectRatio = false;
+    d.plugins.legend.position = 'top'; d.plugins.legend.align = 'start';
+    Object.assign(d.plugins.legend.labels, { usePointStyle: true, pointStyle: 'circle', boxWidth: 8, boxHeight: 8, padding: 16 });
+    Object.assign(d.plugins.tooltip, { backgroundColor: '#FFFFFF', titleColor: C.muted, bodyColor: '#000000', borderColor: 'rgba(9,50,63,.12)', borderWidth: 1, padding: 12, cornerRadius: 6, titleFont: { size: 11, weight: '500' }, bodyFont: { size: 13, weight: '600' }, usePointStyle: true, boxPadding: 6 });
+    d.elements.bar.borderRadius = 3; d.elements.bar.maxBarThickness = 28;
+    d.elements.line.tension = 0; d.elements.point.radius = 0; d.elements.point.hoverRadius = 4;
+  }
+  const scales = (money = true, horizontal = false) => {
+    const val = { ticks: { callback: v => money ? fmt.eur(v) : nf0.format(v) }, grid: { color: 'rgba(9,50,63,.08)' }, border: { display: false } };
+    const cat = { grid: { display: false }, border: { display: false } };
+    return horizontal ? { x: val, y: cat } : { x: cat, y: val };
+  };
+
+  // Filas de KPI siempre equilibradas: una fila de hasta 6; en pantallas medianas 3 y 3 o 2 y 2; nunca 4 y 2
+  function balanceKpis(root = document) {
+    root.querySelectorAll('.kpi-grid').forEach(g => {
+      const n = g.children.length; if (!n) return;
+      g.style.setProperty('--n', Math.min(n, 6));
+      g.style.setProperty('--n-md', n % 3 === 0 ? 3 : n % 2 === 0 ? 2 : Math.min(n, 6));
+      g.style.setProperty('--n-sm', n % 2 === 0 ? 2 : 1);
+    });
+  }
+
+  // Metadatos obligatorios en la cabecera: actualización (fecha y hora), periodo y versión
+  function setMeta({ actualizado, periodo, version }) {
+    const el = document.getElementById('dbMeta'); if (!el) return;
+    const a = actualizado instanceof Date ? `${fmt.fecha(actualizado)}, ${actualizado.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}` : actualizado;
+    el.innerHTML = [a && `Actualizado <b>${a}</b>`, periodo && `Periodo <b>${periodo}</b>`, version].filter(Boolean).join(' · ');
+  }
+
+  // Pestañas: .tab[data-p] muestra #p-<id>
+  function tabs(onChange) {
+    const bar = document.querySelector('.tabs'); if (!bar) return;
+    bar.addEventListener('click', e => {
+      const t = e.target.closest('.tab'); if (!t) return;
+      bar.querySelectorAll('.tab').forEach(x => { x.classList.toggle('active', x === t); x.setAttribute('aria-selected', x === t); });
+      document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'p-' + t.dataset.p));
+      if (onChange) onChange(t.dataset.p);
+      balanceKpis();
+    });
+  }
+
+  // Selector segmentado (filtro global): .seg button[data-v]
+  function seg(el, onChange) {
+    el.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return;
+      el.querySelectorAll('button').forEach(x => x.classList.toggle('active', x === b));
+      onChange(b.dataset.v);
+    });
+  }
+
+  // Índice de capítulos fijo (informes): marca el capítulo visible
+  function toc() {
+    const links = [...document.querySelectorAll('.toc a')]; if (!links.length) return;
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+    }), { rootMargin: '-30% 0px -60% 0px' });
+    links.forEach(a => { const s = document.querySelector(a.getAttribute('href')); if (s) io.observe(s); });
+  }
+
+  // Gráfico ampliado: botón arriba a la derecha de cada .card[data-chart="<id del canvas>"] que abre el gráfico en grande.
+  // graficos[id] = { f: () => config de Chart.js, zoom: 'x' | 'y' | 'xy' }. Con chartjs-plugin-zoom cargado: rueda o pellizco y arrastre.
+  function ampliar(graficos) {
+    const svg = p => `<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
+    let scrim = document.querySelector('.scrim');
+    if (!scrim) { scrim = document.createElement('div'); scrim.className = 'scrim'; document.body.appendChild(scrim); }
+    const conZoom = !!(window.Chart && Chart.registry.plugins.get('zoom'));
+    const modal = document.createElement('section');
+    modal.className = 'modal'; modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-modal', 'true'); modal.setAttribute('aria-labelledby', 'dsMTitle');
+    modal.innerHTML = `<div class="modal-head"><div><div class="modal-eyebrow">Gráfico ampliado</div><h3 id="dsMTitle"></h3></div>
+      <div class="modal-tools">${conZoom ? '<button class="btn-sm" type="button" data-reset>Restablecer zoom</button>' : ''}<button class="icon-btn" type="button" data-close aria-label="Cerrar">${svg('<path d="M18 6 6 18"/><path d="m6 6 12 12"/>')}</button></div></div>
+      <div class="modal-body"><canvas></canvas></div>
+      <p class="modal-hint">${conZoom ? 'Rueda del ratón o pellizco para acercar, arrastra para desplazar. ' : ''}Pulsa en la leyenda para ocultar series.</p>`;
+    document.body.appendChild(modal);
+    let chart = null, foco = null;
+    const cerrar = () => {
+      if (!modal.classList.contains('on')) return;
+      modal.classList.remove('on');
+      if (!document.querySelector('.side.on')) scrim.classList.remove('on');
+      if (chart) { chart.destroy(); chart = null; }
+      if (foco && foco.focus) foco.focus(); foco = null;
+    };
+    const abrir = (id, titulo) => {
+      const def = graficos[id]; if (!def) return;
+      if (chart) chart.destroy();
+      foco = document.activeElement;
+      const cfg = def.f(), o = cfg.options = cfg.options || {}, pl = o.plugins = o.plugins || {}, modo = def.zoom || 'x';
+      if (conZoom) pl.zoom = { zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: modo }, pan: { enabled: true, mode: modo } };
+      if (o.onClick) { const f = o.onClick; o.onClick = (e, els, ch) => { if (els.length) { cerrar(); f(e, els, ch); } }; }   // el clic al detalle cierra antes
+      modal.querySelector('h3').textContent = titulo;
+      scrim.classList.add('on'); modal.classList.add('on');
+      chart = new Chart(modal.querySelector('canvas'), cfg);
+      setTimeout(() => modal.querySelector('[data-close]').focus(), 50);   // sigue en visibility:hidden hasta que arranca la transición
+    };
+    modal.querySelector('[data-close]').onclick = cerrar;
+    if (conZoom) modal.querySelector('[data-reset]').onclick = () => chart && chart.resetZoom();
+    scrim.addEventListener('click', cerrar);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrar(); });
+    document.querySelectorAll('.card[data-chart]').forEach(card => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'expand'; b.title = 'Ampliar gráfico'; b.setAttribute('aria-label', 'Ampliar gráfico');
+      b.innerHTML = svg('<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/>');
+      b.onclick = () => abrir(card.dataset.chart, (card.querySelector('h3') || {}).textContent || 'Gráfico');
+      card.appendChild(b);
+    });
+  }
+
+  window.DS = { C, SERIES, fmt, chartDefaults, scales, balanceKpis, setMeta, tabs, seg, toc, ampliar };
+  chartDefaults();
+})();
+
+</script>
+<script>
+
+(function () {
+  'use strict';
+  // Ampliar diagramas SVG. DS.ampliar solo cubre Chart.js, así que el panel se monta aquí
+  // con las clases .scrim, .modal, .modal-head, .modal-body, .expand y .btn-sm de brand-datos.css.
+  // Sin librerías: el zoom y el desplazamiento son un transform sobre un <g> del svg copiado.
+  const NS = 'http://www.w3.org/2000/svg';
+  const ZOOM_MAX = 8;
+  const ICONO_AMPLIAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg>';
+  const ICONO_CERRAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
+
+  // Metadatos de cabecera (obligatorios) e índice de capítulos
+  DS.setMeta({ actualizado: '04 nov 2026', periodo: 'Estado a 04/11/2026', version: 'Versión 1' });
+  DS.toc();
+
+  // Velo: se reutiliza el de DS.ampliar si ya existe
+  let velo = document.querySelector('.scrim');
+  if (!velo) { velo = document.createElement('div'); velo.className = 'scrim'; document.body.appendChild(velo); }
+
+  // Panel: se monta una vez, oculto, y se rellena al abrir
+  const panel = document.createElement('section');
+  panel.className = 'modal';
+  panel.setAttribute('role', 'dialog');
+  panel.setAttribute('aria-modal', 'true');
+  panel.setAttribute('aria-labelledby', 'dgTitulo');
+  panel.innerHTML =
+    '<div class="modal-head"><div><div class="modal-eyebrow">Gráfico ampliado</div><h3 id="dgTitulo"></h3></div>' +
+    '<div class="modal-tools"><button class="btn-sm" type="button" data-reset>Restablecer zoom</button>' +
+    '<button class="icon-btn" type="button" data-close aria-label="Cerrar">' + ICONO_CERRAR + '</button></div></div>' +
+    '<div class="modal-body"></div>' +
+    '<p class="modal-hint">Rueda del ratón o pellizco para acercar. Arrastra para desplazar. Escape cierra.</p>';
+  document.body.appendChild(panel);
+  const titulo = panel.querySelector('h3');
+  const cuerpo = panel.querySelector('.modal-body');
+  const btnCerrar = panel.querySelector('[data-close]');
+  const btnReset = panel.querySelector('[data-reset]');
+
+  // Estado del diagrama abierto
+  let disparador = null;          // botón que abrió el panel, para devolverle el foco
+  let svgCopia = null;            // copia del svg dentro del panel
+  let grupo = null;               // <g> que recibe el zoom y el desplazamiento
+  let k = 1, tx = 0, ty = 0;      // escala y traslación, en unidades del viewBox
+  const punteros = new Map();     // punteros activos (coordenadas del viewBox)
+  let previo = null;              // distancia y punto medio del gesto de dos dedos anterior
+
+  // Pasa un evento de pantalla a coordenadas del viewBox
+  function aUsuario(e) {
+    const pt = svgCopia.createSVGPoint();
+    pt.x = e.clientX; pt.y = e.clientY;
+    return pt.matrixTransform(svgCopia.getScreenCTM().inverse());
+  }
+
+  function aplicar() {
+    grupo.setAttribute('transform', 'translate(' + tx + ' ' + ty + ') scale(' + k + ')');
+  }
+
+  // Acerca o aleja manteniendo fijo el punto (px, py) del viewBox
+  function zoomEn(px, py, factor) {
+    const nk = Math.min(ZOOM_MAX, Math.max(1, k * factor));
+    const r = nk / k;
+    tx = px - r * (px - tx);
+    ty = py - r * (py - ty);
+    k = nk;
+    if (k === 1) { tx = 0; ty = 0; }
+    aplicar();
+  }
+
+  function restablecer() {
+    k = 1; tx = 0; ty = 0;
+    if (grupo) aplicar();
+  }
+
+  // Gesto de dos dedos: desplaza con el punto medio y acerca con la variación de distancia
+  function gesto() {
+    const [a, b] = [...punteros.values()];
+    const d = Math.hypot(a.x - b.x, a.y - b.y);
+    const c = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    if (previo && previo.d > 0) {
+      tx += c.x - previo.c.x;
+      ty += c.y - previo.c.y;
+      zoomEn(c.x, c.y, d / previo.d);
+    }
+    previo = { d: d, c: c };
+  }
+
+  cuerpo.addEventListener('pointerdown', e => {
+    if (!svgCopia) return;
+    cuerpo.setPointerCapture(e.pointerId);
+    punteros.set(e.pointerId, aUsuario(e));
+    previo = null;
+  });
+
+  cuerpo.addEventListener('pointermove', e => {
+    if (!svgCopia || !punteros.has(e.pointerId)) return;
+    const actual = aUsuario(e);
+    const anterior = punteros.get(e.pointerId);
+    punteros.set(e.pointerId, actual);
+    if (punteros.size === 1) {
+      tx += actual.x - anterior.x;
+      ty += actual.y - anterior.y;
+      aplicar();
+    } else if (punteros.size === 2) {
+      gesto();
+    }
+  });
+
+  const soltar = e => {
+    punteros.delete(e.pointerId);
+    previo = null;
+  };
+  cuerpo.addEventListener('pointerup', soltar);
+  cuerpo.addEventListener('pointercancel', soltar);
+
+  // Rueda: zoom centrado en el puntero (no es pasiva para poder evitar el desplazamiento de la página)
+  cuerpo.addEventListener('wheel', e => {
+    if (!svgCopia) return;
+    e.preventDefault();
+    const p = aUsuario(e);
+    zoomEn(p.x, p.y, e.deltaY < 0 ? 1.2 : 1 / 1.2);
+  }, { passive: false });
+
+  function abrir(boton) {
+    const tarjeta = boton.closest('.card[data-diagram]');
+    const original = tarjeta && tarjeta.querySelector('.diagram > svg');
+    if (!original) return;
+    disparador = boton;
+
+    // Copia del svg que ocupa el panel; su contenido va dentro de un <g> para poder moverlo
+    svgCopia = original.cloneNode(true);
+    svgCopia.removeAttribute('width');
+    svgCopia.removeAttribute('height');
+    svgCopia.removeAttribute('style');
+    svgCopia.style.width = '100%';
+    svgCopia.style.height = '100%';
+    svgCopia.style.display = 'block';
+    grupo = document.createElementNS(NS, 'g');
+    while (svgCopia.firstChild) grupo.appendChild(svgCopia.firstChild);
+    svgCopia.appendChild(grupo);
+
+    cuerpo.replaceChildren(svgCopia);
+    cuerpo.style.touchAction = 'none';
+    cuerpo.style.cursor = 'grab';
+    punteros.clear();
+    previo = null;
+    restablecer();
+
+    const h3 = tarjeta.querySelector('h3');
+    titulo.textContent = h3 ? h3.textContent : 'Diagrama';
+    velo.classList.add('on');
+    panel.classList.add('on');
+    // Se enfoca tras el arranque de la transición, porque hasta entonces el panel está oculto
+    setTimeout(() => btnCerrar.focus(), 50);
+  }
+
+  function cerrar() {
+    if (!panel.classList.contains('on')) return;
+    panel.classList.remove('on');
+    velo.classList.remove('on');
+    cuerpo.replaceChildren();
+    cuerpo.style.touchAction = '';
+    cuerpo.style.cursor = '';
+    svgCopia = null;
+    grupo = null;
+    punteros.clear();
+    previo = null;
+    if (disparador) disparador.focus();
+    disparador = null;
+  }
+
+  btnCerrar.addEventListener('click', cerrar);
+  btnReset.addEventListener('click', restablecer);
+  velo.addEventListener('click', cerrar);
+
+  // Escape cierra; Tab no sale del panel mientras está abierto
+  document.addEventListener('keydown', e => {
+    if (!panel.classList.contains('on')) return;
+    if (e.key === 'Escape') { cerrar(); return; }
+    if (e.key === 'Tab') {
+      const botones = [btnReset, btnCerrar];
+      const i = botones.indexOf(document.activeElement);
+      e.preventDefault();
+      botones[(i + (e.shiftKey ? botones.length - 1 : 1)) % botones.length].focus();
+    }
+  });
+
+  // Botón de ampliar en cada tarjeta de diagrama, con el mismo icono y atributos que DS.ampliar
+  document.querySelectorAll('.card[data-diagram]').forEach(tarjeta => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'expand';
+    b.title = 'Ampliar diagrama';
+    b.setAttribute('aria-label', 'Ampliar diagrama');
+    b.innerHTML = ICONO_AMPLIAR;
+    b.addEventListener('click', () => abrir(b));
+    tarjeta.appendChild(b);
+  });
+})();
+
+</script>
+</body>
+</html>
