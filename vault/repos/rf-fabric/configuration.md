@@ -68,7 +68,7 @@ Resumen de `reporting-financiero/docs/flujo-fabric.md` (leer el original para lo
 - `main` solo recibe definiciones ya publicadas y validadas en Fabric, por merge `--no-ff`.
 - Flujo A, el cambio se hace en Fabric: exportar con `exportar_fabric.py`, revisar, commit y merge en `main`. Después, `exportar_fabric.py --comprobar main` debe dar 0.
 - Flujo B, el cambio se prepara en el repositorio: editar `fabric/<Item>/`, simular con `publicar_fabric.py` (sin `--confirmar`), publicar con confirmación explícita, validar en Fabric, exportar y volver a `main`.
-- Rollback: localizar el commit de `main` que tiene la versión buena y publicarlo con `--ref <commit>`. `publicar_fabric.py` solo actualiza items existentes; no crea ni borra items, no publica vistas SQL ni cambia tablas. Publicar la definición no restaura datos.
+- Rollback: localizar el commit de `main` que tiene la versión buena y publicarlo con `--ref <commit>`. `publicar_fabric.py` actualiza los items existentes; crea los que faltan solo con `--crear` y publica las vistas SQL de `fabric/sql/` (`CREATE VIEW` si es nueva, `CREATE OR ALTER VIEW` si ya existe). Nunca borra items ni vistas. Publicar la definición no restaura datos.
 - Las User Data Functions no se versionan: llevan un secreto incrustado.
 
 ## Evidence
