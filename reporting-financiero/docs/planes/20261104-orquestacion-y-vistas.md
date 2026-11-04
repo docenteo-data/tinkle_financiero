@@ -86,6 +86,8 @@ Mismas filas en las 9 tablas y la misma cifra de control de `300.Fact_Actuals` (
 
 ### Tarea 3: Generar_salidas (04/11/2026)
 
+Destino de la copia "a SharePoint" (de "Grabar salidas" y de `Generar_salidas`): la conexión "SharePoint reporting" apunta al OneDrive para la Empresa de la cuenta `reporting@likuit.com`, no a un sitio de equipo de Finanzas (consultado en la API de conexiones de Fabric el 04/11/2026). Con el acceso actual, Microsoft Graph no deja leer esa carpeta desde aquí.
+
 Notebook publicado y `Generar_salidas` creado (`983f7eb`, exportación sin cambios de contenido en `009f11f`). Pruebas en Fabric:
 
 | Prueba | Resultado | Ficheros escritos |
