@@ -1,0 +1,53 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "name": "Ingesta_datos",
+        "type": "ExecutePipeline",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "8eb0c2ee-0848-4caa-a30e-632663d69a9d",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {}
+        }
+      },
+      {
+        "name": "Transformacion_datos",
+        "type": "ExecutePipeline",
+        "dependsOn": [
+          {
+            "activity": "Ingesta_datos",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "pipeline": {
+            "referenceName": "443f4608-28f6-4f51-b42d-15c3e8e08378",
+            "type": "PipelineReference"
+          },
+          "waitOnCompletion": true,
+          "parameters": {}
+        }
+      }
+    ]
+  }
+}

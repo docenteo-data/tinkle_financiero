@@ -110,6 +110,52 @@ def esperar_operacion(cabeceras, tok, con_resultado):
     raise TimeoutError(operacion)
 
 
+ESTADOS_FINALES_JOB = ("Completed", "Failed", "Cancelled", "Deduped")
+
+
+def leer_parametros(lista: list[str]) -> dict[str, str]:
+    """Convierte ["clave=valor", ...] en {clave: valor}. Se parte por el primer "=".
+
+    ValueError si un elemento no tiene "=" o si la clave, sin espacios alrededor, queda vacía.
+    """
+    parametros = {}
+    for elemento in lista:
+        clave, separador, valor = elemento.partition("=")
+        clave = clave.strip()
+        if not separador or not clave:
+            raise ValueError("Parámetro mal formado (se espera clave=valor): " + ascii(elemento))
+        parametros[clave] = valor
+    return parametros
+
+
+def lanzar_pipeline(item, tok, parametros) -> str:
+    """Lanza el pipeline `item` con `parametros` y devuelve la URL de la instancia del job.
+
+    RuntimeError con el estado HTTP si la respuesta no es 202 o no trae la cabecera Location.
+    """
+    url = f"{API}/workspaces/{WORKSPACE_ID}/items/{item['id']}/jobs/instances?jobType=Pipeline"
+    estado, cabeceras, _ = peticion("POST", url, tok, {"executionData": {"parameters": parametros}})
+    if estado != 202 or "Location" not in cabeceras:
+        raise RuntimeError(f"No se pudo lanzar el pipeline (estado {estado}).")
+    return cabeceras["Location"]
+
+
+def esperar_job(url, tok, intervalo=20, max_segundos=10800, dormir=time.sleep) -> dict:
+    """Consulta el job hasta que alcanza un estado final y devuelve su cuerpo.
+
+    TimeoutError(url) si el tiempo esperado acumulado superaría max_segundos.
+    """
+    esperado = 0
+    while True:
+        _, _, cuerpo = peticion("GET", url, tok)
+        if cuerpo["status"] in ESTADOS_FINALES_JOB:
+            return cuerpo
+        if esperado + intervalo > max_segundos:
+            raise TimeoutError(url)
+        dormir(intervalo)
+        esperado += intervalo
+
+
 def items(tok):
     return peticion("GET", f"{API}/workspaces/{WORKSPACE_ID}/items", tok)[2]["value"]
 
@@ -150,6 +196,21 @@ def publicar_definicion(item, ficheros, tok):
         definicion["format"] = formato
     url = f"{API}/workspaces/{WORKSPACE_ID}/items/{item['id']}/updateDefinition"
     estado, cabeceras, _ = peticion("POST", url, tok, {"definition": definicion})
+    if estado == 202:
+        esperar_operacion(cabeceras, tok, con_resultado=False)
+
+
+def crear_item(nombre, tipo, ficheros, tok):
+    """Crea en el workspace un item nuevo con la definición dada (sin el .platform, igual que al publicar).
+
+    Espera a que termine si Fabric responde con una operación asíncrona (202).
+    """
+    definicion = {"parts": partes_para_publicar(ficheros)}
+    formato = FORMATOS[tipo]
+    if formato:
+        definicion["format"] = formato
+    url = f"{API}/workspaces/{WORKSPACE_ID}/items"
+    estado, cabeceras, _ = peticion("POST", url, tok, {"displayName": nombre, "type": tipo, "definition": definicion})
     if estado == 202:
         esperar_operacion(cabeceras, tok, con_resultado=False)
 
@@ -251,6 +312,50 @@ def descargar_sql():
     columnas = cursor.fetchall()
     con.close()
     return ficheros_sql(vistas, columnas)
+
+
+def vista_de_ruta(ruta: str) -> tuple[str, str]:
+    """Devuelve (esquema, vista) de una ruta como "sql/300.vw_A.sql". ValueError si no tiene ese formato."""
+    casa = re.fullmatch(r"sql/(100|200|300)\.(\w+)\.sql", ruta, re.ASCII)
+    if not casa:
+        raise ValueError("Ruta de vista no válida (se espera sql/100|200|300.nombre.sql): " + ascii(ruta))
+    return casa.group(1), casa.group(2)
+
+
+def sentencia_de_vista(ruta: str, contenido: bytes, existe: bool) -> str:
+    """Prepara la sentencia que publica una vista.
+
+    Rechaza el contenido si tiene una línea GO o si no es la creación de la vista de la ruta.
+    Si la vista ya existe en Fabric, cambia CREATE VIEW por CREATE OR ALTER VIEW.
+    """
+    esquema, vista = vista_de_ruta(ruta)
+    texto = contenido.decode("utf-8")
+    for linea in texto.splitlines():
+        if linea.strip().lower() == "go":
+            raise ValueError("El fichero " + ascii(ruta) + " contiene una línea GO: no se admite.")
+    patron = re.compile(
+        r"\s*CREATE\s+VIEW\s+" + re.escape(f"[{esquema}].[{vista}]"), re.IGNORECASE
+    )
+    casa = patron.match(texto)
+    if not casa:
+        raise ValueError(
+            "El fichero " + ascii(ruta) + " no crea la vista [" + esquema + "].[" + vista + "] al principio."
+        )
+    if not existe:
+        return texto
+    return f"CREATE OR ALTER VIEW [{esquema}].[{vista}]" + texto[casa.end():]
+
+
+def publicar_vista(sentencia: str) -> None:
+    """Ejecuta la sentencia en el SQL endpoint del lakehouse y confirma el cambio."""
+    con = conectar_sql()
+    try:
+        cursor = con.cursor()
+        cursor.execute(sentencia)
+        con.commit()
+    finally:
+        con.close()
+
 
 def es_consulta_de_lectura(sql):
     """True si la sentencia empieza por SELECT o WITH y no contiene ninguna palabra de escritura.

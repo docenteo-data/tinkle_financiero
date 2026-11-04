@@ -40,9 +40,12 @@ CLAUDE.md para la sesión principal.
 
 ## Sistemas del cliente
 
-- Leer por API, sí. Ejecutar, publicar o refrescar pipelines, modelos o
-  informes, no: eso lo hace una persona del equipo. Subir una definición solo si
-  la tarea lo pide.
+- Leer por API, sí. Publicar definiciones (`publicar_fabric.py`) y ejecutar
+  pipelines (`ejecutar_fabric.py`) solo la sesión principal, con `--confirmar` y
+  la confirmación explícita del usuario justo antes, en cada ejecución. Un
+  subagente nunca escribe ni ejecuta en Fabric. Refrescar modelos fuera de un
+  pipeline, publicar la app o cambiar permisos lo hace una persona del equipo.
+  Subir una definición solo si la tarea lo pide.
 
 ## Tests
 

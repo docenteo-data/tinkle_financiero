@@ -1,4 +1,4 @@
-CREATE   VIEW [200].[vw_Export_Saldos_4_7]
+CREATE   VIEW [300].[vw_Export_Saldos_4_7]
 AS
 
 WITH UltimoPeriodo AS

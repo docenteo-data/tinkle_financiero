@@ -20,13 +20,15 @@ El workspace es el único entorno del cliente: no hay desarrollo ni pruebas sepa
 | Datos: filas, recuentos, cuadres de cifras | `consultar_sql.py` (solo SELECT y WITH) | No |
 | Traer al repositorio lo publicado en Fabric | `exportar_fabric.py` | No |
 | Publicar un cambio preparado en el repositorio, o volver a una versión anterior | `publicar_fabric.py` (simulación por defecto, `--confirmar` para publicar) | Sí |
-| Ejecutar pipelines, refrescar modelos, publicar la app, cambiar permisos | Una persona del equipo, en el portal | Sí |
+| Ejecutar un pipeline y esperar a que termine | `ejecutar_fabric.py` (simulación por defecto, `--confirmar` para lanzar; parámetros con `--parametro clave=valor`) | Sí |
+| Refrescar modelos fuera de un pipeline, publicar la app, cambiar permisos | Una persona del equipo, en el portal | Sí |
 | Código de las User Data Functions | Ninguna: llevan un secreto incrustado | |
 
 Reglas:
 
 - La lógica se lee primero en `fabric/`, no en Fabric. Si hay que asegurarse de que está vigente, `exportar_fabric.py --comprobar main`.
-- Las herramientas del MCP que escriben (crear, actualizar o borrar items, workspaces, shortcuts o ficheros, ejecutar pipelines) están bloqueadas en `.claude/settings.json`. Para escribir solo se usa `publicar_fabric.py`.
+- Las herramientas del MCP que escriben (crear, actualizar o borrar items, workspaces, shortcuts o ficheros, ejecutar pipelines) están bloqueadas en `.claude/settings.json`. Para escribir solo se usa `publicar_fabric.py`, y para ejecutar pipelines, `ejecutar_fabric.py`.
+- Comprobar una ejecución: `ejecutar_fabric.py` espera al job que lanza y devuelve su estado final. Ojo con el historial de jobs de un pipeline (`GET .../items/{id}/jobs/instances`): solo lista las ejecuciones lanzadas directamente, no las que lanza otro pipeline con `ExecutePipeline`. Para saber si un hijo se ejecutó dentro de un flujo, mira el flujo en el portal (Supervisión) o las tablas que escribe (versiones Delta, recuentos).
 - `fabric-local` no devuelve definiciones de items ni ejecuta SQL: para eso están los ficheros de `fabric/` y `consultar_sql.py`.
 - El MCP remoto `fabric` y GitHub Copilot no forman parte del flujo.
 
@@ -61,7 +63,7 @@ Fabric, el MCP `fabric-local` y los scripts usan la cuenta por defecto de Azure 
 1. En la rama de trabajo (`feature/<nombre-corto>`), editar los ficheros de `fabric/<Item>/` (TMDL, M, JSON del pipeline o del informe) y hacer commit. Es reversible con git y no toca Fabric.
 2. `publicar_fabric.py "<Item>" --ref <rama>` (simulación). Comprueba la cuenta y que Fabric coincide con `main` en esos items, y dice qué cambiaría. Código 1: Fabric ha cambiado desde `main`; hacer antes el flujo A e integrar esos cambios en la rama.
 3. Publicar: `publicar_fabric.py "<Item>" --ref <rama> --confirmar`. Requiere la confirmación explícita de la persona en ese momento, item a item, y que no haya nadie cambiando esos items en Fabric.
-4. Refrescar o ejecutar en Fabric lo que haga falta para validar (lo hace una persona) y comprobar las cifras de control.
+4. Ejecutar en Fabric lo que haga falta para validar (`ejecutar_fabric.py ... --confirmar`, con la confirmación explícita de la persona en ese momento) y comprobar las cifras de control.
 5. `exportar_fabric.py` y `git diff`: lo que devuelve Fabric puede diferir en detalles de formato de lo editado. Commit de esos ajustes.
 6. Merge `--no-ff` en `main`, preguntando antes. Push solo tras pedir aprobación justo antes (sección 4, paso 1).
 7. `exportar_fabric.py --comprobar main` debe dar 0.
@@ -75,7 +77,7 @@ Para volver un item a como estaba en un commit anterior de `main`:
 3. Con confirmación de la persona: `publicar_fabric.py "<Item>" --ref <commit> --confirmar`.
 4. Validar en Fabric, exportar y commit (`revert(fabric): <Item> a <commit> porque ...`). Merge en `main`.
 
-`publicar_fabric.py` solo actualiza items que ya existen: no crea ni borra items. Tampoco publica las vistas SQL de `fabric/sql/` ni cambia tablas: eso se hace en el portal (flujo A) y la exportación lo trae al repositorio. Un item nuevo se crea en el portal (flujo A) y desde ese momento se versiona como los demás. Publicar la definición no restaura datos: si el cambio afectó a tablas del lakehouse, hay que volver a ejecutar las cargas.
+`publicar_fabric.py` actualiza los items que ya existen y, solo con `--crear`, crea los que están en el repo pero no en Fabric (por ejemplo, un pipeline nuevo preparado en la rama). Nunca borra items. Las vistas SQL de `fabric/sql/` sí las publica, pasando la ruta (`"sql/300.vw_Export_Grupo.sql"`): las crea si no existen y las actualiza si existen, con las mismas comprobaciones que los items (simulación por defecto, Fabric igual que `--base`); un rollback de una vista es publicar su fichero de un commit anterior. No borra vistas ni cambia tablas: eso se hace en el portal (flujo A) y la exportación lo trae al repositorio. Un item nuevo se puede crear en el portal (flujo A) o desde el repositorio con `--crear` (flujo B); desde ese momento se versiona como los demás. Publicar la definición no restaura datos: si el cambio afectó a tablas del lakehouse, hay que volver a ejecutar las cargas.
 
 ## 7. Consultas SQL
 

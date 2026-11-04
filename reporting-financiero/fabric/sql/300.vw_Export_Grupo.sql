@@ -1,4 +1,4 @@
-CREATE   VIEW [200].[vw_Export_Grupo]
+CREATE   VIEW [300].[vw_Export_Grupo]
 AS
 
 WITH UltimoPeriodo AS
