@@ -252,6 +252,50 @@ def descargar_sql():
     con.close()
     return ficheros_sql(vistas, columnas)
 
+
+def vista_de_ruta(ruta: str) -> tuple[str, str]:
+    """Devuelve (esquema, vista) de una ruta como "sql/300.vw_A.sql". ValueError si no tiene ese formato."""
+    casa = re.fullmatch(r"sql/(100|200|300)\.(\w+)\.sql", ruta, re.ASCII)
+    if not casa:
+        raise ValueError("Ruta de vista no válida (se espera sql/100|200|300.nombre.sql): " + ascii(ruta))
+    return casa.group(1), casa.group(2)
+
+
+def sentencia_de_vista(ruta: str, contenido: bytes, existe: bool) -> str:
+    """Prepara la sentencia que publica una vista.
+
+    Rechaza el contenido si tiene una línea GO o si no es la creación de la vista de la ruta.
+    Si la vista ya existe en Fabric, cambia CREATE VIEW por CREATE OR ALTER VIEW.
+    """
+    esquema, vista = vista_de_ruta(ruta)
+    texto = contenido.decode("utf-8")
+    for linea in texto.splitlines():
+        if linea.strip().lower() == "go":
+            raise ValueError("El fichero " + ascii(ruta) + " contiene una línea GO: no se admite.")
+    patron = re.compile(
+        r"\s*CREATE\s+VIEW\s+" + re.escape(f"[{esquema}].[{vista}]"), re.IGNORECASE
+    )
+    casa = patron.match(texto)
+    if not casa:
+        raise ValueError(
+            "El fichero " + ascii(ruta) + " no crea la vista [" + esquema + "].[" + vista + "] al principio."
+        )
+    if not existe:
+        return texto
+    return f"CREATE OR ALTER VIEW [{esquema}].[{vista}]" + texto[casa.end():]
+
+
+def publicar_vista(sentencia: str) -> None:
+    """Ejecuta la sentencia en el SQL endpoint del lakehouse y confirma el cambio."""
+    con = conectar_sql()
+    try:
+        cursor = con.cursor()
+        cursor.execute(sentencia)
+        con.commit()
+    finally:
+        con.close()
+
+
 def es_consulta_de_lectura(sql):
     """True si la sentencia empieza por SELECT o WITH y no contiene ninguna palabra de escritura.
 
