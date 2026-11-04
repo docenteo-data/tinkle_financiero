@@ -35,7 +35,7 @@ CLAUDE.md para la sesión principal.
   no aplica a ningún fichero.
 - Todo lo visual (HTML, CSS, gráficos, Word, PowerPoint, Excel) se hace con la
   skill `docenteo-design`: cárgala antes de escribir el primer archivo.
-- Python: el `.venv` del proyecto (`<proyecto>/.venv/Scripts/python.exe`),
+- Python: el `.venv` del proyecto (`reporting-financiero/.venv/Scripts/python.exe`),
   nunca el del sistema.
 
 ## Sistemas del cliente

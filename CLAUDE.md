@@ -6,29 +6,35 @@ hasta necesitar más.
 
 ## Qué es este repo
 
-Repositorio del cliente Tinkle en la organización Docenteo de GitHub.
-Contiene uno o varios proyectos, cada uno en su subdirectorio con su propio
-entorno virtual y sus dependencias:
-
-- `reporting-financiero/` - Reporting financiero. Activo.
+Repositorio del cliente Tinkle en la organización Docenteo de GitHub. Todo el
+repositorio es un único proyecto, el reporting financiero de Tinkle; su código,
+su entorno virtual y su documentación están en `reporting-financiero/`.
 
 ## Ramas y commits
 
-- Una rama permanente por proyecto, con el nombre exacto de su carpeta. Todo el
-  trabajo del proyecto va ahí: no abras ramas por tarea. Antes de tocar nada,
-  comprueba la rama con `git branch --show-current`.
-- Lo transversal (vault, CLAUDE.md, AGENTS.md, convenciones) va directo a `main`.
-- El trabajo se distingue por el commit: conventional en español con prefijo de
-  trabajo (`feat(<trabajo>): ...`, `fix(...)`, `docs(...)`). Un commit no toca
-  dos proyectos a la vez.
-- Commit en la misma sesión tras cada cambio no trivial. Etiqueta al cerrar un
-  trabajo.
+- `main` refleja lo publicado en Fabric y el trabajo cerrado. En `main`
+  directamente solo se hacen el refresco del vault y los cambios de
+  convenciones (CLAUDE.md, AGENTS.md, `.claude/`).
+- Cada línea de trabajo tiene su rama, creada desde `main` al día:
+  `feature/<nombre-corto>` (por ejemplo `feature/orquestacion-y-vistas`). Antes
+  de tocar nada, comprueba la rama con `git branch --show-current`.
+- Lo que se publica en Fabric sale de la rama de trabajo
+  (`publicar_fabric.py --ref <rama>`). Tras validarlo en Fabric se exporta a la
+  misma rama, y la rama se integra en `main`.
+- `vault/` no se toca en las ramas de trabajo: se refresca en `main` después de
+  integrar (ver "Mantenimiento del vault"). Excepciones: los ADR escritos a mano
+  (`vault/adrs/`), que viajan con la rama que toma la decisión, y la
+  configuración del vault (`vault/.ralphvault/config.json` y los `source_globs`).
+- Commits conventional en español con prefijo de trabajo
+  (`feat(<trabajo>): ...`, `fix(...)`, `docs(...)`), tras cada cambio no trivial.
+- `main` solo recibe líneas de trabajo cerradas, con merge `--no-ff`, y nunca
+  por iniciativa propia: pregunta antes de integrar. Al cerrar: merge,
+  etiqueta, refresco del vault y borrado de la rama (local y remota, con
+  aprobación).
 - Push: nunca sin pedir aprobación al usuario justo antes, en cada push. Di qué
   ramas y qué commits se suben y espera su sí. Una aprobación anterior, o una
   frase general como "habrá que hacer push", no cuenta para el siguiente push.
-- `main` solo recibe ciclos cerrados, con merge `--no-ff`, y nunca por iniciativa
-  propia: pregunta antes de integrar.
-- Worktree solo si otra sesión trabaja a la vez en el mismo proyecto.
+- Worktree solo si otra sesión trabaja a la vez en el mismo clon.
 
 ## Modo de trabajo
 
@@ -36,14 +42,20 @@ entorno virtual y sus dependencias:
   cerrado y contexto mínimo: di qué leer por ruta exacta, qué producir y en qué
   formato corto.
 - Un plan por fases se escribe con `superpowers:writing-plans` en
-  `<proyecto>/docs/planes/AAAAMMDD-nombre.md` y el usuario lo aprueba antes de
-  ejecutarlo.
-- El plan aprobado no lo ejecuta la sesión principal: sus tareas van a
-  subagentes Haiku, uno por fichero y entregable (skill
-  `superpowers:subagent-driven-development`). La sesión principal reparte y
-  valida cada fase ejecutando sus checks antes de pasar a la siguiente y de
-  commitear, porque el autoinforme del subagente no es prueba. Si una fase no
-  sale en Haiku, se parte, no se sube de modelo.
+  `reporting-financiero/docs/planes/AAAAMMDD-nombre.md`, en la rama de su línea
+  de trabajo, y el usuario lo aprueba antes de ejecutarlo.
+- Roles y modelos:
+  - Sesión principal (Opus): diseño, plan, reparto de tareas, revisión de cada
+    tarea, commits, push y publicación en Fabric.
+  - Implementadores (Haiku): un subagente por tarea del plan, uno por fichero y
+    entregable (skill `superpowers:subagent-driven-development`). Sin commit.
+  - Revisores de tarea y revisión final (Opus). Búsquedas de solo lectura
+    (Haiku).
+  - Vault: skill `refresco-vault` (un subagente Haiku por unidad, un juez Opus
+    por unidad, correcciones con Haiku).
+- La sesión principal valida cada fase ejecutando sus checks antes de pasar a
+  la siguiente y de commitear, porque el autoinforme del subagente no es
+  prueba. Si una tarea no sale en Haiku, se parte, no se sube de modelo.
 - Persiste solo conocimiento reutilizable: el del proyecto va al vault; los
   hechos durables meta (decisiones, preferencias, punteros) van a memoria. El
   código es la fuente de verdad; no lo dupliques en vault ni en memoria.
@@ -59,27 +71,30 @@ carga ante cualquier duda:
 
 1. `vault/README.md` (tier 0, punto de entrada).
 2. `vault/index/README.md` (índice cruzado).
-3. `vault/agent-context/repo-cards/<proyecto>.md` (tier 1, tarjeta resumen).
-4. Solo si hace falta más: `vault/repos/<proyecto>/*.md` o `vault/domains/*.md`.
+3. `vault/agent-context/repo-cards/<unidad>.md` (tier 1, tarjeta resumen; unidades `rf-fabric` y `rf-scripts`).
+4. Solo si hace falta más: `vault/repos/<unidad>/*.md` o `vault/domains/*.md`.
 
 No leas código, notebooks o docs salvo que la tarea lo pida o el vault no lo
 cubra. El código y `docs/` son canónicos si el vault está desactualizado.
 
 ## Mantenimiento del vault
 
-Tras un cambio no trivial en un proyecto documentado, corre el check desde la
-raíz del repo y resincroniza si sale STALE (`gv.py plan --stale` y el bucle).
-La skill ralph-vault llega por plugin: su ruta la da la propia skill al cargarse.
+Paso obligatorio: quien integra en `main` un cambio de
+`reporting-financiero/` corre el check en `main` justo después y, si alguna
+unidad sale STALE, refresca el vault en ese momento con la skill
+`refresco-vault` (`.claude/skills/refresco-vault/`), antes de dar el trabajo por
+terminado. Alternativa en serie: `gv.py plan --stale` y el bucle ralph. La
+skill ralph-vault llega por plugin: su ruta la da la propia skill al cargarse.
 
-    "<proyecto>/.venv/Scripts/python.exe" "<skill ralph-vault>/scripts/gv.py" --vault vault check
+    "reporting-financiero/.venv/Scripts/python.exe" "<skill ralph-vault>/scripts/gv.py" --vault vault check
 
 ## Convenciones
 
-- Un entorno virtual por proyecto (`<proyecto>/.venv`), nunca uno compartido.
+- Un único entorno virtual, `reporting-financiero/.venv`; nunca el de sistema.
 - Los datos NO se versionan (ver `.gitignore`): se regeneran con scripts.
 - `docs/` es para el equipo: planteamiento, planes, guías, reuniones. `vault/`
   es la fuente de conocimiento del agente. No mezcles una cosa con la otra.
-- Glosario del dominio en `<proyecto>/CONTEXT.md`, poblado con la skill
+- Glosario del dominio en `reporting-financiero/CONTEXT.md`, poblado con la skill
   grill-with-docs antes de escribir código.
 - Idioma español con ortografía completa: la ñ, las tildes y la ü son
   obligatorias en documentos, comentarios, commits y mensajes. Sin emojis, sin
@@ -120,4 +135,6 @@ la nota de cómo regenerarlos).
   extractos en OneDrive (ver `reporting-financiero/README.md`).
 - Las UDF de Fabric tienen un secreto incrustado pendiente de rotar (ver
   `reporting-financiero/docs/contexto/Documentacion_Tinkle_Financiero.md`):
-  nunca se copia su valor a ningún archivo ni mensaje.
+  nunca se copia su valor a ningún archivo versionado ni mensaje. La única
+  copia permitida es el respaldo de su código en `.secretos/udf/` (ignorado por
+  Git), hasta que el secreto salga de las UDF y estas se versionen.

@@ -6,8 +6,8 @@ El workspace es el único entorno del cliente: no hay desarrollo ni pruebas sepa
 
 ## 1. Qué representa cada rama
 
-- `main` refleja lo publicado en Fabric. Solo recibe definiciones que ya están publicadas y validadas en Fabric, por merge `--no-ff` desde la rama del proyecto.
-- `reporting-financiero` es la rama de trabajo: cambios preparados en el repositorio que aún no están en Fabric, y exportaciones pendientes de integrar en `main`.
+- `main` refleja lo publicado en Fabric. Solo recibe definiciones que ya están publicadas y validadas en Fabric, por merge `--no-ff` desde la rama de trabajo que lo publicó (la rama del proyecto.
+- Cada línea de trabajo tiene su rama (`feature/<nombre-corto>`, creada desde `main`): cambios preparados en el repositorio que aún no están en Fabric, y exportaciones pendientes de integrar en `main`.
 - Cada commit de `main` es un punto al que se puede volver con un rollback (sección 6).
 
 ## 2. Qué vía usar para cada cosa
@@ -41,7 +41,7 @@ Fabric, el MCP `fabric-local` y los scripts usan la cuenta por defecto de Azure 
 ## 4. Al empezar a trabajar
 
 1. `git fetch` y `git log HEAD..origin/main --oneline`. Si hay commits nuevos, se dice a la persona y se le sugiere integrarlos. Nunca `git pull` sin su confirmación. Nunca `git push` sin pedir aprobación a la persona justo antes, en cada push: se le dice qué ramas y qué commits se suben y se espera su sí; una aprobación anterior no vale para el siguiente.
-2. `git branch --show-current`: se trabaja en `reporting-financiero`.
+2. `git branch --show-current`: se trabaja en la rama de la línea de trabajo (`feature/<nombre-corto>`), nunca directamente en `main`.
 3. Comprobar la cuenta (sección 3).
 4. `exportar_fabric.py --comprobar main`. Código 0: Fabric coincide con `main`. Código 1: alguien ha cambiado Fabric sin pasarlo al repositorio; antes de nada, flujo A desde el paso 3.
 
@@ -51,16 +51,16 @@ Fabric, el MCP `fabric-local` y los scripts usan la cuenta por defecto de Azure 
 
 1. Lo hace una persona del equipo.
 2. Se valida en Fabric (informe, refresco, cifras de control).
-3. `exportar_fabric.py` en `reporting-financiero`.
+3. `exportar_fabric.py` en una rama de trabajo (`feature/<nombre-corto>`) creada desde `main`.
 4. Revisar `git status` y `git diff`: solo deben aparecer los items tocados. Commit: `feat(fabric): ...` o `fix(fabric): ...`, con qué cambia y por qué.
 5. Merge `--no-ff` en `main`, preguntando antes. Push solo tras pedir aprobación justo antes (sección 4, paso 1).
 6. `exportar_fabric.py --comprobar main` debe dar 0.
 
 ### Flujo B: el cambio se prepara en el repositorio (con IA)
 
-1. En `reporting-financiero`, editar los ficheros de `fabric/<Item>/` (TMDL, M, JSON del pipeline o del informe) y hacer commit. Es reversible con git y no toca Fabric.
-2. `publicar_fabric.py "<Item>" --ref reporting-financiero` (simulación). Comprueba la cuenta y que Fabric coincide con `main` en esos items, y dice qué cambiaría. Código 1: Fabric ha cambiado desde `main`; hacer antes el flujo A e integrar esos cambios en la rama.
-3. Publicar: `publicar_fabric.py "<Item>" --ref reporting-financiero --confirmar`. Requiere la confirmación explícita de la persona en ese momento, item a item, y que no haya nadie cambiando esos items en Fabric.
+1. En la rama de trabajo (`feature/<nombre-corto>`), editar los ficheros de `fabric/<Item>/` (TMDL, M, JSON del pipeline o del informe) y hacer commit. Es reversible con git y no toca Fabric.
+2. `publicar_fabric.py "<Item>" --ref <rama>` (simulación). Comprueba la cuenta y que Fabric coincide con `main` en esos items, y dice qué cambiaría. Código 1: Fabric ha cambiado desde `main`; hacer antes el flujo A e integrar esos cambios en la rama.
+3. Publicar: `publicar_fabric.py "<Item>" --ref <rama> --confirmar`. Requiere la confirmación explícita de la persona en ese momento, item a item, y que no haya nadie cambiando esos items en Fabric.
 4. Refrescar o ejecutar en Fabric lo que haga falta para validar (lo hace una persona) y comprobar las cifras de control.
 5. `exportar_fabric.py` y `git diff`: lo que devuelve Fabric puede diferir en detalles de formato de lo editado. Commit de esos ajustes.
 6. Merge `--no-ff` en `main`, preguntando antes. Push solo tras pedir aprobación justo antes (sección 4, paso 1).

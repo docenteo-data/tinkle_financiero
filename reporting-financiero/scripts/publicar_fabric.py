@@ -5,9 +5,9 @@ Escribe en el workspace del cliente, que no tiene entorno de pruebas: lo ejecuta
 equipo, o el agente solo con su confirmación explícita en ese momento.
 
 Uso, desde la raíz del repositorio:
-    python reporting-financiero/scripts/publicar_fabric.py "Financial Model.SemanticModel" --ref reporting-financiero
+    python reporting-financiero/scripts/publicar_fabric.py "Financial Model.SemanticModel" --ref feature/mi-cambio
         Simulación: comprueba la cuenta y que Fabric coincide con main en esos items, y dice qué publicaría.
-    python reporting-financiero/scripts/publicar_fabric.py "Financial Model.SemanticModel" --ref reporting-financiero --confirmar
+    python reporting-financiero/scripts/publicar_fabric.py "Financial Model.SemanticModel" --ref feature/mi-cambio --confirmar
         Publica.
     python reporting-financiero/scripts/publicar_fabric.py "TRANS_Gold.Dataflow" --ref <commit anterior> --confirmar
         Rollback de un item a un commit anterior.

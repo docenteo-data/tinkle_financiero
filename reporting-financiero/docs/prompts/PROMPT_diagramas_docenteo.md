@@ -8,7 +8,7 @@ Quiero generar (o regenerar) los diagramas de arquitectura de `reporting-financi
 
 ## 0. El repositorio refleja Fabric
 
-1. Lee `CLAUDE.md` y `AGENTS.md` de la raíz del repo y `reporting-financiero/docs/flujo-fabric.md`, y haz los pasos de su sección 4 (rama `reporting-financiero`, cuenta de Azure CLI). Si `main` tiene commits que la rama no tiene (por ejemplo, del vault), propón integrarlos en la rama antes de seguir.
+1. Lee `CLAUDE.md` y `AGENTS.md` de la raíz del repo y `reporting-financiero/docs/flujo-fabric.md`, y haz los pasos de su sección 4 (cuenta de Azure CLI). Trabaja en una rama `feature/diagramas` creada desde `main` al día.
 2. Pregúntame: "¿Sabes si la copia de Fabric del repositorio está al día con el workspace?". Según la respuesta:
    - "Sí" o "no lo sé": ejecuta `reporting-financiero/.venv/Scripts/python.exe reporting-financiero/scripts/exportar_fabric.py --comprobar main`. Código 0: sigue. Código 1: pasa al caso siguiente.
    - "No", o la comprobación da código 1: trae Fabric al repositorio con el flujo A de `flujo-fabric.md` desde el paso 3 (`exportar_fabric.py`, revisar `git diff`, commit, merge `--no-ff` en `main` preguntando antes). Al terminar, `--comprobar main` debe dar 0.
@@ -16,7 +16,7 @@ Quiero generar (o regenerar) los diagramas de arquitectura de `reporting-financi
 
 ## 1. El vault refleja el repositorio
 
-1. Ejecuta el check del vault (ver `CLAUDE.md`, sección "Mantenimiento del vault") y `reporting-financiero/.venv/Scripts/python.exe -m pytest reporting-financiero/tests/test_linaje_vault.py`; si el test falla, lleva a `vault/repos/rf-fabric/lineage.md` lo que señale antes de seguir. Si sale STALE para `rf-fabric` o `rf-scripts`, `gv.py plan --stale` y resincroniza esos documentos antes de dibujar nada; después, `gv.py validate` sin errores y commit en `main` (lo transversal va ahí).
+1. Ejecuta el check del vault (ver `CLAUDE.md`, sección "Mantenimiento del vault") y `reporting-financiero/.venv/Scripts/python.exe -m pytest reporting-financiero/tests/test_linaje_vault.py`; si el test falla, lleva a `vault/repos/rf-fabric/lineage.md` lo que señale antes de seguir. Si sale STALE para `rf-fabric` o `rf-scripts`, refresca el vault en `main` con la skill `refresco-vault` antes de crear la rama y de dibujar nada.
 2. Lee los hechos del vault en este orden: `vault/README.md`, `vault/index/README.md`, `vault/agent-context/repo-cards/rf-fabric.md` y `rf-scripts.md`, y luego `vault/repos/rf-fabric/` (`overview`, `architecture`, `lineage`, `data-model`, `domain-model`, `integrations`, `apis`), `vault/domains/ficheros-de-grupo.md` y `vault/infrastructure/`.
 3. Cada nodo y cada flecha de un diagrama tiene que poder citarse con un documento del vault. No deduzcas relaciones por cercanía ni por nombre, ni a partir de indicadores sueltos de un fichero (por ejemplo, `loadEnabled = False` en un dataflow no significa que la consulta no escriba). Si falta un hecho que el diagrama necesita, compruébalo en `reporting-financiero/fabric/`, llévalo al documento del vault que le corresponde (con su Evidence) y valida el vault; nunca lo apuntes en este prompt.
 4. Antes de dibujar, enséñame una lista corta de los hechos que vas a usar con el documento del vault de cada uno, y lo que el vault deja como TBD.
@@ -46,4 +46,4 @@ Si en Fabric aparece algo que no encaja en estos cuatro, dímelo y propón dónd
 - Una tabla final con cada nodo y flecha y el documento del vault que lo respalda. Lo que no tenga respaldo se quita.
 - Texto en español con ortografía completa; sin rayas largas, flechas tipográficas ni comillas tipográficas.
 - Enlaza los diagramas donde se citen (busca `diagramas/` en `reporting-financiero/docs/` y en el vault).
-- Commit en `reporting-financiero` con mensaje `docs(diagramas): ...`. Push nunca sin pedirme aprobación justo antes, diciendo qué ramas y qué commits se suben.
+- Commit en la rama `feature/diagramas` con mensaje `docs(diagramas): ...`; integrarla en `main` preguntando antes. Push nunca sin pedirme aprobación justo antes, diciendo qué ramas y qué commits se suben.
