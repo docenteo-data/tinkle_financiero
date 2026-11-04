@@ -5,7 +5,7 @@ schema_version: 1
 repo: rf-fabric
 source: reporting-financiero/fabric
 commit: fb5c2b5
-last_sync: 2026-10-26T22:45:58Z
+last_sync: 2026-11-04T10:00:00Z
 stack: generic
 source_globs: ["*.SemanticModel/definition/tables/_Medidas.tmdl", "*.Report/definition/pages/**", "*.Report/definition.pbir", "sql/**"]
 tags: [rf-fabric, apis]
@@ -82,13 +82,15 @@ Modelo de cada informe según `definition.pbir` (conexión al workspace "Tinkle 
 
 Carpeta `sql/`, sobre el lakehouse `lh_tinkle_financiero`.
 
-- `200.vw_Export_Grupo` (esquema 200): exporta los saldos por cuenta magnitud del último periodo en formato de grupo, en miles.
-- `200.vw_Export_Saldos_4_7` (esquema 200): exporta los saldos por sociedad del último periodo para el fichero de cuentas 4 a 7.
-- `300.vw_Reporting_Actuals` (esquema 300): une las líneas de cuentas y las de medidas en un único conjunto de reporting real.
+- `200.vw_Export_Grupo` (esquema 200): exporta los saldos por cuenta magnitud del último periodo en formato de grupo, en miles. Lee `300.Fact_Actuals`, `300.Dim_Mapeo_Cuentas` y `300.Dim_Sociedades`.
+- `200.vw_Export_Saldos_4_7` (esquema 200): exporta los saldos por sociedad del último periodo para el fichero de cuentas 4 a 7. Lee `300.Fact_Actuals` y `300.Dim_Sociedades`.
+- `300.vw_Reporting_Actuals` (esquema 300): une las líneas de cuentas y las de medidas en un único conjunto de reporting real. Lee `300.Fact_Actuals`, `300.Dim_Mapeo_Cuentas` y `300.Map_Report_Line_Account`.
+
+Ninguna vista lee `Dim_Cuentas`. Las dos vistas `200.*` las lee el notebook `Generar_txt_Balance_Saldos` por el SQL endpoint (ver [[repos/rf-fabric/integrations]]).
 
 ## Open questions
 
-- TBD: consumidores externos de las vistas `200.*` (no son derivables del repositorio).
+- TBD: consumidores de las vistas fuera del workspace (el único consumidor dentro del repositorio es el notebook `Generar_txt_Balance_Saldos`).
 - TBD: propósito de la página "Página 1" del informe `Presupuesto.Report`.
 
 ## Evidence
@@ -98,4 +100,4 @@ Carpeta `sql/`, sobre el lakehouse `lh_tinkle_financiero`.
 - `Agings.Report/definition.pbir`, `Checklist (Oracle).Report/definition.pbir`, `HAPA.Report/definition.pbir`, `MMS.Report/definition.pbir`, `Presupuesto.Report/definition.pbir`, `Rentabilidad.Report/definition.pbir` - modelo de cada informe.
 - `Agings.Report/definition/pages/pages.json`, `Checklist (Oracle).Report/definition/pages/pages.json`, `HAPA.Report/definition/pages/pages.json`, `MMS.Report/definition/pages/pages.json`, `Presupuesto.Report/definition/pages/pages.json`, `Rentabilidad.Report/definition/pages/pages.json` - orden de páginas.
 - `*.Report/definition/pages/*/page.json` - `displayName` de cada página.
-- `sql/200.vw_Export_Grupo.sql`, `sql/200.vw_Export_Saldos_4_7.sql`, `sql/300.vw_Reporting_Actuals.sql` - cabeceras y propósito de cada vista.
+- `sql/200.vw_Export_Grupo.sql`, `sql/200.vw_Export_Saldos_4_7.sql`, `sql/300.vw_Reporting_Actuals.sql` - cabeceras, propósito y tablas que lee cada vista (cláusulas FROM y JOIN).
