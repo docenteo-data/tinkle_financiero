@@ -147,3 +147,14 @@ def test_vista_ageing_sin_duplicados():
         "SELECT COUNT(*) FROM (SELECT [d_ru], [d_client], [d_fl] FROM [300].[vw_Export_Ageing] "
         "GROUP BY [d_ru], [d_client], [d_fl] HAVING COUNT(*) > 1) t")[0][0]
     assert repetidas == 0
+
+
+def test_ageing_vista_contra_marzo():
+    """La vista de Fabric reproduce los importes por sociedad y tramo del TXT de marzo."""
+    r = subprocess.run([sys.executable, str(SCRIPT), "ageing", "--vista"], capture_output=True, text=True,
+                       encoding="utf-8", errors="replace")
+    assert r.returncode == 0, r.stdout + r.stderr
+    maxima = float(re.search(r"^TRAMOS combinaciones=\d+ diferencia_maxima=(\d+\.\d+)$", r.stdout, re.M).group(1))
+    assert maxima < 0.001
+    assert re.search(r"^CLIENTES lineas_txt=\d+ exactas=\d+", r.stdout, re.M)
+    assert re.search(r"^GRICFLAG txt=\d+ vista=\d+ coinciden=\d+", r.stdout, re.M)
