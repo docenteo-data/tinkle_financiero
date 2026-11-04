@@ -11,6 +11,8 @@ Uso, desde la raíz del repositorio:
         Publica.
     python reporting-financiero/scripts/publicar_fabric.py "TRANS_Gold.Dataflow" --ref <commit anterior> --confirmar
         Rollback de un item a un commit anterior.
+    python reporting-financiero/scripts/publicar_fabric.py "Ingesta_datos.DataPipeline" --ref feature/mi-cambio --crear
+        Simulación de la creación de un item que no existe en Fabric. Con --confirmar lo crea.
     python reporting-financiero/scripts/publicar_fabric.py "sql/300.vw_Export_Grupo.sql" --ref feature/mi-cambio
         Simulación de una vista del SQL endpoint. Con --confirmar la crea (CREATE si es nueva) o la
         actualiza (CREATE OR ALTER si ya existe). Las vistas no se borran.
@@ -20,9 +22,10 @@ Uso, desde la raíz del repositorio:
 --base    referencia con la que Fabric debe coincidir antes de publicar (por defecto main). Si no
           coincide, alguien ha cambiado Fabric sin pasar al repo y publicar lo pisaría: el script para.
 --forzar  publica aunque Fabric no coincida con --base. Solo con decisión explícita de la persona.
+--crear   crea los items que no existen en Fabric con la definición del repo.
 
-Los items solo se actualizan (no se crean ni borran); las vistas se crean o actualizan, pero no se borran.
-Las UDF no se publican.
+Los items existentes se actualizan; los que no existen solo se crean con --crear, y nunca se borran.
+Las vistas se crean o actualizan, pero no se borran. Las UDF no se publican.
 Códigos de salida: 0 publicado o simulación correcta, 1 Fabric no coincide con --base, 2 error.
 """
 
@@ -103,6 +106,7 @@ def main():
     parser.add_argument("--base", default="main")
     parser.add_argument("--confirmar", action="store_true", help="publica de verdad (sin esto, simulación)")
     parser.add_argument("--forzar", action="store_true", help="publica aunque Fabric no coincida con --base")
+    parser.add_argument("--crear", action="store_true", help="crea los items que no existen en Fabric con la definición del repo")
     args = parser.parse_args()
 
     vistas = [a for a in args.items if a.startswith("sql/")]
@@ -129,33 +133,49 @@ def main():
         if codigo:
             return codigo
 
+    existentes, nuevos_items = [], []
+    a_publicar, a_crear, actual, base = {}, {}, {}, {}
     if items:
         tok = fc.token()
         en_fabric = {fc.nombre_carpeta(i): i for i in fc.items(tok)}
         faltan = [c for c in items if c not in en_fabric]
-        if faltan:
-            print("ERROR: no existen en Fabric (este script no crea items):", fc.ascii(", ".join(faltan)))
+        if faltan and not args.crear:
+            print("ERROR: no existen en Fabric:", fc.ascii(", ".join(faltan)) + "; usa --crear para crearlos")
             return 2
+        existentes = [c for c in items if c in en_fabric]
+        nuevos_items = faltan
 
-        a_publicar = fc.solo_items(fc.ficheros_en_git(args.ref), set(items))
-        base = fc.solo_items(fc.ficheros_en_git(args.base), set(items))
-        for carpeta in items:
+        ref_ficheros = fc.ficheros_en_git(args.ref)
+        base_ficheros = fc.ficheros_en_git(args.base)
+        a_publicar = fc.solo_items(ref_ficheros, set(existentes))
+        base = fc.solo_items(base_ficheros, set(existentes))
+        a_crear = fc.solo_items(ref_ficheros, set(nuevos_items))
+        base_crear = fc.solo_items(base_ficheros, set(nuevos_items))
+        for carpeta in existentes:
             if not any(r.startswith(carpeta + "/") for r in a_publicar):
+                print("ERROR:", fc.ascii(carpeta), "no esta en", fc.ascii(args.ref))
+                return 2
+        for carpeta in nuevos_items:
+            if not any(r.startswith(carpeta + "/") for r in a_crear):
                 print("ERROR:", fc.ascii(carpeta), "no esta en", fc.ascii(args.ref))
                 return 2
 
         # Fabric tiene que estar como en --base: si no, publicar perdería cambios hechos en Fabric.
-        actual = {}
+        # Los items nuevos no existen en Fabric: difieren de --base si --base los tiene.
         try:
-            for carpeta in items:
+            for carpeta in existentes:
                 for ruta, contenido in fc.descargar_definicion(en_fabric[carpeta], tok).items():
                     actual[carpeta + "/" + ruta] = contenido
         except (urllib.error.HTTPError, RuntimeError, TimeoutError) as error:
             print("ERROR al leer Fabric:", fc.ascii(error))
             return 2
         nuevos, cambiados, borrados = fc.comparar(actual, base)
-        if nuevos or cambiados or borrados:
-            for ruta in nuevos + cambiados + borrados:
+        distintos = nuevos + cambiados + borrados
+        for carpeta in nuevos_items:
+            if any(r.startswith(carpeta + "/") for r in base_crear):
+                distintos.append(carpeta + " (no existe en Fabric)")
+        if distintos:
+            for ruta in distintos:
                 print("FABRIC DISTINTO DE", fc.ascii(args.base) + ":", fc.ascii(ruta))
             if not args.forzar:
                 print("Fabric ha cambiado respecto a " + fc.ascii(args.base) + ". Exporta, integra esos cambios y repite.")
@@ -167,7 +187,7 @@ def main():
         if codigo:
             return codigo
 
-    for carpeta in items:
+    for carpeta in existentes:
         ficheros = {r[len(carpeta) + 1:]: c for r, c in a_publicar.items() if r.startswith(carpeta + "/")}
         cambios = fc.comparar(ficheros, {r[len(carpeta) + 1:]: c for r, c in actual.items() if r.startswith(carpeta + "/")})
         resumen = f"{len(cambios[0])} nuevos, {len(cambios[1])} cambiados, {len(cambios[2])} quitados"
@@ -180,6 +200,19 @@ def main():
             print("ERROR al publicar", fc.ascii(carpeta) + ":", fc.ascii(error))
             return 2
         print("PUBLICADO", fc.ascii(carpeta), "desde", fc.ascii(args.ref), "por", fc.ascii(usuario) + ":", resumen)
+
+    for carpeta in nuevos_items:
+        nombre, tipo = fc.separar_item(carpeta)
+        ficheros = {r[len(carpeta) + 1:]: c for r, c in a_crear.items() if r.startswith(carpeta + "/")}
+        if not args.confirmar:
+            print("SIMULACION", fc.ascii(carpeta), "desde", fc.ascii(args.ref) + ": se crearia (" + str(len(ficheros)) + " ficheros)")
+            continue
+        try:
+            fc.crear_item(nombre, tipo, ficheros, tok)
+        except (urllib.error.HTTPError, RuntimeError, TimeoutError) as error:
+            print("ERROR al crear", fc.ascii(carpeta) + ":", fc.ascii(error))
+            return 2
+        print("CREADO", fc.ascii(carpeta), "desde", fc.ascii(args.ref), "por", fc.ascii(usuario))
 
     if not args.confirmar:
         print("Simulacion: no se ha publicado nada. Repite con --confirmar para publicar.")

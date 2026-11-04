@@ -200,6 +200,21 @@ def publicar_definicion(item, ficheros, tok):
         esperar_operacion(cabeceras, tok, con_resultado=False)
 
 
+def crear_item(nombre, tipo, ficheros, tok):
+    """Crea en el workspace un item nuevo con la definición dada (sin el .platform, igual que al publicar).
+
+    Espera a que termine si Fabric responde con una operación asíncrona (202).
+    """
+    definicion = {"parts": partes_para_publicar(ficheros)}
+    formato = FORMATOS[tipo]
+    if formato:
+        definicion["format"] = formato
+    url = f"{API}/workspaces/{WORKSPACE_ID}/items"
+    estado, cabeceras, _ = peticion("POST", url, tok, {"displayName": nombre, "type": tipo, "definition": definicion})
+    if estado == 202:
+        esperar_operacion(cabeceras, tok, con_resultado=False)
+
+
 # --- Git -------------------------------------------------------------------
 
 def ficheros_en_git(ref, carpeta=CARPETA_FABRIC):
