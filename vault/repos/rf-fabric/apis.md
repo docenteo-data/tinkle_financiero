@@ -7,7 +7,7 @@ source: reporting-financiero/fabric
 commit: fb5c2b5
 last_sync: 2026-11-04T10:00:00Z
 stack: generic
-source_globs: ["*.SemanticModel/definition/tables/_Medidas.tmdl", "*.Report/definition/pages/**", "*.Report/definition.pbir", "sql/**"]
+source_globs: ["*.SemanticModel/definition/tables/_Medidas.tmdl", "*.Report/definition/pages/**", "*.Report/definition.pbir", "*.Report/definition/reportExtensions.json", "sql/**"]
 tags: [rf-fabric, apis]
 ---
 
@@ -78,6 +78,8 @@ Modelo de cada informe según `definition.pbir` (conexión al workspace "Tinkle 
 - `Presupuesto.Report`, modelo `Financial Model`: Home, Revenue (Real + MMS), MMS VS REAL, Página 1.
 - `Rentabilidad.Report`, modelo `Financial Model`: RESUMEN, RENTABILIDAD CLIENTE, RENTABILIDAD CLIENTE (CDC), RENTABILIDAD AVANZADA, SALARIOS.
 
+Medidas definidas en el informe y no en el modelo (`reportExtensions.json`): solo `Presupuesto.Report`, con `REAL (Fees & other)`, `Acordado anual` e `Importe MMS` sobre la tabla `_Medidas`. Si cambia una medida del modelo con el mismo nombre, revisar también estas.
+
 ## Vistas SQL
 
 Carpeta `sql/`, sobre el lakehouse `lh_tinkle_financiero`.
@@ -95,6 +97,7 @@ Ninguna vista lee `Dim_Cuentas`. Las dos vistas `200.*` las lee el notebook `Gen
 
 ## Evidence
 
+- `Presupuesto.Report/definition/reportExtensions.json` - medidas definidas en el informe.
 - `Financial Model.SemanticModel/definition/tables/_Medidas.tmdl` - nombres y familias de las medidas del modelo.
 - `Agings.SemanticModel/definition/tables/Aging_Clientes_Snapshot.tmdl`, `Agings.SemanticModel/definition/tables/Aging_Proveedores_Snapshot.tmdl`, `Agings.SemanticModel/definition/tables/Fechas.tmdl` - medidas del modelo Agings.
 - `Agings.Report/definition.pbir`, `Checklist (Oracle).Report/definition.pbir`, `HAPA.Report/definition.pbir`, `MMS.Report/definition.pbir`, `Presupuesto.Report/definition.pbir`, `Rentabilidad.Report/definition.pbir` - modelo de cada informe.

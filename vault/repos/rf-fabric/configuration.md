@@ -7,7 +7,7 @@ source: reporting-financiero/fabric
 commit: fb5c2b5
 last_sync: 2026-10-26T22:45:58Z
 stack: generic
-source_globs: ["*/.platform", "*.SemanticModel/definition.pbism", "*.Report/definition.pbir", "*.DataPipeline/pipeline-content.json"]
+source_globs: ["*/.platform", "*.SemanticModel/definition.pbism", "*.Report/definition.pbir", "*.DataPipeline/pipeline-content.json", "*.Report/.pbi/**", "*.SemanticModel/.pbi/**", "*.Report/StaticResources/**", "*.Report/definition/report.json", "*.Report/definition/version.json", "*.SemanticModel/definition/database.tmdl", "*.SemanticModel/definition/cultures/**", "temas/**"]
 tags: [rf-fabric, configuration]
 ---
 
@@ -44,6 +44,7 @@ Los 21 `.platform` tienen el `logicalId` a ceros porque es lo que devuelve getDe
 
 - `definition.pbism` (en cada SemanticModel): versión del formato del modelo (4.2 en `Agings`) y `settings` vacío.
 - `definition.pbir` (en cada Report): versión del formato del informe (4.0 en `Agings`) y su referencia al modelo. La referencia es `byConnection`: el informe no contiene el modelo, se conecta al modelo semántico publicado en el workspace. El informe `Agings` apunta al modelo semántico `Agings`. La cadena de conexión y el identificador del modelo no se copian aquí.
+- Recursos de presentación, sin lógica de datos: en cada Report, `.pbi/`, `StaticResources/` (logos y temas base), `definition/report.json` y `definition/version.json`; en cada SemanticModel, `.pbi/`, `definition/database.tmdl` y `definition/cultures/`; y la carpeta `temas/` con los temas de Power BI. Se versionan para poder publicar, pero no se documentan aquí.
 
 ## Política de los pipelines
 
@@ -66,6 +67,7 @@ Resumen de `reporting-financiero/docs/flujo-fabric.md` (leer el original para lo
 
 ## Evidence
 
+- `Agings.Report/StaticResources/`, `Agings.Report/definition/report.json`, `temas/TemaTinkle.json` - recursos de presentación.
 Rutas relativas a `reporting-financiero/fabric/`, salvo las dos últimas.
 
 - `Agings.SemanticModel/.platform` - tipo SemanticModel, esquema y `logicalId`.
