@@ -117,13 +117,34 @@ def parrafo(t, estilo=None, ppr_extra="", negrita=False):
 NUMERICO = re.compile(r"^\**[\d.,]+\**$|^sin estimar$")
 
 
+def anchos_automaticos(cab, cuerpo):
+    """Ancho mínimo para que no se parta la palabra más larga (cabecera en mayúsculas de 7,5 pt con
+    espaciado y celdas de 9,5 pt) y el resto del ancho repartido según la cantidad de texto."""
+    ncol = len(cab)
+    palabra = lambda t: max([len(p) for p in limpiar(t).replace("**", "").split(" ")] or [0])
+    minimos = [
+        max(palabra(cab[c]) * 120, max([palabra(f[c]) for f in cuerpo] or [0]) * 105) + 250
+        for c in range(ncol)
+    ]
+    texto = [sum(len(limpiar(f[c])) for f in cuerpo) / max(len(cuerpo), 1) for c in range(ncol)]
+    libre = max(ANCHO - sum(minimos), 0)
+    extra = [libre * t / sum(texto) if sum(texto) else 0 for t in texto]
+    anchos = [int(m + e) for m, e in zip(minimos, extra)]
+    escala = ANCHO / sum(anchos)
+    return [int(a * escala) for a in anchos]
+
+
+def pegar_cifras(t):
+    """Une con espacio duro una sigla corta y su cifra ("J 1,25", "IT 0,5") para que no se separen."""
+    return re.sub(r"\b([A-Z][A-Za-z]{0,2}) (?=\d)", "\\1\u00a0", t)
+
+
 def tabla(filas, anchos=None):
+    filas = [[pegar_cifras(c) for c in f] for f in filas]
     cab, *cuerpo = filas
     ncol = len(cab)
     if anchos is None:
-        largos = [max([len(limpiar(f[c])) for f in cuerpo] + [int(len(cab[c]) * 1.4)]) for c in range(ncol)]
-        pesos = [max(8, min(l, 60)) ** 0.8 for l in largos]
-        anchos = [int(ANCHO * p / sum(pesos)) for p in pesos]
+        anchos = anchos_automaticos(cab, cuerpo)
     anchos[-1] += ANCHO - sum(anchos)
     derecha = [
         all(NUMERICO.match(limpiar(f[c]).strip()) or not f[c].strip() for f in cuerpo) and any(f[c].strip() for f in cuerpo)
