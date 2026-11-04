@@ -79,7 +79,7 @@ Procesa un fichero por ejecución (`ageing` o `revenue`), con la carpeta `3.Fuen
 
 ### Generar anexo de pendientes
 
-1. Recibe la ruta de la auditoría como argumento. Su sección 1 contiene la tabla de conceptos, con filas de 8 columnas agrupadas por bloque (`leer_conceptos`).
+1. Recibe la ruta de la auditoría como argumento. Su sección 1 contiene la tabla de conceptos, con filas de 5 columnas (Nº, concepto, qué falta, prioridad y pendientes) agrupadas por bloque (`leer_conceptos`).
 2. Carga el registro de reuniones (`leer_registro`), la auditoría técnica con el estado más reciente de cada riesgo (`leer_tecnica`, donde manda el apartado 13.7 sobre el 13.6) y las preguntas para Tinkle (`leer_preguntas`).
 3. Por cada concepto extrae los puntos P-nnn, los riesgos S, O, M, D y N, y el rango de preguntas, y copia sus descripciones desde las fuentes (`generar`).
 4. Limpia el texto copiado de caracteres de redacción (rayas, flechas y barras verticales).

@@ -33,9 +33,9 @@ tags: [rf-scripts, quality]
 
 Estos tests no tocan Fabric.
 
-- `reporting-financiero/tests/test_anexo_pendientes.py` prueba `scripts/anexo_pendientes.py` sobre una copia de `docs/auditoria/20261028-auditoria-general.md`, nunca sobre el original. Modos de fallo que cubre:
+- `reporting-financiero/tests/test_anexo_pendientes.py` prueba `scripts/anexo_pendientes.py` sobre una copia de `docs/auditoria/auditoria-general.md`, nunca sobre el original. Modos de fallo que cubre:
   - Un punto del registro (P-001 a P-226) falta o aparece dos veces en el anexo.
-  - Una referencia técnica (S, O, M, D, N) o una de las 15 preguntas de la tabla de conceptos queda sin explicar.
+  - Una referencia técnica (S, O, M, D, N) o una de las preguntas pendientes de `PREGUNTAS_PARA_TINKLE.md` (el test las lee del propio fichero, porque se renumeran al llegar respuestas) queda sin explicar.
   - El anexo contiene rayas largas o flechas.
   - Volver a ejecutarlo duplica el anexo en lugar de reemplazarlo.
 - `reporting-financiero/tests/test_md_a_docx.py` prueba `scripts/md_a_docx.py` generando un .docx de prueba con portada. Necesita la plantilla `docenteo-documento.dotx` de la skill docenteo-design; si no está instalada, los tests se saltan. Modos de fallo que cubre:
@@ -97,7 +97,7 @@ Desde la raíz del repositorio, con el Python del entorno virtual de `reporting-
 
 - `reporting-financiero/tests/test_fabric_comun.py` - tests unitarios y modos de fallo de Fabric.
 - `reporting-financiero/tests/test_fabric_e2e.py` - E2E de solo lectura, activado con FABRIC_E2E=1.
-- `reporting-financiero/tests/test_anexo_pendientes.py` - sobre `scripts/anexo_pendientes.py` y `docs/auditoria/20261028-auditoria-general.md`.
+- `reporting-financiero/tests/test_anexo_pendientes.py` - sobre `scripts/anexo_pendientes.py` y `docs/auditoria/auditoria-general.md`.
 - `reporting-financiero/tests/test_md_a_docx.py` - sobre `scripts/md_a_docx.py`, con la plantilla de docenteo-design.
 - `reporting-financiero/tests/test_validar_ficheros_grupo_e2e.py` - E2E de ficheros de Grupo sobre `scripts/validar_ficheros_grupo.py`.
 - `reporting-financiero/scripts/fabric_comun.py#comprobar_cuenta`, `#comparar`, `#solo_items`, `#es_exportable`, `#partes_para_publicar`, `#es_consulta_de_lectura`, `#ficheros_sql`, `FORMATOS`.
