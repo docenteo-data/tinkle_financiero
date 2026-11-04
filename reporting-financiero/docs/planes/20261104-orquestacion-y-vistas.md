@@ -162,8 +162,19 @@ Un subagente por pipeline. Test: `test_orquestacion_fabric.py`.
 - [ ] **[Fabric]** Ejecutar `Flujo_total_reporting` y `Flujo_total_txt` una vez cada uno.
 - [ ] Commit `feat(orquestacion): flujos de actualización, reporting y txt`.
 
-### Tarea 5: UDF y botones (bloqueada hasta decidir con IT de Tinkle dónde va el secreto)
+### Tarea 5a: las UDF lanzan los pipelines nuevos (decisión del 04/11/2026)
 
+Los botones se quedan como están. Cada UDF referencia su pipeline por id, una sola vez en su código; se sustituye ese id y nada más, con un script que no muestra el código (lleva el secreto).
+
+- [ ] **[publicar]** `Ejecución Reporting`: id de "Generar Reporting" (`147b24eb-352f-4f88-9d64-b4a7fc1d67f6`) por el de `Flujo_total_reporting`. `Generar_txt`: id de "Grabar salidas" (`56a37cd5-3664-47b4-b28f-ec7f26d23075`) por el de `Generar_salidas` (`919cfea3-9513-4c10-a90b-26c2b21e493a`). Antes, comprobar que la definición en Fabric es igual al respaldo de `.secretos/udf/2026-11-04/`.
+- [ ] **[Fabric]** Probar cada botón una vez y comprobar que se ejecuta el pipeline nuevo.
+- [ ] Respaldo de la versión nueva en `.secretos/udf/` y commit de la documentación.
+
+### Tarea 5b: pendiente de revisar (no se hace en esta rama)
+
+- Botones: botón propio para actualizar datos sin refrescar modelos, nombres iguales en los cinco informes, pasar `ficheros` y `periodo_esperado` desde el botón de txt, y guía para Finanzas.
+- UDF: esperar al final del job y devolver el estado (riesgo O2).
+- Secreto (riesgo S1): rotarlo primero y guardar el nuevo en Key Vault o en una conexión, y solo entonces versionar las UDF. Se puede hacer con `reporting@likuit.com` si tiene permisos de administración en Entra ID (por confirmar). Pasos originales:
 - [ ] **[Fabric, IT de Tinkle]** Elegir conexión gestionada o Key Vault, dar de alta la credencial y rotar el secreto actual.
 - [ ] **[Fabric]** UDF: `Ejecución Reporting` lanza `Refresco_modelos`; `Generar_txt` lanza `Generar_salidas` (con `ficheros` y `periodo_esperado` como argumentos opcionales); UDF nueva `Actualizar_datos` lanza `Flujo_actualizar_datos`. Las tres esperan a que el job termine y devuelven el estado final.
 - [ ] **[repo] Tests que fallan** en `tests/test_fabric_comun.py`: `UserDataFunction` está en `FORMATOS`; ningún fichero de `fabric/*.UserDataFunction/` contiene `ClientSecretCredential` ni un literal con forma de secreto de Entra ID.
@@ -174,7 +185,7 @@ Un subagente por pipeline. Test: `test_orquestacion_fabric.py`.
 
 ### Tarea 6: retirada de los pipelines antiguos
 
-- [ ] **[Fabric]** Con todo lo anterior probado, borrar "Generar Reporting" y "Grabar salidas" del workspace.
+- [ ] **[Fabric]** Con la tarea 5a probada, borrar "Generar Reporting" y "Grabar salidas" del workspace.
 - [ ] Exportar (desaparecen sus carpetas), tests en verde, commit `chore(orquestacion): retirada de Generar Reporting y Grabar salidas`.
 
 ### Tarea 7: cierre

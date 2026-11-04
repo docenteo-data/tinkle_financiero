@@ -44,9 +44,9 @@ Hechos de partida en [[repos/rf-fabric/architecture]] y [[repos/rf-fabric/lineag
    | `Flujo_total_txt` | `Flujo_actualizar_datos` y `Generar_salidas` |
 
    Si Fabric no permite que un flujo invoque a otro flujo, `Flujo_total_*` invocan directamente los modulares. Cuando existan los controles de veracidad (concepto 7 de la auditoría general), irán antes de `Generar_salidas`.
-4. Tres botones, iguales en la página Home de los informes que hoy los tienen: "Actualizar datos" (lanza `Flujo_actualizar_datos`), "Actualizar informes" (lanza `Refresco_modelos`) y "Generar txt" (lanza `Generar_salidas`). Cada botón llama a su UDF; hace falta una UDF nueva para el tercero. Los flujos totales se lanzan desde Fabric (y, si se decide, con programación).
-5. Las UDF esperan a que el job termine y devuelven su estado final. El secreto sale de las UDF (conexión gestionada o Key Vault, a decidir con IT de Tinkle) y se rota; después, las UDF se versionan en el repo como el resto de items.
-6. "Generar Reporting" y "Grabar salidas" se mantienen hasta que los nuevos estén probados; después se borran (son items que se pueden recuperar desde `main`, pero no con `publicar_fabric.py`, que no crea items).
+4. Botones (revisado el 04/11/2026): se quedan como están, con los mismos textos y el mismo comportamiento para el usuario. Solo cambia lo que lanza cada UDF, por el equivalente nuevo: `Ejecución Reporting` ("Cargar datos" o "Actualizar datos") pasa de "Generar Reporting" a `Flujo_total_reporting`, y `Generar_txt` ("Generar txt") pasa de "Grabar salidas" a `Generar_salidas` sin parámetros. Pendiente de revisar con Finanzas: un botón propio para actualizar datos sin refrescar modelos, nombres iguales en todos los informes y pasar `ficheros` y `periodo_esperado` desde el botón de txt.
+5. Pendiente: que las UDF esperen a que el job termine y devuelvan su estado final, y sacar el secreto (conexión gestionada o Key Vault) rotándolo antes, para que en Git nunca haya una credencial válida. Después, las UDF se versionan en el repo como el resto de items.
+6. Cuando las UDF lancen los pipelines nuevos, "Generar Reporting" y "Grabar salidas" se borran (se pueden recuperar desde `main` con `publicar_fabric.py --crear`).
 
 ## Alternativas descartadas
 
