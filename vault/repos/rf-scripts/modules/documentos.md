@@ -23,7 +23,7 @@ Genera el anexo "Pendientes por concepto" de la auditoría general.
 
 | Argumento | Por defecto | Significado |
 |---|---|---|
-| `AUDITORIA` | obligatorio | Ruta del Markdown de la auditoría, por ejemplo `reporting-financiero/docs/auditoria/20261028-auditoria-general.md`. |
+| `AUDITORIA` | obligatorio | Ruta del Markdown de la auditoría, por ejemplo `reporting-financiero/docs/auditoria/auditoria-general.md`. |
 
 Lee la tabla de conceptos de la sección 1 y, de sus fuentes (registro de reuniones, auditoría técnica y preguntas para Tinkle), copia la descripción de cada punto pendiente. Escribe entre las marcas `<!-- anexo:inicio -->` y `<!-- anexo:fin -->` (las añade al final si no existen); volver a ejecutarlo deja el mismo resultado. Imprime `OK anexo con N puntos del registro`.
 
