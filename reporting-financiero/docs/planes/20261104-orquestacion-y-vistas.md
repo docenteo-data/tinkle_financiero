@@ -99,6 +99,10 @@ Notebook publicado y `Generar_salidas` creado (`983f7eb`, exportación sin cambi
 - Actividad `ExecutePipeline` (la `InvokePipeline` está marcada como obsoleta en el esquema de Fabric), con `referenceName` = id del pipeline hijo y `waitOnCompletion` verdadero. Fabric la guarda tal cual.
 - `Flujo_actualizar_datos` (id `7f86c295-fa58-49c5-a199-fd1fca7b0795`): Completed (14:50 a 14:53). Los hijos se ejecutaron en orden: `100.New_Oracle` v38 a las 14:50; `200.Oracle_historico` v27, `200.HAPA` v26 y `200.MMS` v44 a las 14:52; `300.Fact_Actuals` v25 a las 14:53. Mismos datos: 34.405 filas, suma de `Saldo` 72.423.595.604,55 y periodo 2026-03; 32.868, 103 y 37.898 filas en las tablas con histórico.
 - La API de jobs de cada pipeline solo lista las ejecuciones lanzadas directamente, no las que lanza otro pipeline: para saber si un hijo se ejecutó hay que mirar el flujo o las tablas.
+- `Flujo_total_reporting` y `Flujo_total_txt` creados (`63838cb`, exportación idéntica) y ejecutados una vez cada uno: Completed los dos. Fabric admite anidar un flujo dentro de otro.
+  - Reporting: refresco de Financial Model (15:07:58 UTC) y Agings (15:08:04 UTC) Completed.
+  - Txt: 10 TXT (sello `20261104_151501`), los 10 idénticos a los de la prueba 1 de la tarea 3 (sin contar la cabecera de fecha de Saldos 4_7): con el redondeo, la misma información da el mismo fichero.
+  - `300.Fact_Actuals` sigue con 34.405 filas, suma de `Saldo` 72.423.595.604,55 y periodo 2026-03.
 
 ## Revisión (riesgos que ningún test cubre)
 
