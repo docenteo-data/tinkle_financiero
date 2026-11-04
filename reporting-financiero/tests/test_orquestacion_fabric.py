@@ -10,6 +10,11 @@ Modos de fallo cubiertos:
 - Un pipeline modular encadena un paso con "Completed" en lugar de "Succeeded", así que avanza aunque el anterior haya fallado.
 - Un pipeline modular cambia su número de actividades o algún identificador de dataflow, endpoint SQL o modelo semántico.
 - Un pipeline modular se aparta de la política actual de la actividad: reintentos distintos de 0 o timeout distinto de "0.12:00:00".
+- Generar_salidas no declara los parámetros "ficheros" y "periodo_esperado" como string con defaultValue vacío.
+- Generar_salidas no tiene exactamente dos actividades, el notebook no es NOTEBOOK_SALIDAS, o la Copy no depende de él con "Succeeded".
+- El notebook de Generar_salidas no pasa "ficheros" y "periodo_esperado" desde los parámetros del pipeline, o los pasa con otro tipo.
+- La Copy de Generar_salidas se aparta de la de "Grabar salidas" (origen, filtro *.txt o destino en SharePoint).
+- Las actividades de Generar_salidas se apartan de la política: reintentos distintos de 0 o timeout distinto de "0.12:00:00".
 """
 
 import json
@@ -27,6 +32,7 @@ TRANS_GOLD = "2ddb6bc7-1a91-490f-9a6b-60ade6940b4e"
 FINANCIAL_MODEL = "847ce270-06ab-408b-85c9-cb8f390fad1c"
 AGINGS = "e19def87-fdf3-4b44-bd60-d22e5d79ce88"
 SQL_ENDPOINT = "485f1bd4-2372-44a3-b279-e00a63a80137"
+NOTEBOOK_SALIDAS = "c649ae24-2b54-4fce-bd5c-d23a9516ec37"
 
 PIPELINES_MODULARES = ["Ingesta_datos", "Transformacion_datos", "Refresco_modelos"]
 
@@ -120,3 +126,36 @@ def test_pipelines_modulares_sin_reintentos_ni_completed():
                     assert condicion == "Succeeded", f"{etiqueta}: {condicion}"
             assert act["policy"]["retry"] == 0, etiqueta
             assert act["policy"]["timeout"] == "0.12:00:00", etiqueta
+
+
+def test_generar_salidas():
+    ruta = FABRIC / "Generar_salidas.DataPipeline" / "pipeline-content.json"
+    contenido = json.loads(ruta.read_text(encoding="utf-8"))
+    parametros = contenido["properties"]["parameters"]
+    for nombre in ["ficheros", "periodo_esperado"]:
+        assert parametros[nombre]["type"].lower() == "string", nombre
+        assert parametros[nombre]["defaultValue"] == "", nombre
+
+    acts = actividades("Generar_salidas")
+    assert len(acts) == 2
+    notebook = por_id(acts, "TridentNotebook", "notebookId", NOTEBOOK_SALIDAS)
+    assert depende_de(notebook) == {}
+    copia = [a for a in acts if a["type"] == "Copy"]
+    assert len(copia) == 1
+    assert depende_de(copia[0]) == {notebook["name"]: ["Succeeded"]}
+
+    pasados = notebook["typeProperties"]["parameters"]
+    for nombre in ["ficheros", "periodo_esperado"]:
+        assert pasados[nombre]["value"]["value"] == f"@pipeline().parameters.{nombre}", nombre
+        assert pasados[nombre]["value"]["type"] == "Expression", nombre
+        assert pasados[nombre]["type"] == "string", nombre
+
+    grabar_balance = next(
+        a for a in actividades("Grabar salidas") if a["name"] == "Grabar balance"
+    )
+    assert copia[0]["typeProperties"] == grabar_balance["typeProperties"]
+
+    for act in acts:
+        etiqueta = f"Generar_salidas / {act['name']}"
+        assert act["policy"]["retry"] == 0, etiqueta
+        assert act["policy"]["timeout"] == "0.12:00:00", etiqueta
