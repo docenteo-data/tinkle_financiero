@@ -169,10 +169,10 @@ def test_generar_salidas():
         assert parametros[nombre]["defaultValue"] == "", nombre
 
     acts = actividades("Generar_salidas")
-    assert len(acts) == 2
+    assert len(acts) == 3
     notebook = por_id(acts, "TridentNotebook", "notebookId", NOTEBOOK_SALIDAS)
     assert depende_de(notebook) == {}
-    copia = [a for a in acts if a["type"] == "Copy"]
+    copia = [a for a in acts if a["type"] == "Copy" and a["name"] != "Copiar Ageing a SharePoint"]
     assert len(copia) == 1
     assert depende_de(copia[0]) == {notebook["name"]: ["Succeeded"]}
 
@@ -191,6 +191,38 @@ def test_generar_salidas():
         etiqueta = f"Generar_salidas / {act['name']}"
         assert act["policy"]["retry"] == 0, etiqueta
         assert act["policy"]["timeout"] == "0.12:00:00", etiqueta
+
+
+def test_generar_salidas_copia_ageing():
+    """Ageing tiene su propia Copy: igual que la de Balance, con su carpeta de origen y de destino."""
+    acts = actividades("Generar_salidas")
+    notebook = por_id(acts, "TridentNotebook", "notebookId", NOTEBOOK_SALIDAS)
+    balance = next(a for a in acts if a["name"] == "Copiar a SharePoint")
+    ageing = next(a for a in acts if a["name"] == "Copiar Ageing a SharePoint")
+
+    assert ageing["type"] == "Copy"
+    assert depende_de(ageing) == {notebook["name"]: ["Succeeded"]}
+    assert ageing["policy"] == balance["policy"]
+
+    origen = ageing["typeProperties"]["source"]["storeSettings"]
+    assert origen["wildcardFolderPath"] == "Exportaciones/Ageing"
+    assert origen["wildcardFileName"] == "*.txt"
+    assert origen["recursive"] is True
+    destino = ageing["typeProperties"]["sink"]["datasetSettings"]["typeProperties"]["location"]
+    assert destino["folderPath"] == "Shared Documents/Reporting Financiero/2. Salida de ficheros/Ageing"
+
+    # Solo cambian esas dos rutas: conexiones y el resto de ajustes son los de la copia de Balance.
+    esperado = json.loads(json.dumps(balance["typeProperties"]))
+    esperado["source"]["storeSettings"]["wildcardFolderPath"] = "Exportaciones/Ageing"
+    esperado["sink"]["datasetSettings"]["typeProperties"]["location"]["folderPath"] = destino["folderPath"]
+    assert ageing["typeProperties"] == esperado
+
+
+def test_ageing_vista_y_notebook():
+    codigo = codigo_notebook()
+    assert re.search(r'^VISTA_AGEING\s*=\s*"vw_Export_Ageing"', codigo, re.M)
+    assert (FABRIC / "sql" / "300.vw_Export_Ageing.sql").exists()
+    assert not (FABRIC / "sql" / "200.vw_Export_Ageing.sql").exists()
 
 
 def test_flujo_actualizar_datos():
