@@ -56,6 +56,15 @@ Recuentos antes y después, reconstruidos del registro Delta (no se apuntaron an
 
 Control de `300.Fact_Actuals`: suma de `Saldo` 72.423.595.604,55; último periodo 2026-03-01.
 
+### Transformacion_datos (04/11/2026, Completed)
+
+Mismas filas en las 9 tablas y la misma cifra de control de `300.Fact_Actuals` (72.423.595.604,55; 2026-03-01). Versiones nuevas: `200.Oracle_historico` v26, `200.HAPA` v25, `200.MMS` v43, `300.Fact_Actuals` v24. Para volver al estado anterior: v25, v24, v42 y v23.
+
+### Antes de Refresco_modelos (04/11/2026)
+
+- Financial Model (Direct Lake): último refresco `DirectLakeFraming` Completed el 24/09/2026 11:07 UTC; `COUNTROWS(Fact_Actuals)` = 34.405.
+- Agings (import): sin historial de refrescos en la API; `200 Aging_Clientes` = 815 filas y `200 Aging_Proveedores` = 708.
+
 ## Revisión (riesgos que ningún test cubre)
 
 1. Las vistas nuevas devuelven distinto que las viejas: se cubre con la comparación EXCEPT de la tarea 1.
