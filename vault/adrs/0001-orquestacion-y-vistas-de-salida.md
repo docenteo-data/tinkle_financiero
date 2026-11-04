@@ -2,7 +2,7 @@
 type: adr
 load_tier: 3
 schema_version: 1
-status: propuesta
+status: aceptada
 date: 2026-11-04
 tags: [rf-fabric, orquestacion, adr]
 ---
@@ -10,6 +10,8 @@ tags: [rf-fabric, orquestacion, adr]
 # ADR 0001 - Pipelines modulares, flujos y vistas de salida
 
 > Cuándo cargar: vas a cambiar los pipelines, las UDF, los botones de los informes o las vistas de exportación de rf-fabric, o a dibujar la orquestación "propuesta".
+
+Estado a 04/11/2026: aceptada e implantada en Fabric salvo lo marcado como pendiente en los puntos 4 a 6 (botones, secreto y retirada de los pipelines antiguos).
 
 ## Contexto
 
