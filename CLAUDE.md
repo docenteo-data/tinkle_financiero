@@ -21,8 +21,11 @@ entorno virtual y sus dependencias:
 - El trabajo se distingue por el commit: conventional en español con prefijo de
   trabajo (`feat(<trabajo>): ...`, `fix(...)`, `docs(...)`). Un commit no toca
   dos proyectos a la vez.
-- Commit en la misma sesión tras cada cambio no trivial; el push, tras
-  confirmarlo con el usuario. Etiqueta al cerrar un trabajo.
+- Commit en la misma sesión tras cada cambio no trivial. Etiqueta al cerrar un
+  trabajo.
+- Push: nunca sin pedir aprobación al usuario justo antes, en cada push. Di qué
+  ramas y qué commits se suben y espera su sí. Una aprobación anterior, o una
+  frase general como "habrá que hacer push", no cuenta para el siguiente push.
 - `main` solo recibe ciclos cerrados, con merge `--no-ff`, y nunca por iniciativa
   propia: pregunta antes de integrar.
 - Worktree solo si otra sesión trabaja a la vez en el mismo proyecto.

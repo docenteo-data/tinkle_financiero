@@ -24,3 +24,4 @@ Copia en texto, exportada por API, del workspace de Microsoft Fabric "Tinkle - F
 - [[integrations]]: ficheros de entrada desde OneDrive o SharePoint, conexiones de los modelos y salida del balance a SharePoint.
 - [[configuration]]: formato de cada tipo de item, ficheros de metadatos, política de reintentos y flujo de publicación y rollback.
 - [[quality]]: validaciones del notebook de Grupo, comprobación de coincidencia con Fabric y riesgos de calidad abiertos.
+- [[lineage]]: qué lee y qué escribe cada consulta de dataflow, lectores de cada tabla del lakehouse y consumo aguas abajo. Fuente de los diagramas de flujo y orquestación.

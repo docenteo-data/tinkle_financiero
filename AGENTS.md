@@ -9,7 +9,8 @@ CLAUDE.md para la sesión principal.
 - Toca solo los ficheros que nombra la tarea. No explores más allá de las rutas
   que te dan; si falta contexto, dilo en el informe en vez de buscarlo.
 - Un subagente no hace commit, push, ni crea ramas o worktrees: el commit lo
-  hace la sesión principal después de validar.
+  hace la sesión principal después de validar. La sesión principal tampoco hace
+  push sin pedir aprobación al usuario justo antes, en cada push (ver CLAUDE.md).
 - Rutas siempre entre comillas: pueden llevar espacios.
 
 ## Cifras y verificación
