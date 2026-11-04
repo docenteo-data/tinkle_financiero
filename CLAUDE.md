@@ -129,8 +129,10 @@ la nota de cómo regenerarlos).
     `exportar_fabric.py` para traer Fabric al repo.
   - Escribir en Fabric solo con `publicar_fabric.py`, y `--confirmar` solo con
     la confirmación explícita de la persona en ese momento. Las herramientas
-    del MCP que escriben están bloqueadas. Ejecutar pipelines y refrescar
-    modelos lo hace una persona del equipo.
+    del MCP que escriben están bloqueadas. Ejecutar pipelines solo con
+    `ejecutar_fabric.py`, también con `--confirmar` y confirmación explícita
+    justo antes de cada ejecución. Refrescar modelos fuera de un pipeline,
+    publicar la app y cambiar permisos lo hace una persona del equipo.
 - Oracle, SAGE y Magnitude: no hay acceso directo; los datos llegan como
   extractos en OneDrive (ver `reporting-financiero/README.md`).
 - Las UDF de Fabric tienen un secreto incrustado pendiente de rotar (ver

@@ -110,6 +110,52 @@ def esperar_operacion(cabeceras, tok, con_resultado):
     raise TimeoutError(operacion)
 
 
+ESTADOS_FINALES_JOB = ("Completed", "Failed", "Cancelled", "Deduped")
+
+
+def leer_parametros(lista: list[str]) -> dict[str, str]:
+    """Convierte ["clave=valor", ...] en {clave: valor}. Se parte por el primer "=".
+
+    ValueError si un elemento no tiene "=" o si la clave, sin espacios alrededor, queda vacía.
+    """
+    parametros = {}
+    for elemento in lista:
+        clave, separador, valor = elemento.partition("=")
+        clave = clave.strip()
+        if not separador or not clave:
+            raise ValueError("Parámetro mal formado (se espera clave=valor): " + ascii(elemento))
+        parametros[clave] = valor
+    return parametros
+
+
+def lanzar_pipeline(item, tok, parametros) -> str:
+    """Lanza el pipeline `item` con `parametros` y devuelve la URL de la instancia del job.
+
+    RuntimeError con el estado HTTP si la respuesta no es 202 o no trae la cabecera Location.
+    """
+    url = f"{API}/workspaces/{WORKSPACE_ID}/items/{item['id']}/jobs/instances?jobType=Pipeline"
+    estado, cabeceras, _ = peticion("POST", url, tok, {"executionData": {"parameters": parametros}})
+    if estado != 202 or "Location" not in cabeceras:
+        raise RuntimeError(f"No se pudo lanzar el pipeline (estado {estado}).")
+    return cabeceras["Location"]
+
+
+def esperar_job(url, tok, intervalo=20, max_segundos=10800, dormir=time.sleep) -> dict:
+    """Consulta el job hasta que alcanza un estado final y devuelve su cuerpo.
+
+    TimeoutError(url) si el tiempo esperado acumulado superaría max_segundos.
+    """
+    esperado = 0
+    while True:
+        _, _, cuerpo = peticion("GET", url, tok)
+        if cuerpo["status"] in ESTADOS_FINALES_JOB:
+            return cuerpo
+        if esperado + intervalo > max_segundos:
+            raise TimeoutError(url)
+        dormir(intervalo)
+        esperado += intervalo
+
+
 def items(tok):
     return peticion("GET", f"{API}/workspaces/{WORKSPACE_ID}/items", tok)[2]["value"]
 
