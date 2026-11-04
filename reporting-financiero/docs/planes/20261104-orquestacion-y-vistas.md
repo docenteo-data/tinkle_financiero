@@ -71,6 +71,12 @@ Mismas filas en las 9 tablas y la misma cifra de control de `300.Fact_Actuals` (
 - Agings: Failed. Motivo (Premium_ASWL_Error): el modelo usa la conexión de datos por defecto, sin credenciales explícitas; Fabric pide sustituirla por una conexión en la nube o de gateway explícita en la configuración del modelo. Es configuración del modelo, no del pipeline: "Generar Reporting" lanzaba el mismo refresco (con condición Completed, así que un fallo no paraba nada) y la API no tiene ningún refresco correcto de Agings en su historial. Los datos del modelo siguen siendo los de su última importación (815 y 708 filas, iguales al lakehouse).
 - Pendiente: asignar a Agings una conexión explícita (configuración del modelo semántico, "Conexiones de puerta de enlace y en la nube") y relanzar `Refresco_modelos`.
 
+### Arreglo de Agings y Refresco_modelos de nuevo (04/11/2026, Completed)
+
+- Propiedad de la configuración de Agings: de `azure@likuit.com` a `reporting@likuit.com` ("Tomar control", con aprobación del usuario). Se borraron las credenciales almacenadas, que eran la asignación por defecto de inicio de sesión único.
+- Conexión en la nube nueva `SqlEndpoint lh_tinkle_financiero reporting` (id `51e3efbb-fe54-4e6d-8694-4ca01e0fe21a`, SQL, OAuth2 de `reporting@likuit.com`, privacidad Organización), creada por el usuario en el portal y asignada al origen SQL del modelo Agings.
+- `Refresco_modelos`: Completed. Financial Model 13:59:56 UTC (34.405 filas en `Fact_Actuals`), Agings 14:00:06 UTC (815 y 708 filas). Primer refresco correcto de Agings que registra la API.
+
 ## Revisión (riesgos que ningún test cubre)
 
 1. Las vistas nuevas devuelven distinto que las viejas: se cubre con la comparación EXCEPT de la tarea 1.
