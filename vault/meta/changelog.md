@@ -22,3 +22,8 @@ tags: [meta]
 - commits: `7d6aa2b` → `0ad7fdb`
 - changed files (5): `anexo_pendientes.py`, `exportar_fabric.py`, `fabric_comun.py`, `md_a_docx.py`, `validar_ficheros_grupo.py`
 - affected docs: `repos\rf-scripts\apis.md`, `repos\rf-scripts\architecture.md`, `repos\rf-scripts\configuration.md`, `repos\rf-scripts\integrations.md`, `repos\rf-scripts\overview.md`, `repos\rf-scripts\quality.md`
+
+## 2026-11-04T10:43:53Z · rf-scripts
+
+- commits: `0ad7fdb` → `ff89948`
+- changed files (0): none
