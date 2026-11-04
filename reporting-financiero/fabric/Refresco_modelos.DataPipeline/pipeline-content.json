@@ -1,0 +1,52 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "name": "Financial Model",
+        "type": "PBISemanticModelRefresh",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "method": "POST",
+          "operationType": "SemanticModelRefresh",
+          "groupId": "b31820dc-4b4f-4696-9a96-bbee438e9306",
+          "datasetId": "847ce270-06ab-408b-85c9-cb8f390fad1c",
+          "waitOnCompletion": true,
+          "commitMode": "Transactional"
+        },
+        "externalReferences": {
+          "connection": "634b6833-a1cb-4197-8442-b23d936b319d"
+        }
+      },
+      {
+        "name": "Agings",
+        "type": "PBISemanticModelRefresh",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "method": "POST",
+          "operationType": "SemanticModelRefresh",
+          "groupId": "b31820dc-4b4f-4696-9a96-bbee438e9306",
+          "datasetId": "e19def87-fdf3-4b44-bd60-d22e5d79ce88",
+          "waitOnCompletion": true,
+          "commitMode": "Transactional"
+        },
+        "externalReferences": {
+          "connection": "634b6833-a1cb-4197-8442-b23d936b319d"
+        }
+      }
+    ]
+  }
+}

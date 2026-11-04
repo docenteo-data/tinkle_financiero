@@ -1,0 +1,105 @@
+{
+  "properties": {
+    "activities": [
+      {
+        "name": "Silver",
+        "type": "RefreshDataflow",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "dataflowId": "e34a567e-3986-467e-ac59-9c89b8014b87",
+          "workspaceId": "b31820dc-4b4f-4696-9a96-bbee438e9306",
+          "notifyOption": "NoNotification",
+          "dataflowType": "DataflowFabric",
+          "executeMashupQueriesOnly": true
+        }
+      },
+      {
+        "name": "Endpoint SQL tras silver",
+        "type": "RefreshSqlEndpoint",
+        "dependsOn": [
+          {
+            "activity": "Silver",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "sqlEndpointId": "485f1bd4-2372-44a3-b279-e00a63a80137",
+          "workspaceId": "b31820dc-4b4f-4696-9a96-bbee438e9306",
+          "recreateTables": false
+        },
+        "externalReferences": {
+          "connection": "2b2904ce-869a-4859-8cb9-6c7589e9a250"
+        }
+      },
+      {
+        "name": "Gold",
+        "type": "RefreshDataflow",
+        "dependsOn": [
+          {
+            "activity": "Endpoint SQL tras silver",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "dataflowId": "2ddb6bc7-1a91-490f-9a6b-60ade6940b4e",
+          "workspaceId": "b31820dc-4b4f-4696-9a96-bbee438e9306",
+          "notifyOption": "NoNotification",
+          "dataflowType": "DataflowFabric",
+          "executeMashupQueriesOnly": true
+        }
+      },
+      {
+        "name": "Endpoint SQL tras gold",
+        "type": "RefreshSqlEndpoint",
+        "dependsOn": [
+          {
+            "activity": "Gold",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.12:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "sqlEndpointId": "485f1bd4-2372-44a3-b279-e00a63a80137",
+          "workspaceId": "b31820dc-4b4f-4696-9a96-bbee438e9306",
+          "recreateTables": false
+        },
+        "externalReferences": {
+          "connection": "2b2904ce-869a-4859-8cb9-6c7589e9a250"
+        }
+      }
+    ]
+  }
+}
