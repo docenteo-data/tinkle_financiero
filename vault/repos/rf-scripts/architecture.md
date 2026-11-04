@@ -20,16 +20,17 @@ tags: [rf-scripts, architecture]
 Módulo compartido sin punto de entrada propio. Tiene cuatro bloques:
 
 - Cuenta y tokens: `comprobar_cuenta` verifica que Azure CLI apunta a la cuenta de Tinkle (si no, sale con código 2). `token` pide al CLI un token para Fabric o para SQL. `_az` sale con código 2 si Azure CLI falla. Ningún script guarda ni imprime tokens.
-- API REST: `peticion` hace las llamadas HTTP con token Bearer. `esperar_operacion` sondea las operaciones asíncronas hasta `Succeeded` o `Failed`. `items`, `descargar_definicion` y `publicar_definicion` cubren listar, leer y escribir definiciones. `partes_para_publicar` excluye los ficheros que no son publicables (`.platform`).
+- API REST: `peticion` hace las llamadas HTTP con token Bearer. `esperar_operacion` sondea las operaciones asíncronas hasta `Succeeded` o `Failed`. `items`, `descargar_definicion`, `publicar_definicion` y `crear_item` cubren listar, leer, actualizar y crear definiciones. `partes_para_publicar` excluye los ficheros que no son publicables (`.platform`). `lanzar_pipeline` y `esperar_job` lanzan un pipeline y siguen su job hasta un estado final; `leer_parametros` convierte los `clave=valor` de la línea de comandos.
 - Git: `ficheros_en_git` lee la carpeta `reporting-financiero/fabric` de un commit con `git archive`, sin tocar la carpeta de trabajo. `solo_items` filtra a lo exportable y `comparar` clasifica las diferencias en nuevos, cambiados y borrados.
-- SQL: `conectar_sql` abre la conexión al SQL endpoint del lakehouse con token. `descargar_sql` y `ficheros_sql` leen vistas y columnas de los esquemas 100, 200 y 300. `es_consulta_de_lectura` bloquea las sentencias de escritura.
+- SQL: `conectar_sql` abre la conexión al SQL endpoint del lakehouse con token. `descargar_sql` y `ficheros_sql` leen vistas y columnas de los esquemas 100, 200 y 300. `es_consulta_de_lectura` bloquea las sentencias de escritura. `vista_de_ruta`, `sentencia_de_vista` y `publicar_vista` preparan y ejecutan la creación o actualización de una vista; `sentencia_de_vista` rechaza líneas `GO` y ficheros que no crean la vista de su ruta.
 
 Configuración clave en el módulo: `FORMATOS` define qué tipos de item se exportan y publican y con qué formato de definición. Las User Data Functions quedan fuera a propósito. `CARPETAS_LAKEHOUSE` marca las carpetas de vistas y esquema. `ITEMS_DE_SISTEMA` y `es_exportable` excluyen los items que Power BI crea al abrir las métricas de uso de un informe (Report Usage Metrics Report, Report Usage Metrics Model y Usage Metrics Report), que no forman parte de la solución y que la API no permite exportar.
 
 ## Puntos de entrada
 
 - `exportar_fabric.py`: lee Fabric y escribe `fabric/` o compara con un commit.
-- `publicar_fabric.py`: escribe en Fabric desde un commit de git. Solo actualiza items existentes.
+- `publicar_fabric.py`: escribe en Fabric desde un commit de git: actualiza items existentes, crea los que faltan con `--crear` y publica vistas SQL (`sql/<esquema>.<vista>.sql`). Nunca borra.
+- `ejecutar_fabric.py`: lanza un pipeline de Fabric, espera a que termine y devuelve su estado. Solo lanza con `--confirmar`.
 - `consultar_sql.py`: consulta de solo lectura al SQL endpoint.
 - `validar_ficheros_grupo.py`: reproduce los ficheros de Grupo de Ageing y Revenue de marzo de 2026 desde las fuentes y los compara con los TXT de Magnitude. Lee Excel y consulta Fabric en solo lectura.
 - `anexo_pendientes.py`: genera el anexo de pendientes de la auditoría general, a partir del registro de reuniones, la auditoría técnica y las preguntas para Tinkle.
@@ -49,13 +50,24 @@ Configuración clave en el módulo: `FORMATOS` define qué tipos de item se expo
 
 ### Publicar
 
-1. Validar que los tipos son publicables, comprobar la cuenta y obtener el token.
-2. Comprobar que los items existen en Fabric. El script no crea ni borra items.
-3. Leer de git, con `--ref` (por defecto `HEAD`), las definiciones a publicar, y de git, con `--base` (por defecto `main`), la referencia esperada.
-4. Descargar de Fabric el estado actual y compararlo con `--base`. Si hay diferencias, sale con código 1, salvo con `--forzar`.
-5. Por cada item, calcular el resumen de cambios (nuevos, cambiados, quitados).
-6. Sin `--confirmar` solo simula. Con `--confirmar` llama a `publicar_definicion`, que envía `updateDefinition` y espera la operación si la respuesta es 202.
-7. Sale con 0 si todo va bien y con 2 ante un error.
+1. Validar que los argumentos son vistas `sql/<100|200|300>.<nombre>.sql` o items de tipo publicable, y comprobar la cuenta.
+2. Vistas (`_preparar_vistas`): leer de git, con `--ref`, cada fichero y las vistas actuales del SQL endpoint. Si una vista no está en `--ref`, sale con código 2. Si Fabric difiere de `--base` en alguna vista, sale con código 1 salvo `--forzar`. Prepara la sentencia (`sentencia_de_vista`): `CREATE` si la vista es nueva, `CREATE OR ALTER` si existe.
+3. Items: los que no existen en Fabric dan error, salvo con `--crear`. Se leen de git, con `--ref` (por defecto `HEAD`), las definiciones a publicar, y de git, con `--base` (por defecto `main`), la referencia esperada.
+4. Descargar de Fabric el estado actual de los items existentes y compararlo con `--base`. Los items que faltan y están en `--base` también cuentan como diferencia. Si hay diferencias, sale con código 1, salvo con `--forzar`.
+5. Por cada vista, calcular su estado: nueva, cambiada o sin cambios. Sin `--confirmar` solo simula. Con `--confirmar` ejecuta la sentencia (`publicar_vista`) y salta las vistas sin cambios. Las vistas se publican antes que los items.
+6. Por cada item existente, calcular el resumen de cambios (nuevos, cambiados, quitados). Con `--confirmar` llama a `publicar_definicion`, que envía `updateDefinition` y espera la operación si la respuesta es 202.
+7. Por cada item nuevo, sin `--confirmar` solo simula. Con `--confirmar` llama a `crear_item`, que envía el item con su definición y espera si la respuesta es 202.
+8. Sale con 0 si todo va bien y con 2 ante un error.
+
+### Ejecutar pipeline
+
+1. Leer `--parametro` con `leer_parametros`. Un parámetro mal formado sale con código 2.
+2. Comprobar la cuenta y buscar el item por nombre. Debe existir y ser de tipo `DataPipeline`; si no, sale con código 2.
+3. Sin `--confirmar` termina aquí, con código 0, sin lanzar nada.
+4. Con `--confirmar`, `lanzar_pipeline` envía la petición de lanzamiento con los parámetros y guarda la URL del job de la cabecera `Location`.
+5. `esperar_job` consulta ese job cada 20 segundos hasta un estado final (`Completed`, `Failed`, `Cancelled` o `Deduped`). Si el tiempo de espera supera `--max-minutos`, sale con código 2 sin cancelar nada, porque el pipeline sigue en marcha.
+6. Sale con 0 si el estado es `Completed`, con 1 en los demás estados finales.
+7. Defecto conocido (no corregido): un `HTTPError` al listar los items (paso 2, fuera del `try`) no se captura. El script termina con traza y código 1, el mismo código que un pipeline `Failed`, en vez del 2 que documenta el resto de errores.
 
 ### Consultar SQL
 
@@ -90,7 +102,7 @@ Procesa un fichero por ejecución (`ageing` o `revenue`), con la carpeta `3.Fuen
 
 1. Localiza la plantilla `docenteo-documento.dotx` de la skill docenteo-design en la versión más alta instalada del plugin docenteo-skills (`plantilla_por_defecto`), salvo que se pase `--plantilla`. Si no la encuentra, sale con código 2.
 2. La primera línea `# ` es el título y no se pinta, porque va en la portada. Lo que hay hasta el primer capítulo se pinta como ficha del documento.
-3. Convierte capítulos, apartados, subapartados, etiquetas en negrita, listas (cada lista numerada reinicia su numeración) y párrafos a los estilos de la plantilla. Las tablas se adaptan a anchos fijos (`tabla`). La tabla de conceptos de 8 columnas se parte en una tabla por bloque, con una nota de pendientes (`tablas_de_conceptos`).
+3. Convierte capítulos, apartados, subapartados, etiquetas en negrita, listas (cada lista numerada reinicia su numeración) y párrafos a los estilos de la plantilla. Las cinco formas de tabla conocidas (cabecera Nº con Tareas, Fase, Id/Tipo/Descripción/Responsable/Estado, Id/Prioridad/Problema/Situación y Nº de dos columnas) usan anchos fijos; el resto calcula sus anchos según el contenido (`anchos_automaticos`). Una sigla corta seguida de una cifra se une con espacio duro (`pegar_cifras`). La tabla de conceptos de 8 columnas se parte en una tabla por bloque, con anchos fijos y una nota de pendientes (`tablas_de_conceptos`).
 4. Reescribe el cuerpo del documento, la numeración, el tipo de contenido y el título de las propiedades. El resto del paquete de la plantilla se copia tal cual.
 5. El script termina sin verificar el resultado. Indica revisarlo después con el verificador de la skill.
 
@@ -107,8 +119,10 @@ Procesa un fichero por ejecución (`ageing` o `revenue`), con la carpeta `3.Fuen
 
 - `fabric_comun.py#comprobar_cuenta`, `#token`, `#peticion`, `#esperar_operacion`, `#descargar_definicion`, `#publicar_definicion`, `#ficheros_en_git`, `#solo_items`, `#comparar`, `#descargar_sql`, `#ficheros_sql`, `#conectar_sql`, `#es_consulta_de_lectura`, `#es_exportable`, `#ITEMS_DE_SISTEMA`.
 - `exportar_fabric.py#descargar_todo`, `#exportar`, `#comprobar`, `#main`.
-- `publicar_fabric.py#main`.
+- `publicar_fabric.py#main`, `#_preparar_vistas`, `#_publicar_vistas`.
+- `ejecutar_fabric.py#main`.
 - `consultar_sql.py#main`.
 - `validar_ficheros_grupo.py#main`, `#validar_ageing`, `#validar_revenue`, `#mapeo_magnitude`, `#leer_txt`, `#tramo`, `#consultar`, `#comparar_lineas`.
 - `anexo_pendientes.py#generar`, `#leer_conceptos`, `#leer_registro`, `#leer_tecnica`, `#leer_preguntas`, `#main`.
-- `md_a_docx.py#plantilla_por_defecto`, `#tabla`, `#tablas_de_conceptos`, `#lista`, `#convertir`.
+- `md_a_docx.py#plantilla_por_defecto`, `#tabla`, `#anchos_automaticos`, `#pegar_cifras`, `#tablas_de_conceptos`, `#lista`, `#convertir`.
+- `fabric_comun.py#crear_item`, `#lanzar_pipeline`, `#esperar_job`, `#vista_de_ruta`, `#sentencia_de_vista`, `#publicar_vista`.

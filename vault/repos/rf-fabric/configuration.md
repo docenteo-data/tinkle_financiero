@@ -38,7 +38,7 @@ Cada carpeta de item tiene un `.platform`, un JSON con el esquema de integració
 - `metadata`: tipo del item (`type`) y nombre visible (`displayName`); en el Notebook, además, una descripción.
 - `config`: versión del esquema (2.0) y `logicalId`.
 
-Los 21 `.platform` tienen el `logicalId` a ceros porque es lo que devuelve getDefinition al exportar. El id real de cada item está en la sección 1 de `reporting-financiero/docs/contexto/Documentacion_Tinkle_Financiero.md`.
+Los 28 `.platform` tienen el `logicalId` a ceros porque es lo que devuelve getDefinition al exportar. El id real de cada item está en la sección 1 de `reporting-financiero/docs/contexto/Documentacion_Tinkle_Financiero.md`.
 
 ## definition.pbism y definition.pbir
 
@@ -48,7 +48,13 @@ Los 21 `.platform` tienen el `logicalId` a ceros porque es lo que devuelve getDe
 
 ## Política de los pipelines
 
-Hay dos DataPipeline: "Generar Reporting" y "Grabar salidas". Todos los bloques `policy` de sus actividades (siete en el primero y dos en el segundo) tienen los mismos valores:
+Hay nueve DataPipeline, en tres grupos:
+
+- Modulares (4): Ingesta_datos (3 actividades), Transformacion_datos (4), Refresco_modelos (2) y Generar_salidas (2).
+- Flujos (3): Flujo_actualizar_datos, Flujo_total_reporting y Flujo_total_txt, con dos actividades ExecutePipeline cada uno.
+- Anteriores (2): "Generar Reporting" (siete actividades) y "Grabar salidas" (dos).
+
+Todos los bloques `policy` de sus actividades tienen los mismos valores:
 
 - Timeout de 12 horas (`0.12:00:00`).
 - Reintentos: 0. Un fallo no se reintenta solo; hay que relanzarlo a mano.
@@ -67,8 +73,9 @@ Resumen de `reporting-financiero/docs/flujo-fabric.md` (leer el original para lo
 
 ## Evidence
 
-- `Agings.Report/StaticResources/`, `Agings.Report/definition/report.json`, `temas/TemaTinkle.json` - recursos de presentación.
 Rutas relativas a `reporting-financiero/fabric/`, salvo las dos últimas.
+
+- `Agings.Report/StaticResources/`, `Agings.Report/definition/report.json`, `temas/TemaTinkle.json` - recursos de presentación.
 
 - `Agings.SemanticModel/.platform` - tipo SemanticModel, esquema y `logicalId`.
 - `Agings.Report/.platform` - tipo Report.
@@ -78,6 +85,7 @@ Rutas relativas a `reporting-financiero/fabric/`, salvo las dos últimas.
 - `Agings.Report/definition.pbir` - versión del informe y referencia `byConnection`.
 - `Generar Reporting.DataPipeline/pipeline-content.json` - bloques `policy` de las actividades.
 - `Grabar salidas.DataPipeline/pipeline-content.json` - bloques `policy` de las actividades.
+- `Ingesta_datos.DataPipeline/pipeline-content.json`, `Transformacion_datos.DataPipeline/pipeline-content.json`, `Refresco_modelos.DataPipeline/pipeline-content.json`, `Generar_salidas.DataPipeline/pipeline-content.json`, `Flujo_actualizar_datos.DataPipeline/pipeline-content.json`, `Flujo_total_reporting.DataPipeline/pipeline-content.json`, `Flujo_total_txt.DataPipeline/pipeline-content.json` - bloques `policy` de las actividades nuevas.
 - `reporting-financiero/docs/flujo-fabric.md` - flujo, ramas y rollback (fuera de la fuente).
 - `.gitattributes` (raíz del repositorio) - regla `-text` sobre `reporting-financiero/fabric/**`.
 

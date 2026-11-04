@@ -29,7 +29,7 @@ Dataflow, DataPipeline, Notebook, SemanticModel y Report, más las carpetas `sql
 
 ## Consultas por dataflow
 
-### INGESTA_Carga_Datos (pipeline Generar Reporting, paso 1)
+### INGESTA_Carga_Datos (pipelines Ingesta_datos y Generar Reporting)
 
 | Consulta | Lee | Escribe |
 |---|---|---|
@@ -40,7 +40,7 @@ Dataflow, DataPipeline, Notebook, SemanticModel y Report, más las carpetas `sql
 | Carga_New_Agings_Clientes | Excel de `Dinamicos/AGINGS` | 100.New_Agings_Clientes |
 | Carga_New_Agings_Proveedores | Excel de `Dinamicos/AGINGS` | 100.New_Agings_Proveedores |
 
-### TRANS_Silver (pipeline Generar Reporting, paso 3)
+### TRANS_Silver (pipelines Transformacion_datos y Generar Reporting)
 
 | Consulta | Lee | Escribe |
 |---|---|---|
@@ -58,7 +58,7 @@ Dataflow, DataPipeline, Notebook, SemanticModel y Report, más las carpetas `sql
 
 200_Oracle, 200_HAPA y 200_MMS leen la misma tabla que escriben: conservan el histórico y le añaden lo nuevo. Oracle y HAPA sustituyen los periodos desde la fecha de corte; MMS no filtra por fecha y quita duplicados.
 
-### TRANS_Gold (pipeline Generar Reporting, paso 5)
+### TRANS_Gold (pipelines Transformacion_datos y Generar Reporting)
 
 | Consulta | Lee | Escribe |
 |---|---|---|
@@ -72,7 +72,7 @@ Dataflow, DataPipeline, Notebook, SemanticModel y Report, más las carpetas `sql
 | Dim_Cuentas | 200_COA_Oracle, 200_Mapping_HAPA, 200_Mapping Portugal | 300.Dim_Cuentas |
 | Dim_mapeo_cuentas | 200_COA_Oracle, 200_Mapping_HAPA, 200_Mapping Portugal | 300.Dim_Mapeo_Cuentas |
 
-### INGESTA_Maestros (fuera de los pipelines)
+### INGESTA_Maestros (pipeline Ingesta_datos)
 
 | Consulta | Lee | Escribe |
 |---|---|---|
@@ -129,9 +129,9 @@ Las B01 y B01 TOTAL no escriben en ninguna tabla: la carga de presupuesto que ll
 | 200.Presupuestos | Modelo Financial Model |
 | 200.Revenues | Ninguno en el repositorio |
 | 200.Budget_historico | Ninguno en el repositorio (tampoco tiene productor) |
-| 300.Fact_Actuals | Modelo Financial Model; vistas 200.vw_Export_Grupo, 200.vw_Export_Saldos_4_7 y 300.vw_Reporting_Actuals |
-| 300.Dim_Mapeo_Cuentas | Modelo Financial Model; vistas 200.vw_Export_Grupo y 300.vw_Reporting_Actuals |
-| 300.Dim_Sociedades | Modelo Financial Model; vistas 200.vw_Export_Grupo y 200.vw_Export_Saldos_4_7 |
+| 300.Fact_Actuals | Modelo Financial Model; vistas 300.vw_Export_Grupo, 300.vw_Export_Saldos_4_7 y 300.vw_Reporting_Actuals |
+| 300.Dim_Mapeo_Cuentas | Modelo Financial Model; vistas 300.vw_Export_Grupo y 300.vw_Reporting_Actuals |
+| 300.Dim_Sociedades | Modelo Financial Model; vistas 300.vw_Export_Grupo y 300.vw_Export_Saldos_4_7 |
 | 300.Map_Report_Line_Account | Modelo Financial Model; vista 300.vw_Reporting_Actuals |
 | 300.Dim_CDC | Modelo Financial Model; INICIAL_Carga_Rentabilidades (Dim_CDC) |
 | 300.Aux_CDC, 300.Dim_Calendar, 300.Dim_Clientes, 300.Dim_Cuentas, 300.Dim_RRHH, 300.Dim_Report_Line, 300.Dim_equipos, 300.Fact_Asignacion_RRHH | Modelo Financial Model |
@@ -140,13 +140,13 @@ Las B01 y B01 TOTAL no escriben en ninguna tabla: la carga de presupuesto que ll
 
 - Financial Model (Direct Lake sobre `lh_tinkle_financiero`): las 13 tablas de 300 más 200.MMS y 200.Presupuestos. Lo leen los informes Checklist (Oracle), HAPA, MMS, Presupuesto y Rentabilidad.
 - Agings (import): 200.Aging_Clientes y 200.Aging_Proveedores. Lo lee el informe Agings.
-- Vistas 200.vw_Export_Grupo y 200.vw_Export_Saldos_4_7: las lee el notebook Generar_txt_Balance_Saldos, que escribe los .txt en `Files/Exportaciones/Balance`; el pipeline Grabar salidas los copia a SharePoint.
+- Vistas 300.vw_Export_Grupo y 300.vw_Export_Saldos_4_7: las lee el notebook Generar_txt_Balance_Saldos, que escribe los .txt en `Files/Exportaciones/Balance`. Los copia a SharePoint el pipeline Generar_salidas (lanzado sin parámetros desde Flujo_total_txt y desde la UDF `Generar_txt`) y, mientras exista, el pipeline anterior Grabar salidas.
 - Vista 300.vw_Reporting_Actuals: sin lector en el repositorio.
 
 ## Open questions
 
 - TBD: lectores fuera del repositorio de 100.RLS, 200.Revenues y 300.vw_Reporting_Actuals (por ejemplo, la seguridad por filas o consultas manuales al SQL endpoint).
-- TBD: programación de los pipelines y quién lanza los dataflows que no están en ellos (ver [[repos/rf-fabric/architecture]]).
+- TBD: programación de los pipelines y de los flujos, y quién lanza los dataflows que no están en ellos, INICIAL_* y Seguridad_CDC (ver [[repos/rf-fabric/architecture]]).
 
 ## Evidence
 
@@ -156,7 +156,10 @@ Las B01 y B01 TOTAL no escriben en ninguna tabla: la carga de presupuesto que ll
 - `Financial Model.SemanticModel/definition/tables/` - `entityName` y `schemaName` de cada partición Direct Lake.
 - `Agings.SemanticModel/definition/tables/200 Aging_Clientes.tmdl`, `200 Aging_Proveedores.tmdl` - particiones import sobre 200.
 - `*.Report/definition.pbir` - modelo de cada informe.
-- `sql/*.sql` - tablas que lee cada vista.
-- `Generar_txt_Balance_Saldos.Notebook/notebook-content.ipynb` - vistas leídas y carpeta de salida.
-- `Grabar salidas.DataPipeline/pipeline-content.json` - copia de `Files/Exportaciones/Balance` a SharePoint.
+- `sql/300.vw_Export_Grupo.sql`, `sql/300.vw_Export_Saldos_4_7.sql`, `sql/300.vw_Reporting_Actuals.sql` - tablas que lee cada vista.
+- `Generar_txt_Balance_Saldos.Notebook/notebook-content.ipynb` - vistas leídas (esquema 300) y carpeta de salida.
+- `Generar_salidas.DataPipeline/pipeline-content.json` - notebook y copia de `Files/Exportaciones/Balance` a SharePoint.
+- `Grabar salidas.DataPipeline/pipeline-content.json` - copia de `Files/Exportaciones/Balance` a SharePoint (pipeline anterior).
+- `Ingesta_datos.DataPipeline/pipeline-content.json`, `Transformacion_datos.DataPipeline/pipeline-content.json`, `Refresco_modelos.DataPipeline/pipeline-content.json` - qué dataflow o modelo refresca cada actividad, por nombre de actividad.
+- `Flujo_actualizar_datos.DataPipeline/pipeline-content.json`, `Flujo_total_reporting.DataPipeline/pipeline-content.json`, `Flujo_total_txt.DataPipeline/pipeline-content.json` - encadenamiento de los pipelines.
 - `lakehouse/esquema.tsv` - inventario de tablas.

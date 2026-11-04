@@ -25,7 +25,7 @@ El objetivo del proyecto es sustituir el reporting financiero basado en Excel (O
 - Fase 2: presupuesto y desviaciones.
 - Fase 3: rentabilidad, aging y periodo medio de pago.
 
-## Inventario de items (21 en la raíz)
+## Inventario de items (28 en la raíz)
 
 Cada carpeta `<Nombre>.<Tipo>/` contiene un fichero `.platform` con el tipo y el nombre visible del item.
 
@@ -36,14 +36,17 @@ Cada carpeta `<Nombre>.<Tipo>/` contiene un fichero `.platform` con el tipo y el
   - Cargas iniciales: INICIAL_Carga_Agings, INICIAL_Carga_Oracle, INICIAL_Carga_Rentabilidades, INICIAL_Carga_Revenues, INICIAL_Carga_budget_fct.
   - Transformación: TRANS_Silver, TRANS_Gold.
   - Seguridad: Seguridad_CDC.
-- Pipelines de datos (2): Generar Reporting, Grabar salidas.
+- Pipelines de datos (9):
+  - Modulares (4): Ingesta_datos, Transformacion_datos, Refresco_modelos, Generar_salidas.
+  - Flujos (3): Flujo_actualizar_datos, Flujo_total_reporting, Flujo_total_txt.
+  - Anteriores (2): Generar Reporting, Grabar salidas. Se retirarán cuando las UDF lancen los pipelines nuevos ([[adrs/0001-orquestacion-y-vistas-de-salida]], punto 6).
 - Notebook (1): Generar_txt_Balance_Saldos.
 
 El detalle funcional de cada item no se deduce de su nombre ni del `.platform`.
 
 ## Fuera de los items
 
-- `sql/`: tres vistas del SQL endpoint del lakehouse, con nombre `<esquema>.<vista>.sql`. Son `200.vw_Export_Grupo`, `200.vw_Export_Saldos_4_7` y `300.vw_Reporting_Actuals`. El prefijo numérico indica la capa.
+- `sql/`: tres vistas del SQL endpoint del lakehouse, con nombre `<esquema>.<vista>.sql`. Son `300.vw_Export_Grupo`, `300.vw_Export_Saldos_4_7` y `300.vw_Reporting_Actuals`. El prefijo numérico indica la capa. Las dos vistas de exportación estaban en el esquema 200 y pasaron al 300; en el repositorio ya no existen las versiones `200.vw_Export_*`.
 - `lakehouse/`: `esquema.tsv`, el esquema de columnas de las capas 100, 200 y 300.
 - `temas/`: dos temas de Power BI, `TemaPBI.json` y `TemaTinkle.json`. Se mantienen a mano, no se exportan.
 
@@ -56,12 +59,13 @@ El detalle funcional de cada item no se deduce de su nombre ni del `.platform`.
 
 - Función de cada pipeline, dataflow y notebook: ver [[architecture]].
 - Significado de las capas 100, 200 y 300: ver [[architecture]] y [[data-model]].
-- TBD: no verificado que la copia siga alineada con `main` en el commit fb5c2b5.
+- TBD: no verificado que la copia siga alineada con `main`.
 
 ## Evidence
 
-- `*/.platform` (21 carpetas de item): tipo y nombre visible de cada item.
-- `sql/200.vw_Export_Grupo.sql`, `sql/200.vw_Export_Saldos_4_7.sql`, `sql/300.vw_Reporting_Actuals.sql`: nombres de las vistas. No se resume su contenido.
+- `*/.platform` (28 carpetas de item): tipo y nombre visible de cada item. Todos tienen el `logicalId` a ceros.
+- `*.DataPipeline/.platform` y `*.DataPipeline/pipeline-content.json`: los nueve pipelines.
+- `sql/300.vw_Export_Grupo.sql`, `sql/300.vw_Export_Saldos_4_7.sql`, `sql/300.vw_Reporting_Actuals.sql`: nombres de las vistas. No se resume su contenido.
 - `lakehouse/esquema.tsv`: existencia y alcance del esquema de columnas.
 - `temas/TemaPBI.json`, `temas/TemaTinkle.json`: nombres de los temas.
 - `reporting-financiero/README.md` (sección "Fabric" y tabla de carpetas): estructura de `fabric/`, formatos TMDL y PBIR, script de exportación y contexto de fases.

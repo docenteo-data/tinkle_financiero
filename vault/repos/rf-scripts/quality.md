@@ -29,6 +29,14 @@ tags: [rf-scripts, quality]
 - Solo lectura: `es_consulta_de_lectura` acepta SELECT y WITH y rechaza DELETE, UPDATE, INSERT, EXEC, SELECT INTO, MERGE, CREATE y las sentencias encadenadas con `;`. No se deja engañar por palabras dentro de textos o nombres entre corchetes.
 - Errores de herramienta: un fallo de Azure CLI (`token`) o de git (`ficheros_en_git`) sale con código 2 y no con 1, para que no se confunda con "hay diferencias con Fabric".
 
+## Tests de publicación y ejecución de Fabric
+
+Estos tests no abren conexión: sustituyen las llamadas a Fabric, Azure CLI y el SQL endpoint por funciones falsas.
+
+- `reporting-financiero/tests/test_publicar_vistas.py` prueba las vistas de `publicar_fabric.py`. Modos de fallo que cubre: `vista_de_ruta` acepta solo `sql/100|200|300.nombre.sql`; una vista nueva se ejecuta tal cual y una existente usa `CREATE OR ALTER`; una sentencia que no crea la vista de su ruta se rechaza; la simulación no escribe; `--confirmar` crea o actualiza la vista; si Fabric difiere de `--base` sale con 1; una vista ausente en `--ref` sale con 2.
+- `reporting-financiero/tests/test_crear_items.py` prueba `publicar_fabric.py --crear`. Modos de fallo que cubre: se crea un item sin `--crear` (error 2); la simulación crea algo; se recrea un item que `main` tenía y que alguien ha borrado en Fabric (sale con 1); la creación no espera a una operación asíncrona; `--crear` cambia los items existentes.
+- `reporting-financiero/tests/test_ejecutar_fabric.py` prueba `ejecutar_fabric.py` y `esperar_job`. Modos de fallo que cubre: la simulación lanza el pipeline; un pipeline inexistente o que no es `DataPipeline` sale con 2; un pipeline `Failed` se da por bueno (sale con 1); la espera se agota sin terminar nunca (error); un parámetro mal escrito (sin `=`) se pasa a Fabric.
+
 ## Tests de generadores de documentos
 
 Estos tests no tocan Fabric.
@@ -75,18 +83,20 @@ Desde la raíz del repositorio, con el Python del entorno virtual de `reporting-
 
 ## Protecciones
 
-- Cuenta: `comprobar_cuenta` compara el tenant de `az account show` con el de Tinkle y sale con código 2 si no coincide. Lo llaman `consultar_sql`, `exportar_fabric` y `publicar_fabric`.
+- Cuenta: `comprobar_cuenta` compara el tenant de `az account show` con el de Tinkle y sale con código 2 si no coincide. Lo llaman `consultar_sql`, `exportar_fabric`, `publicar_fabric`, `ejecutar_fabric` y `validar_ficheros_grupo`.
 - Solo lectura en SQL: `consultar_sql.py#main` devuelve 2 si la sentencia no pasa `es_consulta_de_lectura`. Es un filtro por palabras clave, no un analizador SQL. TBD: confirmar que los permisos de la conexión son de solo lectura.
 - CSV solo en `data/`: `consultar_sql.py#main` devuelve 2 si `--csv` apunta fuera de `reporting-financiero/data/`, carpeta que no se versiona.
 - Simulación por defecto: `publicar_fabric.py#main` solo publica con `--confirmar`. Sin él muestra el resumen y no escribe nada.
-- Solo items existentes: no crea ni borra items. Sale con 2 si un item no existe en Fabric o no está en `--ref`.
+- Solo con `--crear` se crean items que no existen en Fabric, y nunca se borran items ni vistas. Sin `--crear`, sale con 2 si un item no existe en Fabric, o si no está en `--ref`.
+- Vistas: las sentencias se preparan antes de ejecutar nada. Se rechazan líneas `GO`, ficheros que no crean la vista de su ruta, y rutas fuera de los esquemas 100, 200 y 300.
+- Pipelines: `ejecutar_fabric.py` lanza solo con `--confirmar`. Sin él, comprueba la cuenta y que el item existe y es `DataPipeline`, y no lanza nada. Un pipeline que termina en `Failed`, `Cancelled` o `Deduped` sale con 1.
 - Comprobación de sincronía: antes de publicar, descarga el item de Fabric y lo compara con `--base` (por defecto main). Si hay diferencias sale con 1 y no publica. `--forzar` lo omite y avisa de que se pierden los cambios de Fabric.
 - UDF excluidas: `FORMATOS` no incluye UserDataFunction, `solo_items` las descarta, `es_exportable` las filtra y `publicar_fabric` rechaza ese tipo con 2.
 
 ## No cubierto
 
-- La publicación real no se prueba: escribiría en el workspace del cliente, que no tiene entorno de pruebas. Los tests cubren funciones puras y la salida con código 2 ante fallos de Azure CLI o git; la simulación de `publicar_fabric.py` no tiene test.
-- Sin test: `publicar_fabric.main` (simulación, código 1, `--forzar`), `comprobar_cuenta`, las llamadas REST (`items`, `descargar_definicion`, `publicar_definicion`), `conectar_sql` y `exportar_fabric.main`, salvo el `--comprobar` del E2E.
+- La publicación real no se prueba: escribiría en el workspace del cliente, que no tiene entorno de pruebas. Los tests cubren funciones puras, la simulación y la salida de `publicar_fabric.py` y `ejecutar_fabric.py` con sustitutos, y la salida con código 2 ante fallos de Azure CLI o git.
+- Sin test: `--forzar` de `publicar_fabric.main`, `comprobar_cuenta`, las llamadas REST reales (`items`, `descargar_definicion`, `publicar_definicion`, `lanzar_pipeline`), `publicar_vista` y `conectar_sql`, y `exportar_fabric.main`, salvo el `--comprobar` del E2E. `crear_item` sí tiene tests, con la petición sustituida.
 - El E2E de SQL no verifica resultados concretos.
 - `validar_ficheros_grupo.py` no tiene tests unitarios: sus cálculos solo se comprueban con el E2E, que requiere la carpeta de OneDrive y FABRIC_E2E=1.
 - Los tests de `md_a_docx.py` dependen de la plantilla externa de docenteo-design: sin ella se saltan y no fallan.
@@ -100,6 +110,8 @@ Desde la raíz del repositorio, con el Python del entorno virtual de `reporting-
 - `reporting-financiero/tests/test_anexo_pendientes.py` - sobre `scripts/anexo_pendientes.py` y `docs/auditoria/auditoria-general.md`.
 - `reporting-financiero/tests/test_md_a_docx.py` - sobre `scripts/md_a_docx.py`, con la plantilla de docenteo-design.
 - `reporting-financiero/tests/test_validar_ficheros_grupo_e2e.py` - E2E de ficheros de Grupo sobre `scripts/validar_ficheros_grupo.py`.
+- `reporting-financiero/tests/test_publicar_vistas.py`, `test_crear_items.py` - vistas, creación de items y códigos de `scripts/publicar_fabric.py#main`.
+- `reporting-financiero/tests/test_ejecutar_fabric.py` - `scripts/ejecutar_fabric.py#main` y `fabric_comun.py#esperar_job`, `#leer_parametros`.
 - `reporting-financiero/scripts/fabric_comun.py#comprobar_cuenta`, `#comparar`, `#solo_items`, `#es_exportable`, `#partes_para_publicar`, `#es_consulta_de_lectura`, `#ficheros_sql`, `FORMATOS`.
 - `reporting-financiero/scripts/publicar_fabric.py#main` - simulación, sincronía, `--forzar` y códigos de salida.
 - `reporting-financiero/scripts/consultar_sql.py#main` - filtro de lectura y CSV en `data/`.

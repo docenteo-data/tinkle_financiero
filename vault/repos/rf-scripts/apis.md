@@ -17,7 +17,7 @@ tags: [rf-scripts, apis]
 
 ## Interfaz de línea de comandos
 
-Todos se ejecutan desde la raíz del repositorio con `python reporting-financiero/scripts/<script>.py`. Los que leen o escriben en Fabric (`exportar_fabric.py`, `publicar_fabric.py`, `consultar_sql.py` y `validar_ficheros_grupo.py`) requieren Azure CLI con la cuenta de Tinkle por defecto. Ningún script guarda tokens.
+Todos se ejecutan desde la raíz del repositorio con `python reporting-financiero/scripts/<script>.py`. Los que leen o escriben en Fabric (`exportar_fabric.py`, `publicar_fabric.py`, `ejecutar_fabric.py`, `consultar_sql.py` y `validar_ficheros_grupo.py`) requieren Azure CLI con la cuenta de Tinkle por defecto. Ningún script guarda tokens.
 
 Si Azure CLI o git fallan, los scripts de Fabric imprimen el error y salen con código 2, para no confundirlo con el 1 (hay diferencias).
 
@@ -38,21 +38,45 @@ Solo lectura sobre Fabric. Sin argumentos regenera `reporting-financiero/fabric/
 
 ### publicar_fabric.py
 
-Escribe en el workspace del cliente. Sin `--confirmar` solo simula. Solo actualiza items que ya existen; no crea ni borra.
+Escribe en el workspace del cliente. Sin `--confirmar` solo simula. Los items existentes se actualizan; los que no existen solo se crean con `--crear`; nunca se borran. Las vistas SQL se crean (`CREATE`) si no existen o se actualizan (`CREATE OR ALTER`) si existen; tampoco se borran. Las UDF no se publican.
 
 | Argumento | Por defecto | Significado |
 |---|---|---|
-| `items` | obligatorio, uno o más | Carpetas de `fabric/`, por ejemplo `"Financial Model.SemanticModel"`. Solo tipos con formato publicable. |
+| `items` | obligatorio, uno o más | Carpetas de `fabric/`, por ejemplo `"Financial Model.SemanticModel"`, o vistas `sql/<esquema>.<vista>.sql` (esquema 100, 200 o 300), por ejemplo `"sql/300.vw_Export_Grupo.sql"`. Solo tipos con formato publicable. |
 | `--ref` | `HEAD` | Commit, rama o etiqueta de donde se leen las definiciones. Se lee de git, no de la carpeta de trabajo. |
-| `--base` | `main` | Referencia con la que Fabric debe coincidir antes de publicar. |
-| `--confirmar` | desactivado | Sin él, simulación. Con él, publica. |
+| `--base` | `main` | Referencia con la que Fabric debe coincidir antes de publicar. Vale para items y para vistas. |
+| `--confirmar` | desactivado | Sin él, simulación. Con él, publica o crea. |
 | `--forzar` | desactivado | Publica aunque Fabric no coincida con `--base`, perdiendo esos cambios. Solo con decisión explícita. |
+| `--crear` | desactivado | Crea en Fabric los items que están en `--ref` pero no existen, con su definición. Sin él, un item inexistente es error. |
+
+Una vista cuyo fichero tiene una línea `GO` o no crea la vista de su ruta al principio se rechaza (código 2). Las vistas se comprueban y se publican antes que los items. Una vista sin cambios respecto a Fabric se salta al publicar.
 
 | Código | Significado |
 |---|---|
-| 0 | Publicado, o simulación correcta. |
+| 0 | Publicado o creado, o simulación correcta. |
 | 1 | Fabric no coincide con `--base` (sin `--forzar`). |
-| 2 | Tipo no publicable, item inexistente en Fabric, item ausente en `--ref`, error de lectura o publicación, cuenta incorrecta, fallo de Azure CLI, o `--ref`/`--base` inexistente en git. |
+| 2 | Tipo no publicable, item inexistente sin `--crear`, item o vista ausente en `--ref`, vista no válida, error de lectura (Fabric o SQL endpoint) o de publicación o creación, cuenta incorrecta, fallo de Azure CLI, o `--ref`/`--base` inexistente en git. |
+
+### ejecutar_fabric.py
+
+Lanza un pipeline de Fabric (`DataPipeline`) y espera a que termine. Escribe en el workspace del cliente, porque el pipeline puede escribir tablas del lakehouse. Sin `--confirmar` solo comprueba la cuenta y que el pipeline existe, y dice qué lanzaría.
+
+| Argumento | Por defecto | Significado |
+|---|---|---|
+| `pipeline` | obligatorio | Nombre del pipeline tal como aparece en Fabric. Debe ser de tipo `DataPipeline`. |
+| `--parametro` | ninguno | Parámetro del pipeline con formato `CLAVE=VALOR`. Se puede repetir. Se parte por el primer `=`. |
+| `--confirmar` | desactivado | Sin él, simulación. Con él, lanza el pipeline y espera. |
+| `--max-minutos` | `180` | Tiempo máximo de espera. Si se supera, el pipeline puede seguir en marcha en Fabric. |
+
+| Código | Significado |
+|---|---|
+| 0 | Simulación correcta, o pipeline `Completed`. |
+| 1 | Pipeline `Failed`, `Cancelled` o `Deduped`. Imprime el motivo si Fabric lo informa. |
+| 2 | Parámetro mal formado, pipeline inexistente o que no es `DataPipeline`, tiempo agotado, cuenta incorrecta, fallo de Azure CLI o error al lanzar. |
+
+Defecto conocido (no corregido): un `HTTPError` al listar los items, antes del `try`, no se captura. El script termina con traza y código 1, igual que un pipeline `Failed`, y no con 2 como el resto de errores.
+
+El historial de jobs no lista los pipelines lanzados por otro con `ExecutePipeline` (ver `reporting-financiero/docs/flujo-fabric.md`, sección 2).
 
 ### consultar_sql.py
 
@@ -119,6 +143,10 @@ Módulo importado como `fc` por los scripts de Fabric. Las funciones con prefijo
 - `descargar_definicion(item, tok)`: devuelve un diccionario ruta a bytes con la definición actual del item.
 - `partes_para_publicar(ficheros)`: devuelve las partes de la definición en base64, sin los ficheros no publicables.
 - `publicar_definicion(item, ficheros, tok)`: envía la definición al item y espera a que la operación termine.
+- `crear_item(nombre, tipo, ficheros, tok)`: crea un item nuevo con esa definición, sin `.platform`, y espera si la respuesta es asíncrona (202).
+- `lanzar_pipeline(item, tok, parametros)`: lanza una instancia de pipeline con esos parámetros y devuelve la URL de la instancia del job (cabecera `Location`). RuntimeError si la respuesta no es 202 o no trae `Location`.
+- `esperar_job(url, tok, intervalo, max_segundos, dormir)`: consulta el job cada `intervalo` segundos (20 por defecto) hasta un estado final y devuelve su cuerpo. TimeoutError si el tiempo esperado superaría `max_segundos`.
+- `leer_parametros(lista)`: convierte `["clave=valor", ...]` en un diccionario. ValueError si un elemento no tiene `=` o la clave queda vacía.
 
 ### Git y comparación
 
@@ -132,6 +160,9 @@ Módulo importado como `fc` por los scripts de Fabric. Las funciones con prefijo
 - `ficheros_sql(vistas, columnas)`: convierte las filas de vistas y columnas en ficheros de `sql/` y `lakehouse/`.
 - `descargar_sql()`: lee vistas y esquema del lakehouse y devuelve esos ficheros.
 - `es_consulta_de_lectura(sql)`: devuelve True si la sentencia empieza por SELECT o WITH y no contiene palabras de escritura.
+- `vista_de_ruta(ruta)`: devuelve (esquema, vista) de una ruta `sql/<100|200|300>.<nombre>.sql`. ValueError si no tiene ese formato.
+- `sentencia_de_vista(ruta, contenido, existe)`: prepara la sentencia que publica la vista. ValueError si el contenido tiene una línea `GO` o no crea la vista de la ruta al principio. Si la vista existe, cambia `CREATE VIEW` por `CREATE OR ALTER VIEW`.
+- `publicar_vista(sentencia)`: ejecuta la sentencia en el SQL endpoint del lakehouse y confirma el cambio.
 
 ### Utilidad
 
@@ -142,6 +173,7 @@ Módulo importado como `fc` por los scripts de Fabric. Las funciones con prefijo
 - `FORMATOS`: tipo de item a formato de definición pedido a la API. `SemanticModel` usa TMDL, `Report` PBIR y `Notebook` ipynb; `Dataflow` y `DataPipeline` no piden formato. Solo estos tipos se exportan y publican.
 - `ITEMS_DE_SISTEMA`: nombres de items de métricas de uso de informes que la API no permite exportar. Los excluye `es_exportable`.
 - `NO_PUBLICABLES`: ficheros que la API devuelve pero no se publican (`.platform`).
+- `ESTADOS_FINALES_JOB`: estados de un job que terminan la espera de `esperar_job`: `Completed`, `Failed`, `Cancelled` y `Deduped`.
 - `ESCRITURA_SQL`: palabras clave que hacen rechazar una consulta.
 - `CARPETAS_LAKEHOUSE` (carpetas `sql` y `lakehouse` de `fabric/`), `COLUMNAS_ESQUEMA` (cabecera de `lakehouse/esquema.tsv`), `CONSULTA_VISTAS` y `CONSULTA_COLUMNAS` (vistas y columnas de las capas 100, 200 y 300).
 - Rutas, URL de la API e identificadores del workspace, tenant, cuenta y SQL endpoint: ver [[configuration]]; sus valores no se documentan aquí.
@@ -152,7 +184,10 @@ Dependencias y versiones: ver [[configuration]].
 
 - `exportar_fabric.py#descargar_todo` - exportación de items, filtrada por `es_exportable`.
 - `exportar_fabric.py#main`, `exportar_fabric.py#comprobar`, `exportar_fabric.py#exportar` - argumentos y códigos de salida de exportar.
-- `publicar_fabric.py#main` - argumentos, simulación y códigos de salida de publicar.
+- `publicar_fabric.py#main`, `publicar_fabric.py#_preparar_vistas`, `publicar_fabric.py#_publicar_vistas` - argumentos, simulación, creación con `--crear`, vistas y códigos de salida de publicar.
+- `ejecutar_fabric.py#main` - argumentos, simulación, espera y códigos de salida de ejecutar.
+- `fabric_comun.py#lanzar_pipeline`, `#esperar_job`, `#leer_parametros`, `#ESTADOS_FINALES_JOB` - lanzamiento y espera de jobs.
+- `fabric_comun.py#crear_item`, `#vista_de_ruta`, `#sentencia_de_vista`, `#publicar_vista` - creación de items y publicación de vistas.
 - `consultar_sql.py#main` - argumentos y códigos de salida de la consulta.
 - `validar_ficheros_grupo.py#main`, `validar_ficheros_grupo.py#validar_ageing`, `validar_ficheros_grupo.py#validar_revenue` - argumentos, líneas de salida y códigos de salida de la validación.
 - `fabric_comun.py#comprobar_cuenta`, `fabric_comun.py#token` - cuenta y tokens.

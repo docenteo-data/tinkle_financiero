@@ -7,7 +7,7 @@ source: reporting-financiero/fabric
 commit: fb5c2b5
 last_sync: 2026-10-26T22:45:58Z
 stack: generic
-source_globs: ["*.Dataflow/mashup.pq", "*.SemanticModel/definition/expressions.tmdl", "*.Notebook/**", "Grabar salidas.DataPipeline/**", "Agings.SemanticModel/definition/tables/**"]
+source_globs: ["*.Dataflow/mashup.pq", "*.SemanticModel/definition/expressions.tmdl", "*.Notebook/**", "Grabar salidas.DataPipeline/**", "Generar_salidas.DataPipeline/**", "Flujo_*.DataPipeline/**", "Agings.SemanticModel/definition/tables/**"]
 tags: [rf-fabric, integrations]
 ---
 
@@ -18,7 +18,7 @@ tags: [rf-fabric, integrations]
 ## Origen de ficheros
 
 - Entrada: carpeta `Reporting Financiero` en Files del lakehouse `lh_tinkle_financiero`, que es un shortcut hacia OneDrive/SharePoint. Subcarpetas usadas en `1. Entrada de Datos`: `Arranque` (cargas iniciales), `Dinamicos` (cargas recurrentes, con subcarpeta `AGINGS`) y `Maestros` (maestros y mapeos).
-- Salida: biblioteca `Shared Documents` de SharePoint, carpeta `Reporting Financiero/2. Salida de ficheros/Balance`.
+- Salida: biblioteca `Shared Documents` de SharePoint, carpeta `Reporting Financiero/2. Salida de ficheros/Balance`. La usan tanto `Generar_salidas` como el pipeline anterior `Grabar salidas`.
 - TBD: sitio, biblioteca y cuenta exactos del shortcut de entrada (no figuran en las fuentes revisadas).
 
 ## Ficheros leídos por dataflow
@@ -45,12 +45,17 @@ Destino de todos los dataflows: tablas del lakehouse `lh_tinkle_financiero`, en 
 
 - `Financial Model`: expresión `DirectLake - lh_tinkle_financiero`, que abre el lakehouse por OneLake con `AzureStorage.DataLake` (modo Direct Lake).
 - `Agings.SemanticModel`: no tiene `expressions.tmdl`. Cada tabla de facturas se conecta por su propia partición import al SQL analytics endpoint de `lh_tinkle_financiero`, esquema `200`.
-- El notebook lee dos vistas del esquema `200` por el SQL analytics endpoint del lakehouse (`vw_Export_Grupo`, `vw_Export_Saldos_4_7`).
+- El notebook lee dos vistas del esquema `300` por el SQL analytics endpoint del lakehouse (`vw_Export_Grupo`, `vw_Export_Saldos_4_7`).
 
-## Notebook y pipeline de salida
+## Notebook y pipelines de salida
 
-- Notebook `Generar_txt_Balance_Saldos` (PySpark): lee las dos vistas y escribe en Files del lakehouse, en `Exportaciones/Balance/<periodo>/`, ficheros .txt por sociedad: balance (separador ";") y saldos 4_7 (líneas de texto).
-- Pipeline `Grabar salidas`: actividad 1, el notebook. Actividad 2, Copy "Grabar balance": copia `Exportaciones/Balance/**/*.txt` del lakehouse a SharePoint, preservando la jerarquía.
+- Notebook `Generar_txt_Balance_Saldos` (PySpark): lee las dos vistas del esquema 300 (`ESQUEMA = "300"`) y escribe en Files del lakehouse, en `Exportaciones/Balance/<periodo>/`, ficheros .txt por sociedad: balance (separador ";") y saldos 4_7 (líneas de texto).
+  - Parámetros de la celda inicial: `ficheros` (vacío significa Balance y Saldos_4_7; también acepta uno de los dos o ambos separados por coma) y `periodo_esperado` (AAAA.MM; vacío significa no comprobar).
+  - Antes de escribir, comprueba que el periodo cargado en las vistas coincide con `periodo_esperado`. Si no coincide, falla sin generar ningún fichero.
+  - En Saldos 4_7 redondea el saldo a 2 decimales antes de decidir si va a debe o a haber.
+- Generar_salidas (pipeline modular): recibe `ficheros` y `periodo_esperado` como parámetros del pipeline y los pasa al notebook. Después, la actividad Copy "Copiar a SharePoint" copia `Exportaciones/Balance/**/*.txt` del lakehouse a SharePoint, preservando la jerarquía.
+- Flujo_total_txt y la UDF `Generar_txt` (botón "Generar txt") ejecutan Generar_salidas sin pasar parámetros, así que el notebook genera todos los ficheros y no comprueba el periodo (ver [[repos/rf-fabric/architecture]]).
+- Pipeline `Grabar salidas` (anterior): actividad 1, el notebook sin parámetros. Actividad 2, Copy "Grabar balance": copia `Exportaciones/Balance/**/*.txt` del lakehouse a SharePoint, preservando la jerarquía.
 - Observación: la carpeta de destino se llama `Balance`, pero el filtro `*.txt` recoge también los saldos 4_7.
 
 ## Planning y CPM
@@ -71,7 +76,9 @@ Destino de todos los dataflows: tablas del lakehouse `lh_tinkle_financiero`, en 
 - `Seguridad_CDC.Dataflow/mashup.pq` - consulta RLS como tabla literal, sin origen, con destino en el esquema `100`.
 - `Financial Model.SemanticModel/definition/expressions.tmdl` - expresión Direct Lake.
 - `Agings.SemanticModel/definition/tables/200 Aging_Clientes.tmdl` y `Agings.SemanticModel/definition/tables/200 Aging_Proveedores.tmdl` - particiones import sobre el esquema `200`.
-- `Generar_txt_Balance_Saldos.Notebook/notebook-content.ipynb` - lectura de vistas y escritura en Files.
+- `Generar_txt_Balance_Saldos.Notebook/notebook-content.ipynb` - parámetros, lectura de vistas, comprobación de periodo, redondeo de Saldos 4_7 y escritura en Files.
+- `Generar_salidas.DataPipeline/pipeline-content.json` - parámetros, notebook y copia a SharePoint.
+- `Flujo_total_txt.DataPipeline/pipeline-content.json` - ExecutePipeline de Generar_salidas sin parámetros.
 - `Grabar salidas.DataPipeline/pipeline-content.json` - notebook y copia a SharePoint.
 
 ## Open questions

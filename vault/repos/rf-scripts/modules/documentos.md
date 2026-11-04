@@ -45,7 +45,7 @@ Convierte un Markdown del proyecto a Word con la plantilla `docenteo-documento.d
 | `--antetitulo TEXTO` | vacío | Línea superior de la portada, por ejemplo fecha y cliente. |
 | `--plantilla RUTA` | la de la versión más alta de `docenteo-skills` instalada | Plantilla alternativa. |
 
-Convenciones: la primera línea `# ` no se pinta (la portada usa `--titulo`) y lo anterior al primer `## ` es la ficha del documento; `## n. Título` es capítulo, `### ` apartado con numeración automática y `#### ` subapartado sin número; una línea que solo tiene `**texto**` es una etiqueta; los comentarios `<!-- ... -->` se ignoran; las tablas de 8 columnas cuya cabecera empieza por "Nº" se parten por bloque. Imprime `OK SALIDA`. Después conviene pasar el verificador de tokens de la skill (`scripts/comprobar-tokens.sh`).
+Convenciones: la primera línea `# ` no se pinta (la portada usa `--titulo`) y lo anterior al primer `## ` es la ficha del documento; `## n. Título` es capítulo, `### ` apartado con numeración automática y `#### ` subapartado sin número; una línea que solo tiene `**texto**` es una etiqueta; los comentarios `<!-- ... -->` se ignoran; las tablas de 8 columnas cuya cabecera empieza por "Nº" se parten por bloque. Las cinco formas de tabla conocidas (cabecera Nº con Tareas, Fase, Id/Tipo/Descripción/Responsable/Estado, Id/Prioridad/Problema/Situación y Nº de dos columnas) llevan anchos fijos por columna; el resto sale del contenido (la palabra más larga y el texto medio). Una sigla corta de una a tres letras seguida de una cifra ("J 1,25") se une con espacio duro para que no se separe. Imprime `OK SALIDA`. Después conviene pasar el verificador de tokens de la skill (`scripts/comprobar-tokens.sh`).
 
 | Código | Significado |
 |---|---|
@@ -57,3 +57,4 @@ Convenciones: la primera línea `# ` no se pinta (la portada usa `--titulo`) y l
 
 - `anexo_pendientes.py#main` - argumento, escritura entre marcas y aborto si hay puntos sin concepto.
 - `md_a_docx.py` - argumentos, búsqueda de la plantilla, convenciones del Markdown y códigos de salida.
+- `md_a_docx.py#anchos_automaticos`, `md_a_docx.py#pegar_cifras`, `md_a_docx.py#tabla` - anchos de columna y espacio duro entre sigla y cifra.

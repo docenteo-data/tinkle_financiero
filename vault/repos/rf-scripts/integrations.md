@@ -26,6 +26,9 @@ Los scripts de `reporting-financiero/scripts` hablan con cuatro sistemas externo
 - getDefinition: POST sobre el item. Los tipos con formato (semantic model en TMDL, report en PBIR, notebook en ipynb) piden el formato en la query; dataflow y data pipeline no. Si la respuesta no es 200, se trata como operación asíncrona y se lee su resultado.
 - updateDefinition: POST con las partes en base64 (`InlineBase64`), ordenadas por ruta y sin el fichero `.platform`. Si responde 202, se espera la operación.
 - Operaciones asíncronas: se lee el identificador de `x-ms-operation-id`, se espera según `Retry-After` (3 segundos por defecto) y se consulta el estado hasta 120 veces. Succeeded termina; Failed lanza error; agotar los intentos lanza timeout.
+- Creación de items: POST sobre los items del workspace con nombre, tipo y definición en base64. Si responde 202, se espera la operación. Solo lo usa `publicar_fabric.py` con `--crear`.
+- Lanzamiento de pipelines: POST sobre las instancias de jobs del item con `jobType=Pipeline` y los parámetros en `executionData`. La respuesta 202 trae en `Location` la URL del job.
+- Seguimiento de jobs: `esperar_job` consulta esa URL cada 20 segundos (sin `Retry-After`) hasta `Completed`, `Failed`, `Cancelled` o `Deduped`. Si el tiempo máximo se agota, lanza timeout; el job sigue en Fabric. Lo usa `ejecutar_fabric.py`.
 - Excluido de la exportación: User Data Functions, porque su código lleva un secreto incrustado. Los items que Power BI crea solo al abrir las métricas de uso de un informe (Report Usage Metrics Report, Report Usage Metrics Model y Usage Metrics Report) también se omiten, porque la API no permite exportarlos. El criterio está en `es_exportable`, que usa `exportar_fabric.py` al descargar todo el workspace.
 
 ## Azure CLI
@@ -40,6 +43,7 @@ Los scripts de `reporting-financiero/scripts` hablan con cuatro sistemas externo
 - Conexión con el driver `mssql-python`, versión fijada en `requirements.txt`, al SQL endpoint del lakehouse de Tinkle (valores en `fabric_comun.py`).
 - Autenticación: token de Entra para el recurso de bases de datos, pasado al driver como atributo de conexión. La cadena de conexión solo lleva servidor, base de datos y cifrado; no hay usuario, contraseña ni DSN.
 - `descargar_sql` lee las vistas de los esquemas 100, 200 y 300 y las columnas del esquema de información. Las vistas van a `sql/` y las columnas a `lakehouse/esquema.tsv`.
+- Escritura de vistas: `publicar_vista` ejecuta en el mismo SQL endpoint una sentencia `CREATE VIEW` o `CREATE OR ALTER VIEW` y confirma el cambio. Solo admite vistas de los esquemas 100, 200 y 300, sin líneas `GO`, y nunca borra vistas.
 - `consultar_sql.py` solo admite sentencias que empiezan por SELECT o WITH y no contienen palabras de escritura. Códigos de salida: 0 correcto, 1 error de consulta, 2 sin sentencia, sentencia no permitida, CSV fuera de `reporting-financiero/data/`, cuenta incorrecta o fallo de Azure CLI. Con `--csv` solo escribe dentro de `reporting-financiero/data/`, que no se versiona.
 - `validar_ficheros_grupo.py` usa la misma conexión, pero con dos consultas fijas escritas en el propio script, ambas SELECT de solo lectura: una sobre `200.MMS` (facturas y códigos de cliente del sistema de órdenes MMS por sociedad) y otra sobre `300.Fact_Actuals` cruzada con `300.Dim_Cuentas` y `300.Dim_Clientes` (importes de las cuentas X agrupadas en `X60000` y `X70000`, de enero a marzo de 2026). Estas consultas no pasan por el filtro de `consultar_sql.py`.
 - Por qué no ODBC: el código no lo justifica. Ver preguntas abiertas.
@@ -82,7 +86,9 @@ Los scripts de `reporting-financiero/scripts` hablan con cuatro sistemas externo
 
 ## Evidence
 
-- `fabric_comun.py#peticion`, `#esperar_operacion`, `#items`, `#descargar_definicion`, `#partes_para_publicar`, `#publicar_definicion` - API REST de Fabric y operaciones asíncronas.
+- `fabric_comun.py#peticion`, `#esperar_operacion`, `#items`, `#descargar_definicion`, `#partes_para_publicar`, `#publicar_definicion`, `#crear_item` - API REST de Fabric y operaciones asíncronas.
+- `fabric_comun.py#lanzar_pipeline`, `#esperar_job`, `#ESTADOS_FINALES_JOB` - lanzamiento y seguimiento de jobs de pipeline.
+- `fabric_comun.py#publicar_vista`, `#sentencia_de_vista` - escritura de vistas en el SQL endpoint.
 - `fabric_comun.py#es_exportable`, `exportar_fabric.py#descargar_todo` - exclusión de items de sistema en la exportación.
 - `fabric_comun.py#_az`, `#comprobar_cuenta`, `#token` - Azure CLI, tenant y tokens.
 - `fabric_comun.py#conectar_sql`, `#ficheros_sql`, `#descargar_sql` - SQL endpoint y driver.

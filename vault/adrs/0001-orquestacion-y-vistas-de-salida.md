@@ -58,7 +58,7 @@ Hechos de partida en [[repos/rf-fabric/architecture]] y [[repos/rf-fabric/lineag
 
 ## Consecuencias
 
-- Riesgo: con botones separados, "Generar txt" puede lanzarse sobre datos viejos. `Generar_salidas` comprueba que el último periodo cargado en `300.Fact_Actuals` es el del cierre que se pide y, si no, falla sin generar nada.
+- Riesgo: "Generar txt" puede lanzarse sobre datos viejos. `Generar_salidas` tiene el parámetro `periodo_esperado`: si se le pasa, compara los periodos que devuelven las vistas de salida con el esperado y, si no coinciden, falla sin escribir nada. Hoy ni el botón ni `Flujo_total_txt` lo pasan, así que esa protección aún no actúa (pendiente con los botones, punto 4).
 - Rollback: las definiciones vuelven con `publicar_fabric.py --ref`; los items nuevos se borran a mano; las vistas se recrean con los `CREATE VIEW` de `fabric/sql/`. Los datos de 200.Oracle_historico, 200.HAPA y 200.MMS no se regeneran relanzando: versiones Delta de partida anotadas en el plan.
 - Al cambiar vistas, pipelines e informes, `lineage.md`, `architecture.md`, `apis.md` y `configuration.md` del vault quedan STALE y se refrescan en `main` tras integrar.
 - Plan de ejecución: `reporting-financiero/docs/planes/20261104-orquestacion-y-vistas.md`.

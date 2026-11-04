@@ -27,3 +27,15 @@ tags: [meta]
 
 - commits: `0ad7fdb` → `ff89948`
 - changed files (0): none
+
+## 2026-11-04T16:22:02Z · rf-fabric
+
+- commits: `fb5c2b5` → `63838cb`
+- changed files (17): `Flujo_actualizar_datos.DataPipeline/.platform`, `Flujo_actualizar_datos.DataPipeline/pipeline-content.json`, `Flujo_total_reporting.DataPipeline/.platform`, `Flujo_total_reporting.DataPipeline/pipeline-content.json`, `Flujo_total_txt.DataPipeline/.platform`, `Flujo_total_txt.DataPipeline/pipeline-content.json`, `Generar_salidas.DataPipeline/.platform`, `Generar_salidas.DataPipeline/pipeline-content.json`, `Generar_txt_Balance_Saldos.Notebook/notebook-content.ipynb`, `Ingesta_datos.DataPipeline/.platform`, `Ingesta_datos.DataPipeline/pipeline-content.json`, `Refresco_modelos.DataPipeline/.platform`, `Refresco_modelos.DataPipeline/pipeline-content.json`, `Transformacion_datos.DataPipeline/.platform`, `Transformacion_datos.DataPipeline/pipeline-content.json`, `sql/300.vw_Export_Grupo.sql`, `sql/300.vw_Export_Saldos_4_7.sql`
+- affected docs: `repos\rf-fabric\apis.md`, `repos\rf-fabric\architecture.md`, `repos\rf-fabric\configuration.md`, `repos\rf-fabric\integrations.md`, `repos\rf-fabric\lineage.md`, `repos\rf-fabric\overview.md`, `repos\rf-fabric\quality.md`
+
+## 2026-11-04T16:22:02Z · rf-scripts
+
+- commits: `ff89948` → `a98625a`
+- changed files (4): `ejecutar_fabric.py`, `fabric_comun.py`, `md_a_docx.py`, `publicar_fabric.py`
+- affected docs: `repos\rf-scripts\apis.md`, `repos\rf-scripts\architecture.md`, `repos\rf-scripts\configuration.md`, `repos\rf-scripts\integrations.md`, `repos\rf-scripts\modules\documentos.md`, `repos\rf-scripts\overview.md`, `repos\rf-scripts\quality.md`
