@@ -65,6 +65,12 @@ Mismas filas en las 9 tablas y la misma cifra de control de `300.Fact_Actuals` (
 - Financial Model (Direct Lake): último refresco `DirectLakeFraming` Completed el 24/09/2026 11:07 UTC; `COUNTROWS(Fact_Actuals)` = 34.405.
 - Agings (import): sin historial de refrescos en la API; `200 Aging_Clientes` = 815 filas y `200 Aging_Proveedores` = 708.
 
+### Refresco_modelos (04/11/2026, Failed)
+
+- Financial Model: refresco Completed (12:57 UTC); `COUNTROWS(Fact_Actuals)` = 34.405, sin cambios.
+- Agings: Failed. Motivo (Premium_ASWL_Error): el modelo usa la conexión de datos por defecto, sin credenciales explícitas; Fabric pide sustituirla por una conexión en la nube o de gateway explícita en la configuración del modelo. Es configuración del modelo, no del pipeline: "Generar Reporting" lanzaba el mismo refresco (con condición Completed, así que un fallo no paraba nada) y la API no tiene ningún refresco correcto de Agings en su historial. Los datos del modelo siguen siendo los de su última importación (815 y 708 filas, iguales al lakehouse).
+- Pendiente: asignar a Agings una conexión explícita (configuración del modelo semántico, "Conexiones de puerta de enlace y en la nube") y relanzar `Refresco_modelos`.
+
 ## Revisión (riesgos que ningún test cubre)
 
 1. Las vistas nuevas devuelven distinto que las viejas: se cubre con la comparación EXCEPT de la tarea 1.
