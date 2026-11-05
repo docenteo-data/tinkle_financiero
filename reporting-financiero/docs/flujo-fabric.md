@@ -16,7 +16,7 @@ El workspace es el único entorno del cliente: no hay desarrollo ni pruebas sepa
 |---|---|---|
 | Inventario de items, esquema de tablas del lakehouse, shortcuts, ficheros de OneLake, documentación de la API | MCP `fabric-local` | No |
 | Lógica: consultas M de los dataflows, medidas DAX y relaciones, pipelines, notebook, páginas de informes, vistas SQL y columnas de las tablas | Ficheros de `reporting-financiero/fabric/` en el repositorio (`fabric/sql/` y `fabric/lakehouse/esquema.tsv` para el lakehouse) | No |
-| Saber si el repositorio está al día con Fabric | `exportar_fabric.py --comprobar` | No |
+| Saber si el repositorio está al día con Fabric | `exportar_fabric.py --comprobar` (con `--solo ITEM ... lakehouse` solo los items indicados) | No |
 | Datos: filas, recuentos, cuadres de cifras | `consultar_sql.py` (solo SELECT y WITH) | No |
 | Traer al repositorio lo publicado en Fabric | `exportar_fabric.py` | No |
 | Publicar un cambio preparado en el repositorio, o volver a una versión anterior | `publicar_fabric.py` (simulación por defecto, `--confirmar` para publicar) | Sí |
@@ -29,6 +29,7 @@ Reglas:
 - La lógica se lee primero en `fabric/`, no en Fabric. Si hay que asegurarse de que está vigente, `exportar_fabric.py --comprobar main`.
 - Las herramientas del MCP que escriben (crear, actualizar o borrar items, workspaces, shortcuts o ficheros, ejecutar pipelines) están bloqueadas en `.claude/settings.json`. Para escribir solo se usa `publicar_fabric.py`, y para ejecutar pipelines, `ejecutar_fabric.py`.
 - Comprobar una ejecución: `ejecutar_fabric.py` espera al job que lanza y devuelve su estado final. Ojo con el historial de jobs de un pipeline (`GET .../items/{id}/jobs/instances`): solo lista las ejecuciones lanzadas directamente, no las que lanza otro pipeline con `ExecutePipeline`. Para saber si un hijo se ejecutó dentro de un flujo, mira el flujo en el portal (Supervisión) o las tablas que escribe (versiones Delta, recuentos).
+- `exportar_fabric.py --solo "<Item>" ... lakehouse` exporta o comprueba solo esos items (y las vistas SQL y el esquema con `lakehouse`), sin leer los demás. Úsalo cuando un item ajeno no se puede leer (por ejemplo, un modelo semántico con la capacidad saturada, `PFE_FABRIC_THROTTLED`) y no lo has tocado. La sincronía completa (`--comprobar main` sin `--solo`) sigue pendiente de hacerse cuando se pueda leer todo.
 - `fabric-local` no devuelve definiciones de items ni ejecuta SQL: para eso están los ficheros de `fabric/` y `consultar_sql.py`.
 - El MCP remoto `fabric` y GitHub Copilot no forman parte del flujo.
 

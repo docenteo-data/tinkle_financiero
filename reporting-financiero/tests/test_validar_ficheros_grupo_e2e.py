@@ -79,3 +79,82 @@ def test_revenue_total_comm_cuadra(revenue):
 
 def test_revenue_informa_cobertura_de_clientes(revenue):
     assert re.search(r"^CLIENTES lineas_txt=\d+ exactas=\d+", revenue.stdout, re.M)
+
+
+def consultar(sql):
+    """Filas de una consulta de solo lectura al SQL endpoint de Tinkle."""
+    sys.path.insert(0, str(SCRIPT.parent))
+    import fabric_comun as fc
+
+    fc.comprobar_cuenta()
+    con = fc.conectar_sql()
+    try:
+        cursor = con.cursor()
+        cursor.execute(sql)
+        return cursor.fetchall()
+    finally:
+        con.close()
+
+
+def test_dim_clientes_codigo_magnitude():
+    """Codigo_Magnitude existe, tiene datos, no duplica clientes y los numericos van a 8 digitos."""
+    con_codigo = consultar("SELECT COUNT(*) FROM [300].[Dim_Clientes] WHERE [Codigo_Magnitude] IS NOT NULL")[0][0]
+    assert con_codigo > 0
+
+    repetidos = consultar(
+        "SELECT COUNT(*) FROM (SELECT [Cliente MMS], [Empresa] FROM [300].[Dim_Clientes] "
+        "GROUP BY [Cliente MMS], [Empresa] HAVING COUNT(*) > 1) t")[0][0]
+    assert repetidos == 0
+
+    cortos = consultar(
+        "SELECT COUNT(*) FROM [300].[Dim_Clientes] WHERE [Codigo_Magnitude] IS NOT NULL "
+        "AND [Codigo_Magnitude] NOT LIKE '%[^0-9]%' AND LEN([Codigo_Magnitude]) < 8")[0][0]
+    assert cortos == 0
+
+
+FL_VALIDOS = ("GR0", "GR1", "GR2", "GR3", "GR4", "GR5", "GR8C", "GR9C", "GRICFLAG")
+
+
+def test_vista_ageing_cuadra_con_la_fuente():
+    """La suma de importes de la vista es la de Aging_Clientes en miles (sin perder ni duplicar facturas)."""
+    vista, lineas = consultar(
+        "SELECT SUM(CAST([p_amount] AS float)), COUNT(*) FROM [300].[vw_Export_Ageing] "
+        "WHERE [d_fl] <> 'GRICFLAG'")[0]
+    fuente = consultar("SELECT SUM(CAST([S_Pendiente] AS float)) / 1000.0 FROM [200].[Aging_Clientes]")[0][0]
+    assert abs(vista - fuente) < 0.0005 * lineas
+
+
+def test_vista_ageing_layout():
+    fijos = consultar(
+        "SELECT COUNT(*) FROM [300].[vw_Export_Ageing] WHERE [d_ca] <> 'C' OR [d_ac] <> 'MB4000' "
+        "OR [d_au] <> '0LIA01' OR [d_cu] <> 'EUR' OR [d_dp] <> [d_pe] "
+        "OR [d_ru] NOT IN ('ESP066','ESP067','ESP068','ESP069','ESP070') "
+        "OR [d_dp] NOT LIKE '[0-9][0-9][0-9][0-9].[0-9]%'")[0][0]
+    assert fijos == 0
+
+    vacios = consultar(
+        "SELECT COUNT(*) FROM [300].[vw_Export_Ageing] WHERE [d_oru] IS NOT NULL OR [d_devtr] IS NOT NULL "
+        "OR [d_sajob] IS NOT NULL OR [p_comment] IS NOT NULL")[0][0]
+    assert vacios == 0
+
+    tramos = {fila[0] for fila in consultar("SELECT DISTINCT [d_fl] FROM [300].[vw_Export_Ageing]")}
+    assert tramos <= set(FL_VALIDOS)
+    assert "GRICFLAG" in tramos
+
+
+def test_vista_ageing_sin_duplicados():
+    repetidas = consultar(
+        "SELECT COUNT(*) FROM (SELECT [d_ru], [d_client], [d_fl] FROM [300].[vw_Export_Ageing] "
+        "GROUP BY [d_ru], [d_client], [d_fl] HAVING COUNT(*) > 1) t")[0][0]
+    assert repetidas == 0
+
+
+def test_ageing_vista_contra_marzo():
+    """La vista de Fabric reproduce los importes por sociedad y tramo del TXT de marzo."""
+    r = subprocess.run([sys.executable, str(SCRIPT), "ageing", "--vista"], capture_output=True, text=True,
+                       encoding="utf-8", errors="replace")
+    assert r.returncode == 0, r.stdout + r.stderr
+    maxima = float(re.search(r"^TRAMOS combinaciones=\d+ diferencia_maxima=(\d+\.\d+)$", r.stdout, re.M).group(1))
+    assert maxima < 0.001
+    assert re.search(r"^CLIENTES lineas_txt=\d+ exactas=\d+", r.stdout, re.M)
+    assert re.search(r"^GRICFLAG txt=\d+ vista=\d+ coinciden=\d+", r.stdout, re.M)

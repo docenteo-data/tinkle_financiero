@@ -11,6 +11,9 @@ El código de cliente es informativo: el Excel Revenue FT3 no es el maestro de M
 Uso, desde la raíz del repositorio:
     python reporting-financiero/scripts/validar_ficheros_grupo.py ageing
     python reporting-financiero/scripts/validar_ficheros_grupo.py revenue --fuentes "RUTA a 3.Fuentes"
+    python reporting-financiero/scripts/validar_ficheros_grupo.py ageing --vista
+        Valida la vista 300.vw_Export_Ageing de Fabric contra los TXT de marzo (sociedad y tramo,
+        clientes y GRICFLAG).
 
 Lee la carpeta 3.Fuentes de OneDrive y consulta Fabric en solo lectura con la cuenta de Tinkle.
 Salida en ASCII. Códigos: 0 las cifras de control cuadran, 1 no cuadran, 2 cuenta o ficheros.
@@ -131,15 +134,14 @@ def comparar_lineas(txt, calculado, tolerancia):
           f"solo_txt={solo_txt} solo_calculadas={solo_calculadas}")
 
 
-def validar_ageing(fuentes):
-    facturas = []
-    libro = openpyxl.load_workbook(fuentes / "AGING Clientes Tinkle 2026 03 31.xlsx", read_only=True, data_only=True)
-    for fila in libro["DATOS"].iter_rows(min_row=2, values_only=True):
-        if fila[0]:
-            facturas.append({"soc": SOC_AGING[fila[0].strip()], "interno": limpio(fila[2]), "nombre": limpio(fila[3]),
-                             "factura": limpio(fila[5]), "nif": limpio(fila[7]), "tramo": tramo(fila[10]),
-                             "importe": float(fila[12] or 0)})
+CONSULTA_VISTA_AGEING = """
+SELECT [d_ru], [d_client], [d_fl], CAST([p_amount] AS float), [sin_codigo]
+FROM [300].[vw_Export_Ageing]
+"""
 
+
+def leer_ageing_marzo(fuentes):
+    """Importes por (sociedad, tramo) y por (sociedad, cliente, tramo), y flags (sociedad, cliente) del TXT de marzo."""
     txt_tramos = defaultdict(float)
     txt_lineas = defaultdict(float)
     txt_flags = set()
@@ -149,6 +151,49 @@ def validar_ageing(fuentes):
         else:
             txt_tramos[(campos[2], campos[12])] += float(campos[25])
             txt_lineas[(campos[2], campos[8], campos[12])] += float(campos[25])
+    return txt_tramos, txt_lineas, txt_flags
+
+
+def validar_vista_ageing(fuentes):
+    """Compara la vista 300.vw_Export_Ageing con los TXT de marzo (cifra de control: sociedad y tramo)."""
+    txt_tramos, txt_lineas, txt_flags = leer_ageing_marzo(fuentes)
+
+    calculado = defaultdict(float)
+    lineas = defaultdict(float)
+    flags = set()
+    sin_codigo = 0.0
+    for ru, cliente, fl, importe, sin in consultar(CONSULTA_VISTA_AGEING):
+        if fl == "GRICFLAG":
+            flags.add((ru, cliente))
+            continue
+        calculado[(ru, fl)] += float(importe)
+        lineas[(ru, cliente, fl)] += float(importe)
+        if sin:
+            sin_codigo += float(importe)
+
+    diferencias = {k: txt_tramos.get(k, 0) - calculado.get(k, 0) for k in set(txt_tramos) | set(calculado)}
+    maxima = max(abs(d) for d in diferencias.values())
+    print(f"TRAMOS combinaciones={len(diferencias)} diferencia_maxima={maxima:.4f}")
+    for (soc, gr), d in sorted(diferencias.items()):
+        if abs(d) >= 0.001:
+            print(f"  DIFERENCIA {soc} {gr} txt={txt_tramos.get((soc, gr), 0):.4f} vista={calculado.get((soc, gr), 0):.4f}")
+
+    comparar_lineas(txt_lineas, lineas, 0.0006)
+    print(f"  importe_sin_codigo={sin_codigo:.4f}")
+    print(f"GRICFLAG txt={len(txt_flags)} vista={len(flags)} coinciden={len(txt_flags & flags)}")
+    return 0 if maxima < 0.001 else 1
+
+
+def validar_ageing(fuentes):
+    facturas = []
+    libro = openpyxl.load_workbook(fuentes / "AGING Clientes Tinkle 2026 03 31.xlsx", read_only=True, data_only=True)
+    for fila in libro["DATOS"].iter_rows(min_row=2, values_only=True):
+        if fila[0]:
+            facturas.append({"soc": SOC_AGING[fila[0].strip()], "interno": limpio(fila[2]), "nombre": limpio(fila[3]),
+                             "factura": limpio(fila[5]), "nif": limpio(fila[7]), "tramo": tramo(fila[10]),
+                             "importe": float(fila[12] or 0)})
+
+    txt_tramos, txt_lineas, txt_flags = leer_ageing_marzo(fuentes)
 
     calculado = defaultdict(float)
     for f in facturas:
@@ -225,14 +270,21 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("fichero", choices=["ageing", "revenue"])
     parser.add_argument("--fuentes", default=str(FUENTES), help="carpeta 3.Fuentes de OneDrive")
+    parser.add_argument("--vista", action="store_true",
+                        help="ageing: valida la vista 300.vw_Export_Ageing en lugar de reproducir desde el Excel")
     args = parser.parse_args()
+    if args.vista and args.fichero != "ageing":
+        print("ERROR: --vista solo existe para ageing")
+        return 2
 
     fuentes = Path(args.fuentes)
     if not (fuentes / "2026 03 - 0001 Magnitude Marzo").exists():
         print("ERROR: no se encuentra la carpeta de TXT de marzo en " + fc.ascii(fuentes))
         return 2
     fc.comprobar_cuenta()
-    return validar_ageing(fuentes) if args.fichero == "ageing" else validar_revenue(fuentes)
+    if args.fichero == "revenue":
+        return validar_revenue(fuentes)
+    return validar_vista_ageing(fuentes) if args.vista else validar_ageing(fuentes)
 
 
 if __name__ == "__main__":

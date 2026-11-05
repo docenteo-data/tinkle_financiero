@@ -717,6 +717,7 @@ esquema	tabla	columna	posicion	tipo	nulable	longitud	precision	escala
 300	Dim_Clientes	SECCION	12	varchar	YES	8000		
 300	Dim_Clientes	ClienteKey_Oracle	13	varchar	YES	8000		
 300	Dim_Clientes	ClienteKey_MMS	14	varchar	YES	8000		
+300	Dim_Clientes	Codigo_Magnitude	15	varchar	YES	8000		
 300	Dim_Cuentas	Cuenta	1	varchar	YES	8000		
 300	Dim_Cuentas	Descripcion	2	varchar	YES	8000		
 300	Dim_Cuentas	Mapeo Oracle	3	varchar	YES	8000		

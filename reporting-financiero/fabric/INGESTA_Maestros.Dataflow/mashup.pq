@@ -163,6 +163,56 @@ shared Dim_Calendar = let
   #"Columna duplicada" = Table.DuplicateColumn(#"Added Orden Mes", "Año_Mes", "Año_Mes - Copia")
 in
     #"Columna duplicada";
+[BindToDefaultDestination = false]
+shared Mapeo_Magnitude = let
+  // Código de cliente Magnitude provisional, desde Revenue 2026 FT3.xlsx (carpeta Arranque).
+  // Mismas reglas que mapeo_magnitude de scripts/validar_ficheros_grupo.py: la hoja
+  // "Revenue by client FT3 2026" tiene prioridad y el resto solo rellena huecos; los códigos
+  // solo numéricos de menos de 8 dígitos se rellenan con ceros a la izquierda.
+  // Resultado: una fila por (Empresa, Codigo MMS).
+  Source = Lakehouse.Contents(null),
+  Navigation = Source{[workspaceId = "b31820dc-4b4f-4696-9a96-bbee438e9306"]}[Data],
+  #"Navigation 1" = Navigation{[lakehouseId = "4d2305f1-7ef6-42c3-87ed-aed12f143ac2"]}[Data],
+  #"Navigation 2" = #"Navigation 1"{[Id = "Files", ItemKind = "Folder"]}[Data],
+  #"Navigation 3" = #"Navigation 2"{[Name = "Reporting Financiero"]}[Content],
+  #"Navigation 4" = #"Navigation 3"{[Name = "1. Entrada de Datos"]}[Content],
+  Arranque = #"Navigation 4"{[Name = "Arranque"]}[Content],
+  Fichero = Arranque{[Name = "Revenue 2026 FT3.xlsx"]}[Content],
+  Libro = Excel.Workbook(Fichero, null, true),
+  Hojas = Table.SelectRows(Libro, each [Kind] = "Sheet" and Text.Contains([Name], "Revenue by client")),
+  HojasIndexadas = Table.AddIndexColumn(Hojas, "Orden", 0, 1, Int64.Type),
+  Requeridas = {"code magnitude", "codigo mms", "codigo cliente magnitude"},
+  Sociedades = [ESP066 = "COMM", ESP067 = "EURO", ESP068 = "JAZZ", ESP069 = "ONION", ESP070 = "CONS"],
+  Limpio = (valor as any) as text => if valor = null then "" else Text.Trim(Text.From(valor)),
+  Extraer = (fila as record) as table =>
+    let
+      Promovida = Table.PromoteHeaders(fila[Data], [PromoteAllScalars = true]),
+      Normalizada = Table.TransformColumnNames(Promovida, each Text.Lower(Text.Trim(_))),
+      Prioridad = if fila[Name] = "Revenue by client FT3 2026" then 0 else fila[Orden] + 1,
+      Salida =
+        if List.ContainsAll(Table.ColumnNames(Normalizada), Requeridas) then
+          let
+            Seleccion = Table.SelectColumns(Normalizada, Requeridas),
+            SinErrores = Table.ReplaceErrorValues(Seleccion, List.Transform(Requeridas, each {_, null})),
+            ConIndice = Table.AddIndexColumn(SinErrores, "Fila", 0, 1, Int64.Type),
+            ConPrioridad = Table.AddColumn(ConIndice, "Prioridad", each Prioridad, Int64.Type)
+          in
+            ConPrioridad
+        else
+          #table(type table [#"code magnitude" = any, #"codigo mms" = any, #"codigo cliente magnitude" = any, Fila = Int64.Type, Prioridad = Int64.Type], {})
+    in
+      Salida,
+  Combinadas = Table.Combine(List.Transform(Table.ToRecords(HojasIndexadas), Extraer)),
+  Textos = Table.TransformColumns(Combinadas, {{"code magnitude", Limpio, type text}, {"codigo mms", Limpio, type text}, {"codigo cliente magnitude", Limpio, type text}}),
+  Validas = Table.SelectRows(Textos, each [codigo cliente magnitude] <> "" and [codigo cliente magnitude] <> "#N/A" and [codigo cliente magnitude] <> "#N/D" and [codigo mms] <> ""),
+  ConEmpresa = Table.AddColumn(Validas, "Empresa", each Record.FieldOrDefault(Sociedades, [code magnitude], null), type text),
+  SoloGrupo = Table.SelectRows(ConEmpresa, each [Empresa] <> null),
+  Rellenado = Table.TransformColumns(SoloGrupo, {{"codigo cliente magnitude", each if Text.Select(_, {"0".."9"}) = _ and Text.Length(_) < 8 then Text.PadStart(_, 8, "0") else _, type text}}),
+  Ordenado = Table.Sort(Rellenado, {{"Prioridad", Order.Ascending}, {"Fila", Order.Ascending}}),
+  Agrupado = Table.Group(Ordenado, {"Empresa", "codigo mms"}, {{"Codigo_Magnitude", each List.First([codigo cliente magnitude]), type text}}),
+  Renombrado = Table.RenameColumns(Agrupado, {{"codigo mms", "Codigo MMS"}})
+in
+  Renombrado;
 [DataDestinations = {[Definition = [Kind = "Reference", QueryName = "Dim_Clientes_DataDestination", IsNewTarget = true], Settings = [Kind = "Automatic", TypeSettings = [Kind = "Table"]]]}]
 shared Dim_Clientes = let
   Source = Lakehouse.Contents(null),
@@ -183,9 +233,13 @@ shared Dim_Clientes = let
   #"Filtered rows" = Table.SelectRows(#"Sorted rows 1", each ([Cliente MMS] <> "0000000" and [Cliente MMS] <> "CORP" and [Cliente MMS] <> "COST" and [Cliente MMS] <> "ESPA" and [Cliente MMS] <> "FIN" and [Cliente MMS] <> "NREP" and [Cliente MMS] <> "PERS" and [Cliente MMS] <> "T" and [Cliente MMS] <> "WC1")),
   #"Trimmed text" = Table.TransformColumns(#"Filtered rows", {{"Descripción", each Text.Trim(_), type nullable text}}),
   #"Personalizado agregado" = Table.TransformColumnTypes(Table.AddColumn(#"Trimmed text", "ClienteKey_Oracle", each [Cliente ORACLE] & "-" & [Empresa]), {{"ClienteKey_Oracle", type text}}),
-  #"Personalizado agregado 1" = Table.TransformColumnTypes(Table.AddColumn(#"Personalizado agregado", "ClienteKey_MMS", each [Cliente MMS] & "-" & [Empresa]), {{"ClienteKey_MMS", type text}})
+  #"Personalizado agregado 1" = Table.TransformColumnTypes(Table.AddColumn(#"Personalizado agregado", "ClienteKey_MMS", each [Cliente MMS] & "-" & [Empresa]), {{"ClienteKey_MMS", type text}}),
+  // Código de cliente Magnitude provisional (Mapeo_Magnitude). Una fila de Dim_Clientes por par (Empresa, Cliente MMS).
+  #"Mapeo Magnitude combinado" = Table.NestedJoin(#"Personalizado agregado 1", {"Empresa", "Cliente MMS"}, Mapeo_Magnitude, {"Empresa", "Codigo MMS"}, "Mapeo", JoinKind.LeftOuter),
+  #"Codigo Magnitude expandido" = Table.ExpandTableColumn(#"Mapeo Magnitude combinado", "Mapeo", {"Codigo_Magnitude"}, {"Codigo_Magnitude"}),
+  #"Codigo Magnitude tipado" = Table.TransformColumnTypes(#"Codigo Magnitude expandido", {{"Codigo_Magnitude", type text}})
 in
-  #"Personalizado agregado 1";
+  #"Codigo Magnitude tipado";
 [BindToDefaultDestination = false]
 shared Assets_Reporte = let
     // ============================================================
