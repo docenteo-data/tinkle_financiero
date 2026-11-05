@@ -50,6 +50,7 @@ tags: [rf-scripts, configuration]
 
 - `validar_ficheros_grupo.py`: lee la carpeta `3.Fuentes` de OneDrive, en `OneDrive - Docenteo/DOCENTEO - General/02.Clientes/04.Tinkle/Reporting financiero/3.Fuentes` dentro del perfil del usuario. Otra ruta se indica con `--fuentes`. La carpeta debe contener la subcarpeta de TXT de marzo; si no, sale con código 2.
 - `validar_ficheros_grupo.py`: el argumento posicional elige el fichero a validar (`ageing` o `revenue`). Códigos de salida: 0 las cifras de control cuadran, 1 no cuadran, 2 problemas de cuenta o de ficheros.
+- `validar_ficheros_grupo.py --vista` (solo `ageing`): valida la vista `300.vw_Export_Ageing` de Fabric contra los TXT de marzo. Solo necesita la carpeta de TXT de `3.Fuentes`; no usa los Excel de aging ni de Revenue FT3. El módulo importa `openpyxl` igualmente al cargarse, así que la dependencia sigue siendo necesaria.
 - `validar_ficheros_grupo.py`: constantes `CORTE` (31-03-2026, fecha de corte del aging) y `TOLERANCIA_SOCIEDAD` (0.05, desviación admitida por sociedad en Revenue por el redondeo a 2 decimales de cada línea).
 - `anexo_pendientes.py`: lee fuentes fijas dentro del repositorio: el registro de reuniones (`docs/reuniones/README.md`), la sección técnica (`docs/contexto/Documentacion_Tinkle_Financiero.md`) y las preguntas (`docs/contexto/PREGUNTAS_PARA_TINKLE.md`). Recibe como argumento el fichero de auditoría y escribe el anexo entre las marcas `<!-- anexo:inicio -->` y `<!-- anexo:fin -->`, que añade al final si no existen.
 - `md_a_docx.py`: usa la plantilla `docenteo-documento.dotx` de la skill docenteo-design. Por defecto la busca en la versión más alta instalada del plugin docenteo-skills, bajo el perfil del usuario. Si no la encuentra, sale con código 2. La opción `--plantilla` indica otra ruta. Solo usa los estilos de la plantilla.
@@ -71,7 +72,8 @@ tags: [rf-scripts, configuration]
 - `reporting-financiero/scripts/fabric_comun.py#WORKSPACE_ID`, `#TENANT_ID`, `#CUENTA`, `#API`, `#SQL_SERVIDOR`, `#SQL_BASE_DATOS`, `#RAIZ_REPO`, `#CARPETA_FABRIC` - constantes de conexión.
 - `reporting-financiero/scripts/fabric_comun.py#ITEMS_DE_SISTEMA`, `#es_exportable` - exclusión de items de sistema en la exportación.
 - `reporting-financiero/scripts/fabric_comun.py` (cabecera de módulo) - tokens pedidos a Azure CLI y salida ASCII.
-- `reporting-financiero/scripts/validar_ficheros_grupo.py#FUENTES`, `#CORTE`, `#TOLERANCIA_SOCIEDAD`, `#main` - carpeta por defecto, constantes, opción `--fuentes` y códigos de salida.
+- `reporting-financiero/scripts/validar_ficheros_grupo.py#FUENTES`, `#CORTE`, `#TOLERANCIA_SOCIEDAD`, `#main` - carpeta por defecto, constantes, opción `--fuentes`, opción `--vista` y códigos de salida.
+- `reporting-financiero/scripts/validar_ficheros_grupo.py#validar_vista_ageing`, `#leer_ageing_marzo` - modo `--vista` y lectura de los TXT sin Excel.
 - `reporting-financiero/scripts/anexo_pendientes.py#REGISTRO`, `#TECNICA`, `#PREGUNTAS`, `#INICIO`, `#FIN` - fuentes y marcas del anexo.
 - `reporting-financiero/scripts/md_a_docx.py#plantilla_por_defecto` - búsqueda de la plantilla y opción `--plantilla`.
 - `reporting-financiero/tests/test_fabric_e2e.py` y `reporting-financiero/tests/test_validar_ficheros_grupo_e2e.py` - condiciones de los tests E2E.

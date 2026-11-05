@@ -82,13 +82,14 @@ Medidas definidas en el informe y no en el modelo (`reportExtensions.json`): sol
 
 ## Vistas SQL
 
-Carpeta `sql/`, sobre el lakehouse `lh_tinkle_financiero`. Las tres vistas están en el esquema 300, la capa de modelo analítico.
+Carpeta `sql/`, sobre el lakehouse `lh_tinkle_financiero`. Las cuatro vistas están en el esquema 300, la capa de modelo analítico.
 
 - `300.vw_Export_Grupo` (esquema 300): exporta los saldos por cuenta magnitud del último periodo en formato de grupo, en miles. Calcula el último periodo de `Fact_Actuals` y lo usa como periodo de cierre. Lee `300.Fact_Actuals`, `300.Dim_Mapeo_Cuentas` y `300.Dim_Sociedades`.
 - `300.vw_Export_Saldos_4_7` (esquema 300): exporta los saldos por sociedad del último periodo para el fichero de cuentas 4 a 7. Calcula el mismo último periodo de `Fact_Actuals`. Lee `300.Fact_Actuals` y `300.Dim_Sociedades`.
+- `300.vw_Export_Ageing` (esquema 300): exporta el ageing de clientes del último periodo de `Fact_Actuals` en formato de grupo: una fila por sociedad, cliente y tramo GR0 a GR9C, más una fila GRICFLAG por cliente intercompañía. Importes en miles, redondeados a 4 decimales. El código de cliente es el Magnitude provisional de `Dim_Clientes.Codigo_Magnitude`; si no hay, se usa el nombre del cliente y `sin_codigo` vale 1. Lee `200.Aging_Clientes`, `200.MMS`, `300.Dim_Sociedades`, `300.Dim_Clientes` y `300.Fact_Actuals`.
 - `300.vw_Reporting_Actuals` (esquema 300): une las líneas de cuentas y las de medidas en un único conjunto de reporting real. Lee `300.Fact_Actuals`, `300.Dim_Mapeo_Cuentas` y `300.Map_Report_Line_Account`.
 
-Las dos vistas de exportación estaban en el esquema 200 y se renombraron al 300 en el commit 63838cb; en el repositorio ya no existen las versiones `200.vw_Export_*`. Ninguna vista lee `Dim_Cuentas`. Las dos vistas de exportación las lee el notebook `Generar_txt_Balance_Saldos` por el SQL endpoint (ver [[repos/rf-fabric/integrations]]).
+Las dos vistas de exportación de Grupo (balance y saldos 4 a 7) estaban en el esquema 200 y se renombraron al 300 en el commit 63838cb; en el repositorio ya no existen las versiones `200.vw_Export_*`. Ninguna vista lee `Dim_Cuentas`. El notebook `Generar_txt_Balance_Saldos` lee por el SQL endpoint las tres vistas de exportación (la de Ageing solo si se pide) (ver [[repos/rf-fabric/integrations]]).
 
 ## Open questions
 
@@ -101,7 +102,8 @@ Las dos vistas de exportación estaban en el esquema 200 y se renombraron al 300
 - `Presupuesto.Report/definition/reportExtensions.json` - medidas definidas en el informe.
 - `Financial Model.SemanticModel/definition/tables/_Medidas.tmdl` - nombres y familias de las medidas del modelo.
 - `Agings.SemanticModel/definition/tables/Aging_Clientes_Snapshot.tmdl`, `Agings.SemanticModel/definition/tables/Aging_Proveedores_Snapshot.tmdl`, `Agings.SemanticModel/definition/tables/Fechas.tmdl` - medidas del modelo Agings.
+- `Agings.SemanticModel/definition/tables/Aging_Clientes_Snapshot.tmdl#AgingBucket` - columna con los tramos de antigüedad, mismos límites que `300.vw_Export_Ageing`.
 - `Agings.Report/definition.pbir`, `Checklist (Oracle).Report/definition.pbir`, `HAPA.Report/definition.pbir`, `MMS.Report/definition.pbir`, `Presupuesto.Report/definition.pbir`, `Rentabilidad.Report/definition.pbir` - modelo de cada informe.
 - `Agings.Report/definition/pages/pages.json`, `Checklist (Oracle).Report/definition/pages/pages.json`, `HAPA.Report/definition/pages/pages.json`, `MMS.Report/definition/pages/pages.json`, `Presupuesto.Report/definition/pages/pages.json`, `Rentabilidad.Report/definition/pages/pages.json` - orden de páginas.
 - `*.Report/definition/pages/*/page.json` - `displayName` de cada página.
-- `sql/300.vw_Export_Grupo.sql`, `sql/300.vw_Export_Saldos_4_7.sql`, `sql/300.vw_Reporting_Actuals.sql` - cabeceras, propósito y tablas que lee cada vista (cláusulas FROM y JOIN).
+- `sql/300.vw_Export_Grupo.sql`, `sql/300.vw_Export_Saldos_4_7.sql`, `sql/300.vw_Export_Ageing.sql`, `sql/300.vw_Reporting_Actuals.sql` - cabeceras, propósito y tablas que lee cada vista (cláusulas FROM y JOIN).

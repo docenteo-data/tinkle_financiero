@@ -29,6 +29,17 @@ tags: [rf-scripts, quality]
 - Solo lectura: `es_consulta_de_lectura` acepta SELECT y WITH y rechaza DELETE, UPDATE, INSERT, EXEC, SELECT INTO, MERGE, CREATE y las sentencias encadenadas con `;`. No se deja engañar por palabras dentro de textos o nombres entre corchetes.
 - Errores de herramienta: un fallo de Azure CLI (`token`) o de git (`ficheros_en_git`) sale con código 2 y no con 1, para que no se confunda con "hay diferencias con Fabric".
 
+## Tests de exportación con --solo
+
+`reporting-financiero/tests/test_exportar_fabric.py` prueba la opción `--solo` de `exportar_fabric.py` con las llamadas a Fabric y a git sustituidas. Modos de fallo que cubre:
+
+- `carpetas_solo` convierte `lakehouse` en las carpetas `sql` y `lakehouse`, y sin `--solo` devuelve `None`.
+- Con `--solo` no se descarga ningún item que no se pidió, y las vistas solo se leen si se pide `lakehouse`.
+- Con `--solo` no se borran las carpetas de los demás items al exportar, y `lakehouse` regenera solo vistas y esquema.
+- Un nombre que no existe en el workspace sale con código 2 sin descargar nada.
+- Con `--comprobar --solo` se comparan solo las carpetas pedidas; sin `--solo`, lo que falta en Fabric cuenta como diferencia.
+- Sin `--solo` se mantiene el comportamiento de siempre: regenerar y comparar todo.
+
 ## Tests de publicación y ejecución de Fabric
 
 Estos tests no abren conexión: sustituyen las llamadas a Fabric, Azure CLI y el SQL endpoint por funciones falsas.
@@ -71,6 +82,8 @@ Estos tests no tocan Fabric.
 - Revenue: el total por sociedad de ESP067, ESP068, ESP069 y ESP070 cuadra con tolerancia de 0,05, porque cada línea del TXT viene redondeada a dos decimales. Modo de fallo: la medida REAL (Fees & other), el acumulado del año, el signo o los importes en miles dejan de reproducir el TXT.
 - Revenue ESP066 (COMM): xfail estricto por una diferencia conocida de 6,82 (0,24%) sin explicar. Si se corrige, el test pasa a fallar y hay que quitar la marca.
 - Revenue: el informe da la cobertura de clientes.
+- Vista de Ageing (`300.vw_Export_Ageing`, sin GRICFLAG): la suma de importes coincide con `200.Aging_Clientes` en miles, sin duplicados por sociedad, cliente y tramo; tiene los valores fijos esperados y solo las sociedades ESP066 a ESP070. Modo de fallo: se pierden o duplican facturas al construir la vista.
+- Vista de Ageing contra marzo (`ageing --vista`): la diferencia máxima por sociedad y tramo es menor de 0,001 y el informe da la cobertura de clientes y de GRICFLAG.
 
 ## Ejecución
 
@@ -91,14 +104,15 @@ Desde la raíz del repositorio, con el Python del entorno virtual de `reporting-
 - Vistas: las sentencias se preparan antes de ejecutar nada. Se rechazan líneas `GO`, ficheros que no crean la vista de su ruta, y rutas fuera de los esquemas 100, 200 y 300.
 - Pipelines: `ejecutar_fabric.py` lanza solo con `--confirmar`. Sin él, comprueba la cuenta y que el item existe y es `DataPipeline`, y no lanza nada. Un pipeline que termina en `Failed`, `Cancelled` o `Deduped` sale con 1.
 - Comprobación de sincronía: antes de publicar, descarga el item de Fabric y lo compara con `--base` (por defecto main). Si hay diferencias sale con 1 y no publica. `--forzar` lo omite y avisa de que se pierden los cambios de Fabric.
+- Exportación parcial: con `--solo`, solo se descargan y regeneran las carpetas pedidas, y un nombre inexistente sale con 2 antes de tocar `fabric/`.
 - UDF excluidas: `FORMATOS` no incluye UserDataFunction, `solo_items` las descarta, `es_exportable` las filtra y `publicar_fabric` rechaza ese tipo con 2.
 
 ## No cubierto
 
 - La publicación real no se prueba: escribiría en el workspace del cliente, que no tiene entorno de pruebas. Los tests cubren funciones puras, la simulación y la salida de `publicar_fabric.py` y `ejecutar_fabric.py` con sustitutos, y la salida con código 2 ante fallos de Azure CLI o git.
-- Sin test: `--forzar` de `publicar_fabric.main`, `comprobar_cuenta`, las llamadas REST reales (`items`, `descargar_definicion`, `publicar_definicion`, `lanzar_pipeline`), `publicar_vista` y `conectar_sql`, y `exportar_fabric.main`, salvo el `--comprobar` del E2E. `crear_item` sí tiene tests, con la petición sustituida.
+- Sin test: `--forzar` de `publicar_fabric.main`, `comprobar_cuenta`, las llamadas REST reales (`items`, `descargar_definicion`, `publicar_definicion`, `lanzar_pipeline`), `publicar_vista` y `conectar_sql`, y `exportar_fabric.main` (sus funciones `descargar_todo`, `exportar` y `comprobar` sí tienen tests con sustitutos; el `--comprobar` del E2E cubre la sincronía real). `crear_item` sí tiene tests, con la petición sustituida.
 - El E2E de SQL no verifica resultados concretos.
-- `validar_ficheros_grupo.py` no tiene tests unitarios: sus cálculos solo se comprueban con el E2E, que requiere la carpeta de OneDrive y FABRIC_E2E=1.
+- `validar_ficheros_grupo.py` no tiene tests unitarios: sus cálculos solo se comprueban con el E2E, que requiere la carpeta de OneDrive y FABRIC_E2E=1. Lo mismo ocurre con el modo `--vista`.
 - Los tests de `md_a_docx.py` dependen de la plantilla externa de docenteo-design: sin ella se saltan y no fallan.
 - La diferencia de 6,82 en COMM no está explicada.
 - No hay workspace de pruebas: es el único entorno del cliente. Una publicación se valida así: una persona refresca o ejecuta en Fabric y comprueba las cifras de control; después se exporta, se revisa `git diff` y `exportar_fabric.py --comprobar main` debe dar 0.
@@ -106,15 +120,17 @@ Desde la raíz del repositorio, con el Python del entorno virtual de `reporting-
 ## Evidence
 
 - `reporting-financiero/tests/test_fabric_comun.py` - tests unitarios y modos de fallo de Fabric.
+- `reporting-financiero/tests/test_exportar_fabric.py` - tests de `--solo` con sustitutos (`carpetas_solo`, `descargar_todo`, `exportar`, `comprobar`).
 - `reporting-financiero/tests/test_fabric_e2e.py` - E2E de solo lectura, activado con FABRIC_E2E=1.
 - `reporting-financiero/tests/test_anexo_pendientes.py` - sobre `scripts/anexo_pendientes.py` y `docs/auditoria/auditoria-general.md`.
 - `reporting-financiero/tests/test_md_a_docx.py` - sobre `scripts/md_a_docx.py`, con la plantilla de docenteo-design.
-- `reporting-financiero/tests/test_validar_ficheros_grupo_e2e.py` - E2E de ficheros de Grupo sobre `scripts/validar_ficheros_grupo.py`.
+- `reporting-financiero/tests/test_validar_ficheros_grupo_e2e.py` - E2E de ficheros de Grupo, vista de Ageing y modo `--vista` sobre `scripts/validar_ficheros_grupo.py`.
 - `reporting-financiero/tests/test_publicar_vistas.py`, `test_crear_items.py` - vistas, creación de items y códigos de `scripts/publicar_fabric.py#main`.
 - `reporting-financiero/tests/test_ejecutar_fabric.py` - `scripts/ejecutar_fabric.py#main` y `fabric_comun.py#esperar_job`, `#leer_parametros`.
 - `reporting-financiero/scripts/fabric_comun.py#comprobar_cuenta`, `#comparar`, `#solo_items`, `#es_exportable`, `#partes_para_publicar`, `#es_consulta_de_lectura`, `#ficheros_sql`, `FORMATOS`.
 - `reporting-financiero/scripts/publicar_fabric.py#main` - simulación, sincronía, `--forzar` y códigos de salida.
 - `reporting-financiero/scripts/consultar_sql.py#main` - filtro de lectura y CSV en `data/`.
-- `reporting-financiero/scripts/exportar_fabric.py#main` - códigos de salida.
+- `reporting-financiero/scripts/exportar_fabric.py#carpetas_solo`, `#descargar_todo`, `#exportar`, `#comprobar`, `#main` - opción `--solo` y códigos de salida.
+- `reporting-financiero/scripts/validar_ficheros_grupo.py#validar_vista_ageing` - modo `--vista`.
 - `test_fabric_comun.py#test_fallo_de_azure_cli_sale_con_codigo_2`, `test_fabric_comun.py#test_fallo_de_git_sale_con_codigo_2` - errores de herramienta con código 2.
 - `test_fabric_comun.py#test_items_de_metricas_de_uso_no_se_exportan` - exclusión de items de uso.

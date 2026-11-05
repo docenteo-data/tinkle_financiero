@@ -7,7 +7,7 @@ source: reporting-financiero/fabric
 commit: fb5c2b5
 last_sync: 2026-10-26T22:45:58Z
 stack: generic
-source_globs: ["*.SemanticModel/definition/model.tmdl", "*.SemanticModel/definition/relationships.tmdl", "*.SemanticModel/definition/tables/**", "*.Dataflow/mashup.pq"]
+source_globs: ["*.Dataflow/mashup.pq", "*.SemanticModel/definition/expressions.tmdl", "*.Notebook/**", "Grabar salidas.DataPipeline/**", "Generar_salidas.DataPipeline/**", "Flujo_*.DataPipeline/**", "Agings.SemanticModel/definition/tables/**"]
 tags: [rf-fabric, domain-model]
 ---
 
@@ -37,7 +37,7 @@ Los términos de negocio siguen el [glosario](../../../reporting-financiero/CONT
 
 - `Dim_Calendar`: calendario, con Fecha y Orden_Mes.
 - `Dim_Sociedades`: Sociedades, con las claves Sociedad, Sociedad_MMS y CodigoSociedad.
-- `Dim_Clientes`: maestro de clientes que une la clave Oracle y la clave MMS. Incluye SECCION.
+- `Dim_Clientes`: maestro de clientes que une la clave Oracle y la clave MMS. Incluye SECCION y `Codigo_Magnitude`, código de cliente Magnitude provisional tomado de Revenue 2026 FT3 (consulta Mapeo_Magnitude). `Codigo_Magnitude` no está en el modelo semántico; lo usa la vista de Ageing.
 - `Dim_equipos`: Equipos.
 - `Dim_RRHH`: Empleados. Contiene datos salariales, que no se describen aquí.
 - `Dim_CDC`: Centros de coste, identificados por INICIALES CAPTIO.
@@ -99,16 +99,23 @@ Los términos de negocio siguen el [glosario](../../../reporting-financiero/CONT
 
 - `Fechas` es el calendario de los snapshots. Las tablas de facturas no se relacionan con `Fechas`, sino con la fecha automática.
 
+### Fichero de Ageing de Grupo (fuera del modelo)
+
+- La vista `300.vw_Export_Ageing` parte de `200.Aging_Clientes` y no pasa por este modelo. Asigna cada factura a un tramo GR0 a GR9C según los días desde el vencimiento hasta el fin del último periodo de `Fact_Actuals`, con los límites de 0, 30, 60, 90, 120, 180 y 365 días. Los importes van en miles. Los límites son los mismos que los de la columna `AgingBucket` de `Aging_Clientes_Snapshot` (A- NOT DUE a H- Over 1 Year), que equivalen a GR0, GR1, GR2, GR3, GR4, GR5, GR8C y GR9C. La única diferencia es la fecha de corte: la vista usa el fin de mes del último periodo de `Fact_Actuals`; el DAX usa cada fecha de `Fechas`.
+
 ## Evidence
 
 - `Financial Model.SemanticModel/definition/model.tmdl` - tablas del modelo y origen Direct Lake.
 - `Financial Model.SemanticModel/definition/relationships.tmdl` - relaciones, columnas y cardinalidades.
 - `Financial Model.SemanticModel/definition/tables/` - modo y tipo de partición de cada tabla (solo lectura de partition y mode).
 - `Agings.SemanticModel/definition/relationships.tmdl` - relaciones de Agings.
+- `Agings.SemanticModel/definition/tables/Aging_Clientes_Snapshot.tmdl#AgingBucket` - columna calculada con los tramos de antigüedad.
 - `Agings.SemanticModel/definition/tables/` - modo y tipo de partición de cada tabla (solo lectura de partition y mode).
 - `Agings.SemanticModel/definition/tables/200 Aging_Clientes.tmdl` - partición import sobre `200.Aging_Clientes`.
 - `Agings.SemanticModel/definition/tables/200 Aging_Proveedores.tmdl` - partición import sobre `200.Aging_Proveedores`.
 - `TRANS_Gold.Dataflow/mashup.pq` - filtro de `Dim_Cuentas` (origen ORACLE).
+- `INGESTA_Maestros.Dataflow/mashup.pq#Dim_Clientes`, `#Mapeo_Magnitude` - origen de `Codigo_Magnitude`.
+- `sql/300.vw_Export_Ageing.sql` - tramos y fuente del fichero de Ageing.
 - `reporting-financiero/CONTEXT.md` - glosario de términos de negocio (fuera de la carpeta fuente).
 
 ## Open questions

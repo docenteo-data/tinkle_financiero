@@ -17,7 +17,7 @@ tags: [rf-fabric, data-model]
 
 ## Alcance y método
 
-- 32 tablas en tres esquemas: `100` (7 tablas, 318 columnas), `200` (12 tablas, 363 columnas) y `300` (13 tablas, 139 columnas). Total: 820 columnas.
+- 32 tablas en tres esquemas: `100` (7 tablas, 318 columnas), `200` (12 tablas, 363 columnas) y `300` (13 tablas, 140 columnas). Total: 821 columnas.
 - Columnas: conteo por tabla del fichero de esquema del lakehouse.
 - Productor: una consulta escribe en una tabla si lleva la anotación `DataDestinations` en `mashup.pq` hacia una consulta `*_DataDestination`. Todas las consultas tienen `loadEnabled` a false, así que ese campo no sirve para saber qué escribe.
 - Esquema y tabla de destino: se toman del esquema y la tabla de cada `*_DataDestination` en `mashup.pq`.
@@ -59,7 +59,7 @@ tags: [rf-fabric, data-model]
 | Aux_CDC | 2 | INGESTA_Maestros | Aux_CDC | |
 | Dim_CDC | 5 | INGESTA_Maestros | Dim_CDC | |
 | Dim_Calendar | 16 | INGESTA_Maestros | Dim_Calendar | |
-| Dim_Clientes | 14 | INGESTA_Maestros | Dim_Clientes | |
+| Dim_Clientes | 15 | INGESTA_Maestros | Dim_Clientes | Incluye `Codigo_Magnitude` (provisional), tomado de la consulta sin destino Mapeo_Magnitude. Columna no usada en el modelo semántico. |
 | Dim_Cuentas | 14 | TRANS_Gold | Dim_Cuentas | |
 | Dim_Mapeo_Cuentas | 5 | TRANS_Gold | Dim_mapeo_cuentas | |
 | Dim_RRHH | 22 | INGESTA_Maestros | Dim_RRHH | Datos de personas: no se detallan columnas |
@@ -97,6 +97,7 @@ tags: [rf-fabric, data-model]
 - `INGESTA_Carga_Datos.Dataflow/mashup.pq` - destino de `Carga_New_HAPA_asientos` (100.New_HAPA).
 - `*.Dataflow/mashup.pq` - anotaciones `DataDestinations` y tabla de destino de cada consulta.
 - `INGESTA_Maestros.Dataflow/queryMetadata.json` - dimensiones, mappings y COA_Oracle en 200 y 300.
+- `INGESTA_Maestros.Dataflow/mashup.pq#Dim_Clientes`, `#Mapeo_Magnitude` - columna `Codigo_Magnitude` y su origen.
 - `INICIAL_Carga_Agings.Dataflow/queryMetadata.json` - Aging_Clientes y Aging_Proveedores (carga histórica).
 - `INICIAL_Carga_Oracle.Dataflow/queryMetadata.json` - Oracle_historico (carga desde Checklist).
 - `INICIAL_Carga_Rentabilidades.Dataflow/queryMetadata.json` - Fact_Asignacion_RRHH y Dim_equipos (la consulta Dim_CDC solo lee 300.Dim_CDC).

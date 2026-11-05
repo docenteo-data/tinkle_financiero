@@ -39,3 +39,15 @@ tags: [meta]
 - commits: `ff89948` → `a98625a`
 - changed files (4): `ejecutar_fabric.py`, `fabric_comun.py`, `md_a_docx.py`, `publicar_fabric.py`
 - affected docs: `repos\rf-scripts\apis.md`, `repos\rf-scripts\architecture.md`, `repos\rf-scripts\configuration.md`, `repos\rf-scripts\integrations.md`, `repos\rf-scripts\modules\documentos.md`, `repos\rf-scripts\overview.md`, `repos\rf-scripts\quality.md`
+
+## 2026-11-05T10:01:28Z · rf-fabric
+
+- commits: `63838cb` → `20719be`
+- changed files (6): `Generar_salidas.DataPipeline/pipeline-content.json`, `Generar_txt_Balance_Saldos.Notebook/notebook-content.ipynb`, `INGESTA_Maestros.Dataflow/mashup.pq`, `INGESTA_Maestros.Dataflow/queryMetadata.json`, `lakehouse/esquema.tsv`, `sql/300.vw_Export_Ageing.sql`
+- affected docs: `repos\rf-fabric\apis.md`, `repos\rf-fabric\architecture.md`, `repos\rf-fabric\configuration.md`, `repos\rf-fabric\data-model.md`, `repos\rf-fabric\domain-model.md`, `repos\rf-fabric\integrations.md`, `repos\rf-fabric\lineage.md`, `repos\rf-fabric\quality.md`
+
+## 2026-11-05T10:01:29Z · rf-scripts
+
+- commits: `a98625a` → `dc3b3a1`
+- changed files (2): `exportar_fabric.py`, `validar_ficheros_grupo.py`
+- affected docs: `repos\rf-scripts\apis.md`, `repos\rf-scripts\architecture.md`, `repos\rf-scripts\configuration.md`, `repos\rf-scripts\integrations.md`, `repos\rf-scripts\overview.md`, `repos\rf-scripts\quality.md`

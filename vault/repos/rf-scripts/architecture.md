@@ -28,11 +28,11 @@ Configuración clave en el módulo: `FORMATOS` define qué tipos de item se expo
 
 ## Puntos de entrada
 
-- `exportar_fabric.py`: lee Fabric y escribe `fabric/` o compara con un commit.
+- `exportar_fabric.py`: lee Fabric y escribe `fabric/` o compara con un commit. Con `--solo` opera solo sobre los items indicados (y, si se pide, sobre las vistas y el esquema del lakehouse).
 - `publicar_fabric.py`: escribe en Fabric desde un commit de git: actualiza items existentes, crea los que faltan con `--crear` y publica vistas SQL (`sql/<esquema>.<vista>.sql`). Nunca borra.
 - `ejecutar_fabric.py`: lanza un pipeline de Fabric, espera a que termine y devuelve su estado. Solo lanza con `--confirmar`.
 - `consultar_sql.py`: consulta de solo lectura al SQL endpoint.
-- `validar_ficheros_grupo.py`: reproduce los ficheros de Grupo de Ageing y Revenue de marzo de 2026 desde las fuentes y los compara con los TXT de Magnitude. Lee Excel y consulta Fabric en solo lectura.
+- `validar_ficheros_grupo.py`: reproduce los ficheros de Grupo de Ageing y Revenue de marzo de 2026 desde las fuentes y los compara con los TXT de Magnitude. Lee Excel y consulta Fabric en solo lectura. Con `ageing --vista` no lee Excel: valida la vista `300.vw_Export_Ageing` de Fabric contra los TXT.
 - `anexo_pendientes.py`: genera el anexo de pendientes de la auditoría general, a partir del registro de reuniones, la auditoría técnica y las preguntas para Tinkle.
 - `md_a_docx.py`: convierte un documento Markdown del proyecto a Word con la plantilla de Docenteo.
 
@@ -47,6 +47,7 @@ Configuración clave en el módulo: `FORMATOS` define qué tipos de item se expo
 5. Si hay errores en cualquier item o en SQL, no escribe ni compara y sale con código 2.
 6. Modo normal: `exportar` borra las carpetas generadas y las vuelve a escribir enteras. `temas/` no se toca.
 7. Modo `--comprobar [REF]`: `ficheros_en_git` lee el commit (por defecto `main`), `solo_items` filtra y `comparar` clasifica las diferencias. Sale con 0 si coincide, con 1 si no, y con 2 si la REF no existe en git.
+8. Modo `--solo ITEM [ITEM ...]`: `carpetas_solo` convierte los nombres en carpetas (`lakehouse` equivale a `sql` y `lakehouse`). `descargar_todo` valida que cada carpeta sea la de un item exportable o una de `CARPETAS_LAKEHOUSE` (`sql`, `lakehouse`); si alguna no existe, sale con código 2 antes de descargar ninguna definición. Un `sql` suelto se acepta sin expandirse: hay que usar `lakehouse` (ver apis.md). Después solo descarga las carpetas pedidas, y `exportar` o `comprobar` trabajan solo sobre ellas. Las demás carpetas de `fabric/` no se tocan.
 
 ### Publicar
 
@@ -88,6 +89,7 @@ Procesa un fichero por ejecución (`ageing` o `revenue`), con la carpeta `3.Fuen
 4. Modo `revenue`: `validar_revenue` suma `Fact_Actuals` del primer trimestre (esquema 300) por sociedad y lo compara con los TXT, con una tolerancia de 0,05. El código de cliente se obtiene con `Dim_Clientes` y el mismo mapeo, también de forma informativa.
 5. `mapeo_magnitude` lee el Excel Revenue FT3 de `Presupuestos`. La hoja FT3 2026 tiene prioridad y el resto solo completa huecos. Los códigos numéricos se rellenan a 8 dígitos.
 6. Sale con 0 si las cifras de control cuadran, con 1 si no cuadran y con 2 si fallan la cuenta o los ficheros. La salida es ASCII.
+7. Modo `ageing --vista`: `validar_vista_ageing` no abre el Excel ni llama a `mapeo_magnitude`. Lee los TXT con `leer_ageing_marzo` y la vista `300.vw_Export_Ageing` con su consulta fija (`CONSULTA_VISTA_AGEING`, a través de `consultar`). Compara los importes por sociedad y tramo (cifra de control), las líneas por cliente y los GRICFLAG. Sale con 0 si la diferencia máxima por sociedad y tramo es menor de 0,001, con 1 si no. Con `revenue` sale con código 2 antes de leer nada.
 
 ### Generar anexo de pendientes
 
@@ -110,19 +112,19 @@ Procesa un fichero por ejecución (`ageing` o `revenue`), con la carpeta `3.Fuen
 
 - Azure CLI (`az`) en el PATH, con sesión en la cuenta de Tinkle. Lo usa `fabric_comun.py` y, por tanto, todos los scripts que consultan Fabric.
 - Biblioteca `mssql_python`, para `consultar_sql.py` y para la exportación de vistas y esquema en `exportar_fabric.py`. `validar_ficheros_grupo.py` consulta SQL a través de `fabric_comun.py`.
-- Biblioteca `openpyxl`, para leer los Excel de `validar_ficheros_grupo.py`.
-- Carpeta `3.Fuentes` de OneDrive, con los Excel de aging y Revenue y los TXT de Magnitude de marzo.
+- Biblioteca `openpyxl`, para leer los Excel de `validar_ficheros_grupo.py`. Se importa al cargar el script, también en modo `--vista`, aunque ese modo no abre ningún Excel.
+- Carpeta `3.Fuentes` de OneDrive, con los Excel de aging y Revenue y los TXT de Magnitude de marzo. El modo `--vista` solo necesita los TXT.
 - Plantilla `docenteo-documento.dotx` de la skill docenteo-design, para `md_a_docx.py`.
 - `anexo_pendientes.py` y `md_a_docx.py` usan solo la biblioteca estándar de Python.
 
 ## Evidence
 
 - `fabric_comun.py#comprobar_cuenta`, `#token`, `#peticion`, `#esperar_operacion`, `#descargar_definicion`, `#publicar_definicion`, `#ficheros_en_git`, `#solo_items`, `#comparar`, `#descargar_sql`, `#ficheros_sql`, `#conectar_sql`, `#es_consulta_de_lectura`, `#es_exportable`, `#ITEMS_DE_SISTEMA`.
-- `exportar_fabric.py#descargar_todo`, `#exportar`, `#comprobar`, `#main`.
+- `exportar_fabric.py#carpetas_solo`, `#descargar_todo`, `#exportar`, `#comprobar`, `#main`.
 - `publicar_fabric.py#main`, `#_preparar_vistas`, `#_publicar_vistas`.
 - `ejecutar_fabric.py#main`.
 - `consultar_sql.py#main`.
-- `validar_ficheros_grupo.py#main`, `#validar_ageing`, `#validar_revenue`, `#mapeo_magnitude`, `#leer_txt`, `#tramo`, `#consultar`, `#comparar_lineas`.
+- `validar_ficheros_grupo.py#main`, `#validar_ageing`, `#validar_revenue`, `#validar_vista_ageing`, `#leer_ageing_marzo`, `#CONSULTA_VISTA_AGEING`, `#mapeo_magnitude`, `#leer_txt`, `#tramo`, `#consultar`, `#comparar_lineas`.
 - `anexo_pendientes.py#generar`, `#leer_conceptos`, `#leer_registro`, `#leer_tecnica`, `#leer_preguntas`, `#main`.
 - `md_a_docx.py#plantilla_por_defecto`, `#tabla`, `#anchos_automaticos`, `#pegar_cifras`, `#tablas_de_conceptos`, `#lista`, `#convertir`.
 - `fabric_comun.py#crear_item`, `#lanzar_pipeline`, `#esperar_job`, `#vista_de_ruta`, `#sentencia_de_vista`, `#publicar_vista`.

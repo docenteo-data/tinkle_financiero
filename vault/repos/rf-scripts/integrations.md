@@ -29,7 +29,7 @@ Los scripts de `reporting-financiero/scripts` hablan con cuatro sistemas externo
 - Creación de items: POST sobre los items del workspace con nombre, tipo y definición en base64. Si responde 202, se espera la operación. Solo lo usa `publicar_fabric.py` con `--crear`.
 - Lanzamiento de pipelines: POST sobre las instancias de jobs del item con `jobType=Pipeline` y los parámetros en `executionData`. La respuesta 202 trae en `Location` la URL del job.
 - Seguimiento de jobs: `esperar_job` consulta esa URL cada 20 segundos (sin `Retry-After`) hasta `Completed`, `Failed`, `Cancelled` o `Deduped`. Si el tiempo máximo se agota, lanza timeout; el job sigue en Fabric. Lo usa `ejecutar_fabric.py`.
-- Excluido de la exportación: User Data Functions, porque su código lleva un secreto incrustado. Los items que Power BI crea solo al abrir las métricas de uso de un informe (Report Usage Metrics Report, Report Usage Metrics Model y Usage Metrics Report) también se omiten, porque la API no permite exportarlos. El criterio está en `es_exportable`, que usa `exportar_fabric.py` al descargar todo el workspace.
+- Excluido de la exportación: User Data Functions, porque su código lleva un secreto incrustado. Los items que Power BI crea solo al abrir las métricas de uso de un informe (Report Usage Metrics Report, Report Usage Metrics Model y Usage Metrics Report) también se omiten, porque la API no permite exportarlos. El criterio está en `es_exportable`, que usa `exportar_fabric.py` al descargar todo el workspace. Con `exportar_fabric.py --solo`, la lista del workspace se pide completa, pero solo se descargan las definiciones de los items indicados.
 
 ## Azure CLI
 
@@ -45,14 +45,15 @@ Los scripts de `reporting-financiero/scripts` hablan con cuatro sistemas externo
 - `descargar_sql` lee las vistas de los esquemas 100, 200 y 300 y las columnas del esquema de información. Las vistas van a `sql/` y las columnas a `lakehouse/esquema.tsv`.
 - Escritura de vistas: `publicar_vista` ejecuta en el mismo SQL endpoint una sentencia `CREATE VIEW` o `CREATE OR ALTER VIEW` y confirma el cambio. Solo admite vistas de los esquemas 100, 200 y 300, sin líneas `GO`, y nunca borra vistas.
 - `consultar_sql.py` solo admite sentencias que empiezan por SELECT o WITH y no contienen palabras de escritura. Códigos de salida: 0 correcto, 1 error de consulta, 2 sin sentencia, sentencia no permitida, CSV fuera de `reporting-financiero/data/`, cuenta incorrecta o fallo de Azure CLI. Con `--csv` solo escribe dentro de `reporting-financiero/data/`, que no se versiona.
-- `validar_ficheros_grupo.py` usa la misma conexión, pero con dos consultas fijas escritas en el propio script, ambas SELECT de solo lectura: una sobre `200.MMS` (facturas y códigos de cliente del sistema de órdenes MMS por sociedad) y otra sobre `300.Fact_Actuals` cruzada con `300.Dim_Cuentas` y `300.Dim_Clientes` (importes de las cuentas X agrupadas en `X60000` y `X70000`, de enero a marzo de 2026). Estas consultas no pasan por el filtro de `consultar_sql.py`.
+- `validar_ficheros_grupo.py` usa la misma conexión, pero con consultas fijas escritas en el propio script, todas SELECT de solo lectura: una sobre `200.MMS` (facturas y códigos de cliente del sistema de órdenes MMS por sociedad), otra sobre `300.Fact_Actuals` cruzada con `300.Dim_Cuentas` y `300.Dim_Clientes` (importes de las cuentas X agrupadas en `X60000` y `X70000`, de enero a marzo de 2026) y, en modo `ageing --vista`, otra sobre `300.vw_Export_Ageing` (sociedad, cliente, tramo, importe y marca de sin código, con el flag GRICFLAG como filas aparte). Estas consultas no pasan por el filtro de `consultar_sql.py`.
 - Por qué no ODBC: el código no lo justifica. Ver preguntas abiertas.
 
 ## Ficheros locales: validación de Grupo
 
 - `validar_ficheros_grupo.py` no escribe nada. Lee de la carpeta `3.Fuentes` del OneDrive del proyecto (dentro de Reporting financiero; `--fuentes` permite indicar otra ruta) con openpyxl: el aging de clientes a 31-03-2026 (hoja DATOS), el libro Revenue 2026 FT3 (.xlsm, que aporta el mapeo de códigos de cliente Magnitude) y los TXT de Magnitude de marzo, separados por punto y coma, de las carpetas Ageing y Revenue.
+- En modo `ageing --vista` no se abre ningún Excel: solo se leen los TXT de marzo de la carpeta Ageing y se consulta la vista `300.vw_Export_Ageing` de Fabric.
 - Reproduce el fichero de Grupo desde las fuentes y lo compara con el TXT real. Por sociedad y tramo en ageing, y por sociedad en revenue, la cifra de control debe cuadrar; el código de cliente Magnitude se compara aparte y es informativo, porque el Excel de Revenue no es el maestro de Magnitude.
-- Códigos de salida: 0 las cifras de control cuadran, 1 no cuadran, 2 cuenta de Azure CLI incorrecta o carpeta de ficheros no encontrada.
+- Códigos de salida: 0 las cifras de control cuadran, 1 no cuadran, 2 cuenta de Azure CLI incorrecta, carpeta de ficheros no encontrada o `--vista` con `revenue`.
 - Dependencia: `openpyxl` 3.1.5, fijado en `requirements.txt`.
 - Reglas de negocio y estado de los ficheros de Grupo en [[domains/ficheros-de-grupo]].
 
@@ -89,11 +90,11 @@ Los scripts de `reporting-financiero/scripts` hablan con cuatro sistemas externo
 - `fabric_comun.py#peticion`, `#esperar_operacion`, `#items`, `#descargar_definicion`, `#partes_para_publicar`, `#publicar_definicion`, `#crear_item` - API REST de Fabric y operaciones asíncronas.
 - `fabric_comun.py#lanzar_pipeline`, `#esperar_job`, `#ESTADOS_FINALES_JOB` - lanzamiento y seguimiento de jobs de pipeline.
 - `fabric_comun.py#publicar_vista`, `#sentencia_de_vista` - escritura de vistas en el SQL endpoint.
-- `fabric_comun.py#es_exportable`, `exportar_fabric.py#descargar_todo` - exclusión de items de sistema en la exportación.
+- `fabric_comun.py#es_exportable`, `exportar_fabric.py#descargar_todo`, `exportar_fabric.py#carpetas_solo` - exclusión de items de sistema y descarga limitada con `--solo`.
 - `fabric_comun.py#_az`, `#comprobar_cuenta`, `#token` - Azure CLI, tenant y tokens.
 - `fabric_comun.py#conectar_sql`, `#ficheros_sql`, `#descargar_sql` - SQL endpoint y driver.
 - `fabric_comun.py#es_consulta_de_lectura`, `consultar_sql.py#main` - filtro de solo lectura y códigos de salida.
-- `validar_ficheros_grupo.py#main`, `#validar_ageing`, `#validar_revenue`, `#mapeo_magnitude`, `#consultar` - lectura de Excel y TXT, consultas SQL y comparación con los ficheros de Grupo.
+- `validar_ficheros_grupo.py#main`, `#validar_ageing`, `#validar_revenue`, `#validar_vista_ageing`, `#leer_ageing_marzo`, `#CONSULTA_VISTA_AGEING`, `#mapeo_magnitude`, `#consultar` - lectura de Excel y TXT, consultas SQL y comparación con los ficheros de Grupo.
 - `anexo_pendientes.py#generar`, `#leer_registro`, `#leer_tecnica` - documentos Markdown del repositorio y anexo de la auditoría.
 - `md_a_docx.py#plantilla_por_defecto`, `#convertir` - plantilla Word y generación del .docx.
 - `fabric_comun.py#ficheros_en_git`, `#comparar` - lectura de commits con git archive.

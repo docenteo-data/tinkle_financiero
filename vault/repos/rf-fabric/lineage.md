@@ -81,7 +81,8 @@ Dataflow, DataPipeline, Notebook, SemanticModel y Report, más las carpetas `sql
 | COA_Oracle | `Maestros/Maestros.xlsx` | 200.COA_Oracle |
 | Dim_CDC | `Maestros/Maestros.xlsx` | 300.Dim_CDC |
 | Aux_CDC | `Maestros/Maestros.xlsx` | 300.Aux_CDC |
-| Dim_Clientes | `Maestros/Maestros.xlsx` | 300.Dim_Clientes |
+| Dim_Clientes | `Maestros/Maestros.xlsx` y la consulta Mapeo_Magnitude | 300.Dim_Clientes |
+| Mapeo_Magnitude | `Arranque/Revenue 2026 FT3.xlsx` (hojas cuyo nombre contiene "Revenue by client") | - (sin destino; solo la usa Dim_Clientes) |
 | Dim_RRHH | `Maestros/MASTER RRHH 2026 .xlsx` | 300.Dim_RRHH |
 | Dim_Calendar | Generada en el M (2020 a 2030) | 300.Dim_Calendar |
 | Dim_Sociedades | Tabla literal en el M | 300.Dim_Sociedades |
@@ -89,6 +90,8 @@ Dataflow, DataPipeline, Notebook, SemanticModel y Report, más las carpetas `sql
 | Assets_Reporte_Cuentas, Liabilities_Reporte_Cuentas, PL_Reporte_Cuentas | Su consulta `*_Reporte`; PL_Reporte_Cuentas, además, Dim_Report_Line | - |
 | Dim_Report_Line | Assets_Reporte, Liabilities_Reporte, PL_Reporte | 300.Dim_Report_Line |
 | Map_Report_Line_Account | Las tres `*_Reporte_Cuentas` | 300.Map_Report_Line_Account |
+
+Mapeo_Magnitude toma el código de cliente Magnitude de la hoja "Revenue by client FT3 2026", que tiene prioridad, y de las demás hojas que contienen "Revenue by client" solo para rellenar huecos. Es provisional. Dim_Clientes lo une por empresa y cliente MMS.
 
 ### Cargas iniciales (fuera de los pipelines)
 
@@ -122,25 +125,28 @@ Las B01 y B01 TOTAL no escriben en ninguna tabla: la carga de presupuesto que ll
 | 100.RLS | Ninguno en el repositorio |
 | 200.Oracle_historico | TRANS_Silver (200_Oracle), TRANS_Gold (Oracle_historico) |
 | 200.HAPA | TRANS_Silver (200_HAPA), TRANS_Gold (HAPA) |
-| 200.MMS | TRANS_Silver (200_MMS), modelo Financial Model |
+| 200.MMS | TRANS_Silver (200_MMS), modelo Financial Model, vista 300.vw_Export_Ageing |
 | 200.Portugal | TRANS_Gold (Portugal) |
 | 200.COA_Oracle, 200.Mapping_HAPA, 200.Mapping Portugal | TRANS_Gold |
-| 200.Aging_Clientes, 200.Aging_Proveedores | Modelo Agings (import) |
+| 200.Aging_Clientes | Modelo Agings (import), vista 300.vw_Export_Ageing |
+| 200.Aging_Proveedores | Modelo Agings (import) |
 | 200.Presupuestos | Modelo Financial Model |
 | 200.Revenues | Ninguno en el repositorio |
 | 200.Budget_historico | Ninguno en el repositorio (tampoco tiene productor) |
-| 300.Fact_Actuals | Modelo Financial Model; vistas 300.vw_Export_Grupo, 300.vw_Export_Saldos_4_7 y 300.vw_Reporting_Actuals |
+| 300.Fact_Actuals | Modelo Financial Model; vistas 300.vw_Export_Grupo, 300.vw_Export_Saldos_4_7, 300.vw_Export_Ageing y 300.vw_Reporting_Actuals |
 | 300.Dim_Mapeo_Cuentas | Modelo Financial Model; vistas 300.vw_Export_Grupo y 300.vw_Reporting_Actuals |
-| 300.Dim_Sociedades | Modelo Financial Model; vistas 300.vw_Export_Grupo y 300.vw_Export_Saldos_4_7 |
+| 300.Dim_Sociedades | Modelo Financial Model; vistas 300.vw_Export_Grupo, 300.vw_Export_Saldos_4_7 y 300.vw_Export_Ageing |
+| 300.Dim_Clientes | Modelo Financial Model; vista 300.vw_Export_Ageing |
 | 300.Map_Report_Line_Account | Modelo Financial Model; vista 300.vw_Reporting_Actuals |
 | 300.Dim_CDC | Modelo Financial Model; INICIAL_Carga_Rentabilidades (Dim_CDC) |
-| 300.Aux_CDC, 300.Dim_Calendar, 300.Dim_Clientes, 300.Dim_Cuentas, 300.Dim_RRHH, 300.Dim_Report_Line, 300.Dim_equipos, 300.Fact_Asignacion_RRHH | Modelo Financial Model |
+| 300.Aux_CDC, 300.Dim_Calendar, 300.Dim_Cuentas, 300.Dim_RRHH, 300.Dim_Report_Line, 300.Dim_equipos, 300.Fact_Asignacion_RRHH | Modelo Financial Model |
 
 ## Consumo aguas abajo
 
 - Financial Model (Direct Lake sobre `lh_tinkle_financiero`): las 13 tablas de 300 más 200.MMS y 200.Presupuestos. Lo leen los informes Checklist (Oracle), HAPA, MMS, Presupuesto y Rentabilidad.
 - Agings (import): 200.Aging_Clientes y 200.Aging_Proveedores. Lo lee el informe Agings.
 - Vistas 300.vw_Export_Grupo y 300.vw_Export_Saldos_4_7: las lee el notebook Generar_txt_Balance_Saldos, que escribe los .txt en `Files/Exportaciones/Balance`. Los copia a SharePoint el pipeline Generar_salidas (lanzado sin parámetros desde Flujo_total_txt y desde la UDF `Generar_txt`) y, mientras exista, el pipeline anterior Grabar salidas.
+- Vista 300.vw_Export_Ageing: la lee el notebook Generar_txt_Balance_Saldos solo si el parámetro `ficheros` incluye Ageing, y escribe los .txt en `Files/Exportaciones/Ageing/<periodo>`. La copia a SharePoint la segunda actividad Copy de Generar_salidas ("Copiar Ageing a SharePoint"). La vista lee 200.Aging_Clientes, 200.MMS, 300.Dim_Sociedades, 300.Dim_Clientes y 300.Fact_Actuals.
 - Vista 300.vw_Reporting_Actuals: sin lector en el repositorio.
 
 ## Open questions
@@ -153,12 +159,13 @@ Las B01 y B01 TOTAL no escriben en ninguna tabla: la carga de presupuesto que ll
 - `*.Dataflow/mashup.pq` - navegación de cada consulta (tablas `Id`, carpetas `Name`), referencias entre consultas y anotaciones `DataDestinations` con el esquema y la tabla de cada `*_DataDestination`.
 - `TRANS_Silver.Dataflow/mashup.pq#200_Oracle`, `#200_HAPA`, `#200_MMS` - lectura de la propia tabla de destino, filtro por fecha de corte y anexado.
 - `INGESTA_Maestros.Dataflow/mashup.pq#Dim_Calendar`, `#Dim_Sociedades` - consultas sin origen externo.
+- `INGESTA_Maestros.Dataflow/mashup.pq#Mapeo_Magnitude`, `#Dim_Clientes` - fichero de Arranque de Mapeo_Magnitude y su unión en Dim_Clientes.
 - `Financial Model.SemanticModel/definition/tables/` - `entityName` y `schemaName` de cada partición Direct Lake.
 - `Agings.SemanticModel/definition/tables/200 Aging_Clientes.tmdl`, `200 Aging_Proveedores.tmdl` - particiones import sobre 200.
 - `*.Report/definition.pbir` - modelo de cada informe.
-- `sql/300.vw_Export_Grupo.sql`, `sql/300.vw_Export_Saldos_4_7.sql`, `sql/300.vw_Reporting_Actuals.sql` - tablas que lee cada vista.
-- `Generar_txt_Balance_Saldos.Notebook/notebook-content.ipynb` - vistas leídas (esquema 300) y carpeta de salida.
-- `Generar_salidas.DataPipeline/pipeline-content.json` - notebook y copia de `Files/Exportaciones/Balance` a SharePoint.
+- `sql/300.vw_Export_Grupo.sql`, `sql/300.vw_Export_Saldos_4_7.sql`, `sql/300.vw_Export_Ageing.sql`, `sql/300.vw_Reporting_Actuals.sql` - tablas que lee cada vista.
+- `Generar_txt_Balance_Saldos.Notebook/notebook-content.ipynb` - vistas leídas (esquema 300, Ageing solo si se pide) y carpetas de salida.
+- `Generar_salidas.DataPipeline/pipeline-content.json` - notebook y copias de `Files/Exportaciones/Balance` y `Files/Exportaciones/Ageing` a SharePoint.
 - `Grabar salidas.DataPipeline/pipeline-content.json` - copia de `Files/Exportaciones/Balance` a SharePoint (pipeline anterior).
 - `Ingesta_datos.DataPipeline/pipeline-content.json`, `Transformacion_datos.DataPipeline/pipeline-content.json`, `Refresco_modelos.DataPipeline/pipeline-content.json` - qué dataflow o modelo refresca cada actividad, por nombre de actividad.
 - `Flujo_actualizar_datos.DataPipeline/pipeline-content.json`, `Flujo_total_reporting.DataPipeline/pipeline-content.json`, `Flujo_total_txt.DataPipeline/pipeline-content.json` - encadenamiento de los pipelines.

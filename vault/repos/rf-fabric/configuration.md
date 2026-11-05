@@ -50,7 +50,7 @@ Los 28 `.platform` tienen el `logicalId` a ceros porque es lo que devuelve getDe
 
 Hay nueve DataPipeline, en tres grupos:
 
-- Modulares (4): Ingesta_datos (3 actividades), Transformacion_datos (4), Refresco_modelos (2) y Generar_salidas (2).
+- Modulares (4): Ingesta_datos (3 actividades), Transformacion_datos (4), Refresco_modelos (2) y Generar_salidas (3).
 - Flujos (3): Flujo_actualizar_datos, Flujo_total_reporting y Flujo_total_txt, con dos actividades ExecutePipeline cada uno.
 - Anteriores (2): "Generar Reporting" (siete actividades) y "Grabar salidas" (dos).
 

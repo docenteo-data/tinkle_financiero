@@ -29,12 +29,24 @@ Solo lectura sobre Fabric. Sin argumentos regenera `reporting-financiero/fabric/
 |---|---|---|
 | (ninguno) | - | Exporta items, vistas SQL y esquema del lakehouse. |
 | `--comprobar [REF]` | `main` si no se indica REF | No escribe. Compara Fabric con `fabric/` en el commit REF. |
+| `--solo ITEM [ITEM ...]` | todo | Exporta, o con `--comprobar` compara, solo esos items. Cada ITEM es el nombre de carpeta `Nombre.Tipo` (por ejemplo `"TRANS_Gold.Dataflow"`); `lakehouse` equivale a las carpetas `sql` y `lakehouse` (vistas SQL y esquema de columnas). Se puede combinar con `--comprobar`. |
+
+Con `--solo`:
+- Solo se descargan las definiciones de los items pedidos. La lista de items del workspace sí se pide completa.
+- Al exportar solo se borran y regeneran las carpetas pedidas. El resto de `fabric/` no se toca.
+- Si no se pide `lakehouse`, no se lee el SQL endpoint ni se tocan `sql/` ni `lakehouse/`.
+- Con `--comprobar`, solo se comparan esas carpetas; lo que falte en Fabric en los demás items no cuenta.
+- Un nombre que no existe en el workspace sale con código 2 antes de descargar nada. Un item de sistema también cuenta como inexistente, porque la lista se filtra con `es_exportable`.
+- Usa `lakehouse`, no `sql` suelto: `sql` se acepta pero no se expande, así que se descargan las vistas, se escribe `lakehouse/esquema.tsv` y, con `--comprobar`, ese fichero sale como diferencia (código 1).
+- Uso previsto: un item que no se puede leer en Fabric (por ejemplo, un modelo semántico con la capacidad saturada) y que no se ha modificado.
 
 | Código | Significado |
 |---|---|
 | 0 | Exportado, o Fabric coincide con REF. |
 | 1 | Solo con `--comprobar`: hay diferencias (solo en Fabric, distintas o solo en el repo). |
-| 2 | Cuenta incorrecta, fallo de Azure CLI, REF de `--comprobar` inexistente en git, o algún item o las vistas no se han podido leer. No escribe ni compara nada. |
+| 2 | Cuenta incorrecta, fallo de Azure CLI, REF de `--comprobar` inexistente en git, nombre de `--solo` que no existe en el workspace, o algún item o las vistas no se han podido leer. No escribe ni compara nada. |
+
+Las funciones públicas del script son `carpetas_solo(solo)` (convierte `--solo` en el conjunto de carpetas, con `lakehouse` expandido; `None` si no hay `--solo`), `descargar_todo(tok, carpetas=None)`, `exportar(ficheros, carpetas=None)` y `comprobar(ficheros, ref, carpetas=None)`. Con `carpetas=None` hacen lo de siempre.
 
 ### publicar_fabric.py
 
@@ -103,21 +115,24 @@ Reproduce desde las fuentes los ficheros de Grupo de Ageing y Revenue y los comp
 |---|---|---|
 | `ageing` o `revenue` | obligatorio | Fichero de Grupo a validar (argumento posicional). |
 | `--fuentes RUTA` | carpeta `3.Fuentes` de la biblioteca Reporting financiero en OneDrive | Carpeta de fuentes. Debe contener la carpeta de TXT "2026 03 - 0001 Magnitude Marzo". |
+| `--vista` | desactivado | Solo con `ageing`. Valida la vista `300.vw_Export_Ageing` de Fabric contra los TXT de marzo, en lugar de reproducir el aging desde el Excel. Solo lee los TXT y la vista: no abre el Excel de aging ni el de Revenue FT3. Con `revenue` sale con código 2. |
 
 Líneas de salida (las leen los tests):
 
-- `TRAMOS combinaciones=N diferencia_maxima=X` (ageing): compara el importe por sociedad y tramo (`GR0` a `GR9C`) del TXT con el aging de clientes al 31-03-2026. Es la cifra de control.
-- `  DIFERENCIA sociedad tramo txt=... calculado=...` (ageing): una línea por combinación con diferencia de al menos 0,001.
+- `TRAMOS combinaciones=N diferencia_maxima=X` (ageing): compara el importe por sociedad y tramo (`GR0` a `GR9C`) del TXT con el aging de clientes al 31-03-2026. Es la cifra de control. Con `--vista`, la comparación es con la vista de Fabric.
+- `  DIFERENCIA sociedad tramo txt=... calculado=...` (ageing): una línea por combinación con diferencia de al menos 0,001. Con `--vista` la etiqueta es `vista=...` en lugar de `calculado=...`.
 - `SOCIEDAD codigo txt=... calculado=... dif=...` (revenue): total por sociedad desde Fact_Actuals frente al TXT. Es la cifra de control.
 - `CLIENTES lineas_txt=N exactas=N distintas=N solo_txt=N solo_calculadas=N` (ambos): cruce línea a línea por código de cliente Magnitude. Es informativa.
 - `  importe_sin_codigo=X` (ambos): importe sin código de cliente.
-- `GRICFLAG txt=N calculados=N coinciden=N` (ageing): compara los marcadores de intercompañía del TXT con los de la fuente. Es informativa.
+- `GRICFLAG txt=N calculados=N coinciden=N` (ageing): compara los marcadores de intercompañía del TXT con los de la fuente. Es informativa. Con `--vista` la etiqueta es `GRICFLAG txt=N vista=N coinciden=N`.
 
 | Código | Significado |
 |---|---|
 | 0 | Las cifras de control cuadran: en ageing, diferencia máxima por tramo menor de 0,001; en revenue, diferencia por sociedad menor de 0,05. |
 | 1 | No cuadran. Las líneas CLIENTES, GRICFLAG e importe_sin_codigo no cambian el código de salida. |
-| 2 | Cuenta de Azure CLI incorrecta (comprobada por `fabric_comun.py`), o no se encuentra la carpeta de TXT de marzo en la ruta de `--fuentes`. | Un error no controlado también sale con 1.
+| 2 | Cuenta de Azure CLI incorrecta (comprobada por `fabric_comun.py`), no se encuentra la carpeta de TXT de marzo en la ruta de `--fuentes`, o `--vista` con `revenue`. |
+
+Un error no controlado también sale con 1.
 
 ### anexo_pendientes.py y md_a_docx.py
 
@@ -182,14 +197,18 @@ Dependencias y versiones: ver [[configuration]].
 
 ## Evidence
 
-- `exportar_fabric.py#descargar_todo` - exportación de items, filtrada por `es_exportable`.
-- `exportar_fabric.py#main`, `exportar_fabric.py#comprobar`, `exportar_fabric.py#exportar` - argumentos y códigos de salida de exportar.
+- `exportar_fabric.py#carpetas_solo` - conversión de `--solo` en carpetas, con `lakehouse` expandido.
+- `exportar_fabric.py#descargar_todo` - exportación de items, filtrada por `es_exportable`, con `--solo` y validación de nombres (código 2).
+- `exportar_fabric.py#exportar` - regeneración de `fabric/`, completa o solo de las carpetas indicadas.
+- `exportar_fabric.py#comprobar` - comparación con git, completa o solo de las carpetas indicadas.
+- `exportar_fabric.py#main` - argumentos `--comprobar` y `--solo`, y códigos de salida de exportar.
 - `publicar_fabric.py#main`, `publicar_fabric.py#_preparar_vistas`, `publicar_fabric.py#_publicar_vistas` - argumentos, simulación, creación con `--crear`, vistas y códigos de salida de publicar.
 - `ejecutar_fabric.py#main` - argumentos, simulación, espera y códigos de salida de ejecutar.
 - `fabric_comun.py#lanzar_pipeline`, `#esperar_job`, `#leer_parametros`, `#ESTADOS_FINALES_JOB` - lanzamiento y espera de jobs.
 - `fabric_comun.py#crear_item`, `#vista_de_ruta`, `#sentencia_de_vista`, `#publicar_vista` - creación de items y publicación de vistas.
 - `consultar_sql.py#main` - argumentos y códigos de salida de la consulta.
 - `validar_ficheros_grupo.py#main`, `validar_ficheros_grupo.py#validar_ageing`, `validar_ficheros_grupo.py#validar_revenue` - argumentos, líneas de salida y códigos de salida de la validación.
+- `validar_ficheros_grupo.py#validar_vista_ageing`, `validar_ficheros_grupo.py#leer_ageing_marzo`, `validar_ficheros_grupo.py#CONSULTA_VISTA_AGEING` - modo `--vista`, lectura de los TXT de marzo y consulta de la vista.
 - `fabric_comun.py#comprobar_cuenta`, `fabric_comun.py#token` - cuenta y tokens.
 - `fabric_comun.py#es_exportable`, `fabric_comun.py#ITEMS_DE_SISTEMA` - exclusión de items de sistema.
 - `fabric_comun.py#descargar_definicion`, `fabric_comun.py#publicar_definicion`, `fabric_comun.py#partes_para_publicar` - definiciones de items.

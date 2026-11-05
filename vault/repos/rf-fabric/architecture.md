@@ -28,7 +28,7 @@ El lakehouse `lh_tinkle_financiero` organiza los datos en tres esquemas:
 Los dataflows de ingesta y de apoyo siguen el patrón de nombre de la carpeta. El nombre interno de algunos no coincide con la carpeta: INGESTA_Carga_Datos figura como INGESTA_Carga_Oracle, INGESTA_Maestros como INGESTAS INICIALES y TRANS_Silver como TRANS_Carga_datos.
 
 - INGESTA_Carga_Datos: consultas `Carga_New_*` (Oracle, MMS, HAPA asientos, Agings proveedores y clientes). Es el dataflow de ingesta principal. `Carga_New_HAPA_asientos` escribe en 100.New_HAPA mediante `Carga_HAPA_asientos_DataDestination`. La auditoría de septiembre (apartados 5.2, 5.5 y N2 del documento de arquitectura) decía que New_HAPA no tenía destino; la definición exportada dice lo contrario. Falta comprobar en el workspace que se ejecuta. Lo refrescan los pipelines Ingesta_datos y Generar Reporting.
-- INGESTA_Maestros: escribe en 200 (`Mapping_HAPA`, `Mapping Portugal`, `COA_Oracle`) y en 300 (`Dim_CDC`, `Dim_Calendar`, `Dim_Clientes`, `Dim_Sociedades`, `Dim_RRHH`, `Dim_Report_Line`, `Map_Report_Line_Account`, `Aux_CDC`). `Assets_Reporte`, `Liabilities_Reporte`, `PL_Reporte` y sus variantes `*_Cuentas` no tienen destino. Lo refresca el pipeline Ingesta_datos.
+- INGESTA_Maestros: escribe en 200 (`Mapping_HAPA`, `Mapping Portugal`, `COA_Oracle`) y en 300 (`Dim_CDC`, `Dim_Calendar`, `Dim_Clientes`, `Dim_Sociedades`, `Dim_RRHH`, `Dim_Report_Line`, `Map_Report_Line_Account`, `Aux_CDC`). `Assets_Reporte`, `Liabilities_Reporte`, `PL_Reporte` y sus variantes `*_Cuentas` no tienen destino. `Mapeo_Magnitude` tampoco: es un paso intermedio que lee `Revenue 2026 FT3.xlsx` de Arranque, y `Dim_Clientes` lo une para añadir `Codigo_Magnitude`. Lo refresca el pipeline Ingesta_datos.
 - INICIAL_Carga_Oracle: carga histórica de Oracle desde Checklist.
 - INICIAL_Carga_Agings: histórico de agings de clientes y proveedores.
 - INICIAL_Carga_Rentabilidades: escribe Fact_Asignacion_RRHH y Dim_equipos. Su consulta Dim_CDC solo lee 300.Dim_CDC.
@@ -67,13 +67,14 @@ Cuatro pipelines que se prueban y se relanzan por separado, según el ADR [[adrs
 
 Parámetros del pipeline:
 
-- `ficheros` (texto, por defecto vacío): ficheros a generar. Vacío significa todos.
+- `ficheros` (texto, por defecto vacío): ficheros a generar: `Balance`, `Saldos_4_7`, `Ageing` o varios separados por coma. Vacío significa Balance y Saldos_4_7; Ageing solo se genera si se pide expresamente.
 - `periodo_esperado` (texto, por defecto vacío): periodo AAAA.MM que se espera generar. Vacío significa no comprobar.
 
 Actividades:
 
 1. Notebook: ejecuta el notebook Generar_txt_Balance_Saldos pasándole `ficheros` y `periodo_esperado`. Sin dependencias.
 2. Copiar a SharePoint: copia recursiva de los `.txt` de `Files/Exportaciones/Balance` del lakehouse a `Shared Documents/Reporting Financiero/2. Salida de ficheros/Balance`, preservando la jerarquía. Se ejecuta si Notebook termina con Succeeded.
+3. Copiar Ageing a SharePoint: copia recursiva de los `.txt` de `Files/Exportaciones/Ageing` a `Shared Documents/Reporting Financiero/2. Salida de ficheros/Ageing`, preservando la jerarquía. Se ejecuta también si Notebook termina con Succeeded. No depende de que se haya pedido Ageing: copia lo que haya en la carpeta.
 
 ## Flujos
 
@@ -81,7 +82,7 @@ Tres pipelines que encadenan los modulares. Cada actividad es un ExecutePipeline
 
 - Flujo_actualizar_datos: Ingesta_datos y luego Transformacion_datos.
 - Flujo_total_reporting: Flujo_actualizar_datos y luego Refresco_modelos.
-- Flujo_total_txt: Flujo_actualizar_datos y luego Generar_salidas. Como no pasa parámetros, Generar_salidas se ejecuta con `ficheros` y `periodo_esperado` vacíos: genera todos los ficheros y no comprueba el periodo (ver [[repos/rf-fabric/quality]]).
+- Flujo_total_txt: Flujo_actualizar_datos y luego Generar_salidas. Como no pasa parámetros, Generar_salidas se ejecuta con `ficheros` y `periodo_esperado` vacíos: genera Balance y Saldos_4_7 (no Ageing) y no comprueba el periodo (ver [[repos/rf-fabric/quality]]).
 
 Ningún flujo tiene programación en la definición.
 
@@ -120,13 +121,14 @@ Este pipeline no toca el lakehouse de capas ni los modelos: solo exporta fichero
 - `Ingesta_datos.DataPipeline/pipeline-content.json` y `.platform` - actividades Maestros, Carga y Endpoint SQL, con sus dependencias.
 - `Transformacion_datos.DataPipeline/pipeline-content.json` y `.platform` - actividades Silver, Gold y los dos endpoints.
 - `Refresco_modelos.DataPipeline/pipeline-content.json` y `.platform` - refrescos de Financial Model y Agings.
-- `Generar_salidas.DataPipeline/pipeline-content.json` y `.platform` - parámetros `ficheros` y `periodo_esperado`, notebook y copia a SharePoint.
+- `Generar_salidas.DataPipeline/pipeline-content.json` y `.platform` - parámetros `ficheros` y `periodo_esperado`, notebook y dos copias a SharePoint (Balance y Ageing).
 - `Flujo_actualizar_datos.DataPipeline/pipeline-content.json`, `Flujo_total_reporting.DataPipeline/pipeline-content.json`, `Flujo_total_txt.DataPipeline/pipeline-content.json` - ExecutePipeline, waitOnCompletion y dependencias Succeeded.
 - `Generar Reporting.DataPipeline/pipeline-content.json` - actividades, dependencias y tipos del pipeline de reporting.
 - `Generar Reporting.DataPipeline/.platform` - nombre del item y logicalId a cero.
 - `Grabar salidas.DataPipeline/pipeline-content.json` - notebook, copia a SharePoint y dependencia.
 - `INGESTA_Carga_Datos.Dataflow/queryMetadata.json` - consultas Carga_New_*.
-- `INGESTA_Maestros.Dataflow/queryMetadata.json` - mapeos, dimensiones y consultas de informes.
+- `INGESTA_Maestros.Dataflow/queryMetadata.json` - mapeos, dimensiones, consultas de informes y Mapeo_Magnitude.
+- `INGESTA_Maestros.Dataflow/mashup.pq#Mapeo_Magnitude` - sin destino y unión en Dim_Clientes.
 - `INICIAL_Carga_Agings.Dataflow/queryMetadata.json`, `INICIAL_Carga_Oracle.Dataflow/queryMetadata.json`, `INICIAL_Carga_Rentabilidades.Dataflow/queryMetadata.json`, `INICIAL_Carga_Revenues.Dataflow/queryMetadata.json`, `INICIAL_Carga_budget_fct.Dataflow/queryMetadata.json` - cargas históricas.
 - `Seguridad_CDC.Dataflow/queryMetadata.json` - consulta RLS y conexión propia.
 - `Seguridad_CDC.Dataflow/mashup.pq` - consulta RLS como tabla literal y destino `RLS_DataDestination`.

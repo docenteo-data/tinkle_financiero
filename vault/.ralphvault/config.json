@@ -20,7 +20,7 @@
       "kind": "subdir",
       "stack": "generic",
       "phase": "done",
-      "last_sync_commit": "63838cb",
+      "last_sync_commit": "20719be",
       "last_reconcile_commit": "fb5c2b5"
     },
     {
@@ -30,7 +30,7 @@
       "kind": "subdir",
       "stack": "python",
       "phase": "done",
-      "last_sync_commit": "a98625a",
+      "last_sync_commit": "dc3b3a1",
       "last_reconcile_commit": "7d6aa2b"
     }
   ]
